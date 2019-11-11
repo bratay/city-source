@@ -5,7 +5,7 @@
 
 Below is required for web app
 /////////////////////
-
+<body>
 <!-- The core Firebase JS SDK is always required and must be listed first -->
 <script src="/__/firebase/7.3.0/firebase-app.js"></script>
 
@@ -15,3 +15,4 @@ Below is required for web app
 
 <!-- Initialize Firebase -->
 <script src="/__/firebase/init.js"></script>
+</body>
