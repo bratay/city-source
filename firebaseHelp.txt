@@ -1,0 +1,4 @@
+1. npm install -g firebase-tools   -  installs the firebase command line tool
+2. run "firebase login" in command line
+3. "firebase init" run from root dir
+4. ONLY WHEN READY TO DEPLOY run "firebase deploy"
