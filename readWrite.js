@@ -1,3 +1,10 @@
+//Great video 
+//https://www.youtube.com/watch?v=9kRgVxULbag&t=1s
+
+///////////////////////////////////////////////////////
+//Initialization
+///////////////////////////////////////////////////////
+
 // Firebase App configuration
 var firebaseConfig = {
     apiKey: "AIzaSyCGnqKQ3XqAuYctdKp49E_xOEnomZxaSQk",
@@ -19,6 +26,11 @@ const db = firebase.firestore() //Firestore noSQL database object
 
 //Printing info for app, analytics, and database configs
 console.log(app, analytics, "\n", db)
+
+
+///////////////////////////////////////////////////////
+//Read and write
+///////////////////////////////////////////////////////
 
 //calling db test collection
 var myDoc = db.collection('TestCollection').doc('testTest')
@@ -45,5 +57,40 @@ myDoc.get().then(function (currentDoc) {
 });
 
 myDoc.set({
-    valOne: 'I changed the database'
+    valOne: 'I changed the database',
+    valTwo: 7
 });
+
+
+///////////////////////////////////////////////////////
+//Query
+///////////////////////////////////////////////////////
+const collect = db.collection('TestCollection')//get wanted collection
+var query = collect.where('valTwo', '>', 5) // name, operator, value
+
+//print out query 
+query.get().then(queriedDocs => {
+    if (queriedDocs.empty == false) {
+        queriedDocs.forEach(singleDoc => {
+            console.log('This val is greater than 5: ', singleDoc.data().valTwo)
+        })
+    } else {
+        console.log("No docs match");
+    }
+});
+
+//docs with valTwo greater than 0 in decending order
+query = collect.where('valTwo', '>', 0).orderBy('valTwo', 'desc') // name, operator, value
+
+query.get().then(queriedDocs => {
+    if (queriedDocs.empty == false) {
+        queriedDocs.forEach(singleDoc => {
+            console.log('This val is greater than 0 and descending: ', singleDoc.data().valTwo)
+        })
+    } else {
+        console.log("No docs match");
+    }
+});
+
+
+
