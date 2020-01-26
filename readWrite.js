@@ -14,7 +14,36 @@ var firebaseConfig = {
 var app = firebase.initializeApp(firebaseConfig);
 // var app = firebase.initializeApp(firebaseConfig, "City Source"); //added name
 const analytics = firebase.analytics(); //analytics object
-const db = firebase.database() //Database object 
+// const db = firebase.database() //Database object 
+const db = firebase.firestore() //Firestore noSQL database object 
 
 //Printing info for app, analytics, and database configs
-console.log(app, analytics,"\n", db)
+console.log(app, analytics, "\n", db)
+
+//calling db test collection
+var myDoc = db.collection('TestCollection').doc('testTest')
+
+//printing out db value whenever updated with timestamp
+myDoc.onSnapshot(currentDoc => {
+    console.log("Realtime update ", new Date().toISOString(), ": ", currentDoc.data());
+});
+
+myDoc.set({
+    valOne: 'Branden Taylor'
+});
+
+//printing out test docment to console with async
+myDoc.get().then(function (currentDoc) {
+    if (currentDoc.exists) {
+        console.log("Current document data from db: ", currentDoc.data());
+    } else {
+        // doc.data() will be undefined in this case
+        console.log("Document doesn't exist");
+    }
+}).catch(function (error) {//error handling
+    console.log("Error getting document: ", error);
+});
+
+myDoc.set({
+    valOne: 'I changed the database'
+});
