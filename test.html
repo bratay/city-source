@@ -1,11 +1,8 @@
-<!-- The core Firebase JS SDK is always required and must be listed first -->
-<script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-app.js"></script> <!-- The core Firebase JS SDK-->
+<script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-analytics.js"></script> <!-- Firebase Analytics -->
+<script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-database.js"></script> <!-- Firebase Database-->
 
-<!-- TODO: Add SDKs for Firebase products that you want to use
-     https://firebase.google.com/docs/web/setup#available-libraries -->
-<script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-analytics.js"></script>
-
-<script>
+<!-- <script>
   // Your web app's Firebase configuration
   var firebaseConfig = {
     apiKey: "AIzaSyCGnqKQ3XqAuYctdKp49E_xOEnomZxaSQk",
@@ -17,12 +14,17 @@
     appId: "1:116800112457:web:e63f46689ea51c11437c98",
     measurementId: "G-D07D7LCMPR"
   };
+
   // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
+  // firebase.initializeApp(firebaseConfig);
+  var otherApp = firebase.initializeApp(otherAppConfig, "City Soruce");
   firebase.analytics();
-</script>
+
+  console.log(otherApp.name);  // "other"
+
+</script> -->
 
 <body>
-    <script src = "readWrite.js">
-        </script>
+  <script src="readWrite.js">
+  </script>
 </body>
