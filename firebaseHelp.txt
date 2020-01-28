@@ -28,7 +28,7 @@ Below is required for web app
 <script>
   // Your web app's Firebase configuration
   var firebaseConfig = {
-    apiKey: "AIzaSyCGnqKQ3XqAuYctdKp49E_xOEnomZxaSQk",
+    apiKey: "YOU SHOULD HAVE THIS ASK IF YOU DON'T",
     authDomain: "city-source-8a88a.firebaseapp.com",
     databaseURL: "https://city-source-8a88a.firebaseio.com",
     projectId: "city-source-8a88a",
