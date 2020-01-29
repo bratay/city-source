@@ -19,6 +19,10 @@ Getting Google Cloud SDK
     - Then answer questions
 
 
+Install FirebaseUI and its dependencies via npm using the following command. used for Google sign in stuff
+1. npm install firebaseui --save
+
+
 Below is required for web app
 /////////////////////
 <!-- The core Firebase JS SDK is always required and must be listed first -->
