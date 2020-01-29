@@ -23,9 +23,10 @@ var app = firebase.initializeApp(firebaseConfig);
 const analytics = firebase.analytics(); //analytics object
 // const db = firebase.database() //Database object 
 const db = firebase.firestore() //Firestore noSQL database object 
+const firestore = firebase.firestore()
 
 //Printing info for app, analytics, and database configs
-console.log(app, analytics, "\n", db)
+console.log(app, analytics, "\n", db, firestore)
 
 
 ///////////////////////////////////////////////////////
@@ -92,5 +93,16 @@ query.get().then(queriedDocs => {
     }
 });
 
+///////////////////
+//sign in
+//////////////////
+
+// example of ID check use case
+/////////////////////////
+// int id = 12341
+// if (IdExsit(id) == false)
+// {
+//     //store everything
+// }
 
 
