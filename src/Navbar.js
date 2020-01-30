@@ -1,10 +1,11 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { AppBar, Button, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, Toolbar, Typography, Divider } from '@material-ui/core';
+import { AppBar, Avatar, Button, Drawer, Hidden, IconButton, List, ListItem, ListItemIcon, ListItemText, Toolbar, Typography, Divider } from '@material-ui/core';
 import HomeIcon from '@material-ui/icons/Home';
-import MapIcon from '@material-ui/icons/Map';
 import MenuIcon from '@material-ui/icons/Menu';
+import NotificationsIcon from '@material-ui/icons/Notifications';
 import RoomIcon from '@material-ui/icons/Room';
+import StarIcon from '@material-ui/icons/Star';
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 
 const useStyles = makeStyles(theme => ({
@@ -29,17 +30,24 @@ function ListItemLink(props) {
 }
 
 function TopRight(props) {
+	const classes = useStyles();
 	if (props.login === true) {
 		return (
-			<React.Fragment>
-
-			</React.Fragment>
+			<Hidden xsdown>
+				<IconButton color="inherit">
+					<NotificationsIcon />
+				</IconButton>
+				<IconButton className={classes.menuButton}>
+					<Avatar />
+				</IconButton>
+				
+			</Hidden>
 		);
 	}
 	else {
 		return (
 			<React.Fragment>
-				<Button color="inherit">What is CitySource?</Button>
+				<Button color="inherit">About CitySource</Button>
 				<Button color="inherit">Log In/Sign Up</Button>
 			</React.Fragment>
 		);
@@ -71,7 +79,7 @@ function Navbar(props) {
 			<Divider />
 			<List>
 				<ListItemLink button key='recommended' href="/recommended">
-					<ListItemIcon><MapIcon /></ListItemIcon>
+					<ListItemIcon><StarIcon /></ListItemIcon>
 					<ListItemText primary="Recommended" />
 				</ListItemLink>
 				<ListItemLink button key='trending' href="/trending">

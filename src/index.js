@@ -9,7 +9,7 @@ import "./index.css";
 ReactDOM.render(
 	<ThemeProvider theme={theme}>
 		<CssBaseline />
-		<Navbar login={false}/>
+		<Navbar login={false} current="index"/>
 	</ThemeProvider>,
 	document.querySelector('#root')
 );
