@@ -22,7 +22,7 @@ var firebaseConfig = {
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-firebase.firestore()
+export var db = firebase.firestore()
 
 ReactDOM.render(
 	<ThemeProvider theme={theme}>

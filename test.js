@@ -23,7 +23,6 @@ var app = firebase.initializeApp(firebaseConfig);
 const analytics = firebase.analytics(); //analytics object
 // const db = firebase.database() //Database object 
 const db = firebase.firestore() //Firestore noSQL database object 
-const firestore = firebase.firestore()
 
 //Printing info for app, analytics, and database configs
 console.log(app, analytics, "\n", db, firestore)
