@@ -38,7 +38,12 @@ export function googleSignIn() {
 export function saveHometown(hometown){
     db.collection('users').doc(googleUserObj.credential.accessToken).update({
         hometown: hometown
-    })
+    }).catch(function(error) {
+        // The document probably doesn't exist.
+        console.error("Error updating document: ", error);
+        return false
+    });
+    return true
 }
 
 // example of ID check func
