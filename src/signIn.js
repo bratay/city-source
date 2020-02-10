@@ -9,8 +9,9 @@ export var googleUserObj
 export function googleSignIn() {
     var provider = new firebase.auth.GoogleAuthProvider(); //Google sign in object
     var userToken;
+
     firebase.auth().signInWithPopup(provider).then(function (result) {
-        // save Google Access Token
+        // save Google user object
         googleUserObj = result
         userToken = googleUserObj.credential.accessToken
     }).catch(function (error) {
@@ -21,18 +22,23 @@ export function googleSignIn() {
     if (!tempDoesUserExist(userToken)) {
         db.collection('users').add({
             bio: "",
-            homtown: "",
+            hometown: "",
             picUrl: googleUserObj.picUrl, 
             userID: userToken,
             postID: 0,
             username: googleUserObj.displayName
         })
 
-        // currentUserDoc = db.collection('user').where('userID','==', googleUserObj.credential.accessToken)
         return 0
     }else{
         return 1
     }
+}
+
+export function saveHometown(hometown){
+    db.collection('users').doc(googleUserObj.credential.accessToken).update({
+        hometown: hometown
+    })
 }
 
 // example of ID check func
