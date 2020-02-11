@@ -27,7 +27,7 @@ export var db = firebase.firestore()
 ReactDOM.render(
 	<ThemeProvider theme={theme}>
 		<CssBaseline />
-		<Navbar login={false} current="index"/>
+		<Navbar login={false} current="index" />
 		<CSMap />
 	</ThemeProvider>,
 	document.querySelector('#root')
