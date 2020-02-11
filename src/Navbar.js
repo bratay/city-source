@@ -40,7 +40,7 @@ function TopRight(props) {
 				<IconButton className={classes.menuButton}>
 					<Avatar />
 				</IconButton>
-				
+
 			</Hidden>
 		);
 	}
