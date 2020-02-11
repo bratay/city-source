@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from '@material-ui/core/styles';
-import Navbar from './Navbar';
+import CitySourceContainer from './CitySourceContainer.jsx';
 import theme from './theme';
 import "./index.css";
 import * as firebase from 'firebase';
@@ -22,13 +22,12 @@ var firebaseConfig = {
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-firebase.firestore()
+export var db = firebase.firestore()
 
 ReactDOM.render(
 	<ThemeProvider theme={theme}>
 		<CssBaseline />
-		<Navbar login={true} current="index" />
-		<ProfileTest />
+		<CitySourceContainer />
 	</ThemeProvider>,
 	document.querySelector('#root')
 );
