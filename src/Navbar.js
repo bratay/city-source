@@ -7,6 +7,7 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import RoomIcon from '@material-ui/icons/Room';
 import StarIcon from '@material-ui/icons/Star';
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
+import SignInModal from './components/SignInModal/SignInModal.jsx'
 import { googleSignIn } from './signIn';
 
 const useStyles = makeStyles(theme => ({
@@ -26,6 +27,10 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
+const openSignIn = () => {
+	return (<SignInModal />);
+}
+
 function ListItemLink(props) {
 	return <ListItem button component="a" {...props} />
 }
@@ -41,7 +46,6 @@ function TopRight(props) {
 				<IconButton className={classes.menuButton}>
 					<Avatar />
 				</IconButton>
-
 			</Hidden>
 		);
 	}
@@ -49,7 +53,7 @@ function TopRight(props) {
 		return (
 			<React.Fragment>
 				<Button color="inherit">About CitySource</Button>
-				<Button color="inherit" onClick = {googleSignIn} >Log In/Sign Up</Button>
+				<Button color="inherit" onClick = {openSignIn} >Log In/Sign Up</Button>
 			</React.Fragment>
 		);
 	}

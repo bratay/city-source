@@ -1,6 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Modal from '@material-ui/core/Modal'
+import { Button, Grid, Modal, Typography } from '@material-ui/core'
+import { googleSignIn } from '../../signIn';
 
 function getModalStyle() {
   const top = 50;
@@ -16,12 +17,27 @@ function getModalStyle() {
 const useStyles = makeStyles(theme => ({
   paper: {
     position: 'absolute',
-    width: 600,
+    // width: 550,
+    // height: 630,
+    width: 300,
     height: 400,
     backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
-    boxShadow: theme.shadows[5],
+    borderRadius: '25px',
+    outline: 'none',
     padding: theme.spacing(2, 4, 3),
+  },
+  root: {
+    '& > *': {
+      // position: 'absolute',
+      // margin: theme.spacing(1),
+      paddingTop: theme.spacing(2),
+    },
+  },
+  title: {
+    flexGrow: 1,
+    fontFamily: 'sans-serif',
+    userSelect: 'none',
+    color: "inherit",
   },
 }));
 
@@ -32,19 +48,27 @@ const SignInModal = () => {
   const [open, setOpen] = React.useState(true);
 
   return (
-    <Modal
-      aria-labelledby="simple-modal-title"
-      aria-describedby="simple-modal-description"
-      open={open}
-      onClose={() => setOpen(false)}
-    >
-      <div style={modalStyle} className={classes.paper}>
-        <h2 id="simple-modal-title">Text in a modal</h2>
-        <p id="simple-modal-description">
-          React is bad.
-        </p>
-      </div>
-    </Modal>
+    <Grid container justify="center" spacing={2}>
+      <Grid item xs={12}>
+        <Modal
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+          open={open}
+          onClose={() => setOpen(false)}
+        >
+          <div style={modalStyle} className={classes.paper}>
+            <Typography variant="h4" className={classes.title} style={{textAlign: "center", paddingTop: "2%", color: "#F06E38"}}>
+              SIGN IN
+            </Typography>
+            <div style={{textAlign: "center", paddingTop: "70%"}}>
+               <Button variant="contained" style={{backgroundColor: "#F06E38", color: "white"}} onClick={googleSignIn}>
+                  Sign in With Google
+               </Button>
+            </div>
+          </div>
+        </Modal>
+      </Grid>
+    </Grid>
   );
 }
 

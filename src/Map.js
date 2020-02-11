@@ -3,10 +3,10 @@ import GoogleMapReact from 'google-map-react';
 
 //TODO: we will need to create markers for each post type. Markers
 //      are just divs that are rendered at specific lat longs on
-//      the map. 
+//      the map.
 /*const simpleMarker = ({ text }) => (
     <div style={{
-      color: 'white', 
+      color: 'white',
       background: 'grey',
       padding: '15px 10px',
       display: 'inline-flex',
@@ -30,12 +30,12 @@ class CSMap extends Component {
         },
         zoom: 11
     };
-    
+
     render() {
         return(
             <div style = {{height: '92vh', width: '100%'}}>
             <GoogleMapReact
-                bootstrapURLKeys={{ key: 'Maps API Key' }}
+                bootstrapURLKeys={{ key: 'API Key' }}
                 defaultCenter={this.props.center}
                 defaultZoom={this.props.zoom}
             >
