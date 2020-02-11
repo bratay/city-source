@@ -27,37 +27,33 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
-const openSignIn = () => {
-	return (<SignInModal />);
-}
-
 function ListItemLink(props) {
 	return <ListItem button component="a" {...props} />
 }
 
-function TopRight(props) {
-	const classes = useStyles();
-	if (props.login === true) {
-		return (
-			<Hidden xsdown>
-				<IconButton color="inherit">
-					<NotificationsIcon />
-				</IconButton>
-				<IconButton className={classes.menuButton}>
-					<Avatar />
-				</IconButton>
-			</Hidden>
-		);
-	}
-	else {
-		return (
-			<React.Fragment>
-				<Button color="inherit">About CitySource</Button>
-				<Button color="inherit" onClick = {openSignIn} >Log In/Sign Up</Button>
-			</React.Fragment>
-		);
-	}
-}
+// function TopRight(props) {
+// 	const classes = useStyles();
+// 	if (props.login === true) {
+// 		return (
+// 			<Hidden xsdown>
+// 				<IconButton color="inherit">
+// 					<NotificationsIcon />
+// 				</IconButton>
+// 				<IconButton className={classes.menuButton}>
+// 					<Avatar />
+// 				</IconButton>
+// 			</Hidden>
+// 		);
+// 	}
+// 	else {
+// 		return (
+// 			<React.Fragment>
+// 				<Button color="inherit">About CitySource</Button>
+// 				<Button color="inherit" onClick = {() => {}} >Log In/Sign Up</Button>
+// 			</React.Fragment>
+// 		);
+// 	}
+// }
 
 function Navbar(props) {
 	const classes = useStyles();
@@ -67,12 +63,48 @@ function Navbar(props) {
 		left: false,
 		right: false,
 	});
+
+	const [signIn, setSignIn] = React.useState(false);
+
 	const toggleDrawer = (side, open) => event => {
 		if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
 			return;
 		}
 		setState({ ...state, [side]: open });
 	};
+
+	const TopRight = () => {
+			if (props.login === true) {
+				return (
+					<Hidden xsdown>
+						<IconButton color="inherit">
+							<NotificationsIcon />
+						</IconButton>
+						<IconButton className={classes.menuButton}>
+							<Avatar />
+						</IconButton>
+					</Hidden>
+				);
+			}
+			else {
+				return (
+					<React.Fragment>
+						<Button color="inherit">About CitySource</Button>
+						<Button color="inherit" onClick={() => {setSignIn(true)}} >Log In/Sign Up</Button>
+					</React.Fragment>
+				);
+			}
+		}
+
+	const signInModal = () => {
+		if (signIn){
+			return (<SignInModal />);
+		}
+		else {
+			return null;
+		}
+	}
+
 	const sideMenu = side => (
 		<div className={classes.list} role="presentation" onClick={toggleDrawer(side, false)} onKeyDown={toggleDrawer(side, false)}>
 			<List>
@@ -100,20 +132,23 @@ function Navbar(props) {
 	);
 
 	return (
-		<AppBar position="sticky">
-			<Toolbar>
-				<IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={toggleDrawer('left', true)}>
-					<MenuIcon />
-				</IconButton>
-				<Drawer open={state.left} onClose={toggleDrawer('left', false)}>
-					{sideMenu('left')}
-				</Drawer>
-				<Typography variant="h4" className={classes.title}>
-					CitySource
-				</Typography>
-				<TopRight login={props.login} />
-			</Toolbar>
-		</AppBar>
+		<React.Fragment>
+			<AppBar position="sticky">
+				<Toolbar>
+					<IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={toggleDrawer('left', true)}>
+						<MenuIcon />
+					</IconButton>
+					<Drawer open={state.left} onClose={toggleDrawer('left', false)}>
+						{sideMenu('left')}
+					</Drawer>
+					<Typography variant="h4" className={classes.title}>
+						CitySource
+					</Typography>
+					<TopRight login={props.login} />
+				</Toolbar>
+			</AppBar>
+			{signInModal()}
+		</React.Fragment>
 	);
 }
 

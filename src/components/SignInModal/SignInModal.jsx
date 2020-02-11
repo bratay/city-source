@@ -17,10 +17,8 @@ function getModalStyle() {
 const useStyles = makeStyles(theme => ({
   paper: {
     position: 'absolute',
-    // width: 550,
-    // height: 630,
     width: 300,
-    height: 400,
+    height: 200,
     backgroundColor: theme.palette.background.paper,
     borderRadius: '25px',
     outline: 'none',
@@ -60,7 +58,7 @@ const SignInModal = () => {
             <Typography variant="h4" className={classes.title} style={{textAlign: "center", paddingTop: "2%", color: "#F06E38"}}>
               SIGN IN
             </Typography>
-            <div style={{textAlign: "center", paddingTop: "70%"}}>
+            <div style={{textAlign: "center", paddingTop: "25%"}}>
                <Button variant="contained" style={{backgroundColor: "#F06E38", color: "white"}} onClick={googleSignIn}>
                   Sign in With Google
                </Button>

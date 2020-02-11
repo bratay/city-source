@@ -1,13 +1,11 @@
 import React from 'react';
 import Navbar from './Navbar.js';
-import CSMap from './Map.js'
-import SignInModal from './components/SignInModal/SignInModal.jsx'
+import CSMap from './Map.js';
 
 const CitySourceContainer = () => {
   return (
     <React.Fragment>
       <Navbar login={false} current="index"/>
-      <SignInModal />
       <CSMap />
     </React.Fragment>
   );
