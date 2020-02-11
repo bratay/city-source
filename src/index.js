@@ -6,6 +6,7 @@ import Navbar from './Navbar';
 import theme from './theme';
 import "./index.css";
 import * as firebase from 'firebase';
+import ProfileTest from './Profile';
 
 // Firebase App configuration
 var firebaseConfig = {
@@ -26,7 +27,8 @@ firebase.firestore()
 ReactDOM.render(
 	<ThemeProvider theme={theme}>
 		<CssBaseline />
-		<Navbar login={false} current="index" />
+		<Navbar login={true} current="index" />
+		<ProfileTest />
 	</ThemeProvider>,
 	document.querySelector('#root')
 );
