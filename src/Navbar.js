@@ -7,6 +7,7 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import RoomIcon from '@material-ui/icons/Room';
 import StarIcon from '@material-ui/icons/Star';
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
+import { googleSignIn } from './signIn';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -48,7 +49,7 @@ function TopRight(props) {
 		return (
 			<React.Fragment>
 				<Button color="inherit">About CitySource</Button>
-				<Button color="inherit">Log In/Sign Up</Button>
+				<Button color="inherit" onClick = {googleSignIn} >Log In/Sign Up</Button>
 			</React.Fragment>
 		);
 	}
@@ -106,7 +107,7 @@ function Navbar(props) {
 				<Typography variant="h4" className={classes.title}>
 					CitySource
 				</Typography>
-				<TopRight login={props.login}/>
+				<TopRight login={props.login} />
 			</Toolbar>
 		</AppBar>
 	);

@@ -3,6 +3,9 @@
 //Great video 
 //https://www.youtube.com/watch?v=9kRgVxULbag&t=1s
 
+//Our current database design
+// https://docs.google.com/document/d/1z-2cGmg0glX0y-AOg5inI-kgpaWKkfYd4ORESzPnR2s/edit
+
 1. npm install -g firebase-tools   -  installs the firebase command line tool
 2. run "firebase login" in command line
 3. "firebase init" run from root dir
@@ -15,8 +18,10 @@ Getting Google Cloud SDK
 4. run ./google-cloud-sdk/bin/gcloud init
     - Then answer questions
 
+Install FirebaseUI and its dependencies via npm using the following command. used for Google sign in stuff
+1. npm install firebaseui --save
 
-Below is required for web app
+Below is required for the web app
 /////////////////////
 <!-- The core Firebase JS SDK is always required and must be listed first -->
 <script src="https://www.gstatic.com/firebasejs/7.6.1/firebase-app.js"></script>
@@ -28,7 +33,7 @@ Below is required for web app
 <script>
   // Your web app's Firebase configuration
   var firebaseConfig = {
-    apiKey: "AIzaSyCGnqKQ3XqAuYctdKp49E_xOEnomZxaSQk",
+    apiKey: "YOU SHOULD HAVE THIS ASK IF YOU DON'T",
     authDomain: "city-source-8a88a.firebaseapp.com",
     databaseURL: "https://city-source-8a88a.firebaseio.com",
     projectId: "city-source-8a88a",
