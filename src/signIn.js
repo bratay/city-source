@@ -36,7 +36,7 @@ export function googleSignIn() {
             username: googleUserObj.displayName,
             userType: 0
         })
-        
+
         updateCurrentUser(db.collection('user').doc(userToken))
 
         return 0
@@ -70,7 +70,7 @@ export function saveHometown(hometown) {
 }
 
 // example of ID check func
-export function getUser(token) {
+export function tempDoesUserExist(token) {
     //probably some firebase calls
     return true
 }

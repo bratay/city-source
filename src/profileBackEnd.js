@@ -41,6 +41,34 @@ export function getUserProfileObj(userKey) {
     return userObj
 }
 
+export function getUserPost(userKey) {
+    let listOfPost = [];
+    let queryResult = db.collection('post').where('userID', '==', userKey)
+
+    queryResult.get().then(queriedDocs => {
+        if (queriedDocs.empty == false) {
+            queriedDocs.forEach(singleDoc => {
+
+                let currentPost = {
+                    comments: singleDoc.comments,
+                    devPost: singleDoc.devPost,
+                    pic: singleDoc.pic,
+                    postID: singleDoc.postID,
+                    timestamp: singleDoc.timestamp, //how are we doing time 
+                    title: singleDoc.title,
+                    userID: singleDoc.userID
+                }
+
+                listOfPost.push(currentPost)
+            })
+        } else {
+            console.log("This user doesn't have any post");
+        }
+    });
+
+    return listOfPost
+}
+
 //Temp user Exist 
 //this will be in singIn.js
 function userExist() { return true }
