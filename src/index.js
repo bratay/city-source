@@ -27,6 +27,8 @@ ReactDOM.render(
 	<ThemeProvider theme={theme}>
 		<CssBaseline />
 		<CitySourceContainer />
+		<Navbar login={false} current="index" />
+		<CSMap />
 	</ThemeProvider>,
 	document.querySelector('#root')
 );

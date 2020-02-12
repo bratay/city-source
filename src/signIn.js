@@ -1,9 +1,7 @@
 import * as firebase from 'firebase';
 import { db } from './index.js';
 
-
 export var googleUserObj
-// const db = firebase.firestore() //Firestore noSQL database object
 
 //returns 1 = user has account, 0 = new user,  -1 = sign in fail
 export function googleSignIn() {
@@ -47,7 +45,7 @@ export function saveHometown(hometown){
 }
 
 // example of ID check func
-function tempDoesUserExist(token) {
+export function tempDoesUserExist(token) {
     //probably some firebase calls
     return true
 }
