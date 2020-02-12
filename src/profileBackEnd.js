@@ -1,7 +1,6 @@
 import * as firebase from 'firebase';
 import { db } from './index.js';
-import { googleUserObj } from './signIn.js';
-
+import { currentUserObj } from './signIn.js';
 
 export function getUserProfileObj(userKey) {
     if (!userExist())
@@ -13,23 +12,26 @@ export function getUserProfileObj(userKey) {
         bio: "",
         hometown: "",
         picUrl: "",
-        username: "NAME"
+        userID: 0,
+        username: "",
+        userType: 0
     }
 
     rawUser.get().then(function (doc) {
         if (!doc.exists) {
             // doc.data() will be undefined in this case
             console.log("No such document");
-        }
+        } else {
+            console.log("Document data for test:", doc.data());
 
-        console.log("Document data for test:", doc.data());
-
-        userObj = {
-            bio: doc.bio,
-            hometown: doc.hometown,
-            picUrl: doc.picUrl,
-            userID: doc.userID,
-            username: doc.username
+            userObj = {
+                bio: doc.bio,
+                hometown: doc.hometown,
+                picUrl: doc.picUrl,
+                userID: doc.userID,
+                username: doc.username,
+                userType: doc.userType
+            }
         }
 
     }).catch(function (error) {
