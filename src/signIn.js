@@ -8,7 +8,7 @@ export function googleSignIn() {
     var provider = new firebase.auth.GoogleAuthProvider(); //Google sign in object
     var userToken;
 
-    firebase.auth().signInWithPopup(provider).then(function (result) {
+    firebase.auth().signInWithRedirect(provider).then(function (result) {
         // save Google user object
         googleUserObj = result
         userToken = googleUserObj.credential.accessToken
@@ -21,7 +21,7 @@ export function googleSignIn() {
         db.collection('users').add({
             bio: "",
             hometown: "",
-            picUrl: googleUserObj.picUrl, 
+            picUrl: googleUserObj.picUrl,
             userID: userToken,
             postID: 0,
             username: googleUserObj.displayName
@@ -49,6 +49,3 @@ export function tempDoesUserExist(token) {
     //probably some firebase calls
     return true
 }
-
-
-
