@@ -9,7 +9,7 @@ import * as firebase from 'firebase';
 
 // Firebase App configuration
 var firebaseConfig = {
-	apiKey: "AIzaSyCGnqKQ3XqAuYctdKp49E_xOEnomZxaSQk",
+	apiKey: "Firebase-API-KEY"
 	authDomain: "city-source-8a88a.firebaseapp.com",
 	databaseURL: "https://city-source-8a88a.firebaseio.com",
 	projectId: "city-source-8a88a",
