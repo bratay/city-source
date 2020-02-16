@@ -3,7 +3,10 @@ import { db } from './index.js';
 import { currentUserObj, userExist } from './signIn.js';
 
 export function getUserProfileObj(userKey) {
-    if (!userExist(userKey))
+
+    if(userKey === currentUserObj.userID)
+        return currentUserObj
+    else if (!userExist(userKey))
         return false
 
     let rawUser = db.collection('user').doc(userKey)
@@ -46,7 +49,7 @@ export function getUserPost(userKey) {
     let queryResult = db.collection('post').where('userID', '==', userKey)
 
     queryResult.get().then(queriedDocs => {
-        if (queriedDocs.empty == false) {
+        if (queriedDocs.empty === false) {
             queriedDocs.forEach(singleDoc => {
 
                 let currentPost = {

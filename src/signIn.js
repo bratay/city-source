@@ -1,7 +1,9 @@
 import * as firebase from 'firebase';
 import { db } from './index.js';
+import { getUserProfileObj } from "./profileBackEnd"
 
-export var googleUserObj
+export var googleUserObj;
+var userToken;
 
 export var currentUserObj = {
     bio: "",
@@ -15,8 +17,7 @@ export var currentUserObj = {
 //returns 1 = user has account, 0 = new user,  -1 = sign in fail
 export function googleSignIn() {
     var provider = new firebase.auth.GoogleAuthProvider(); //Google sign in object
-    var userToken;
-
+    
     firebase.auth().signInWithRedirect(provider).then(function (result) {
         // save Google user object
         googleUserObj = result
@@ -25,7 +26,7 @@ export function googleSignIn() {
         console.log('Sign in fail! Error message: ', error.message)
         return -1
     });
-
+    
     if (!userExist(userToken)) {
         // Creates new document with token as name of doc
         db.collection('users').doc(userToken).set({
@@ -38,13 +39,24 @@ export function googleSignIn() {
         })
 
         autoUpdateUserObject(db.collection('user').doc(userToken))
-
+        
+        var temp = userToken
+        testing(temp)
+        
         return 0
     } else {
-        autoUpdateUserObject(db.collection('user').doc(userToken))
 
+        autoUpdateUserObject(db.collection('user').doc(userToken))
+        
+        var temp = userToken
+        testing(temp)
+        
         return 1
     }
+}
+
+function testing(token) {
+    console.log(getUserProfileObj(token))
 }
 
 export function saveHometown(hometown) {
@@ -59,6 +71,7 @@ export function saveHometown(hometown) {
 }
 
 //Auto updates user Object when doc value is changed via firebase snapshot
+//Only called once
 function autoUpdateUserObject(currentUser) {
     currentUser.onSnapshot(doc => {
         currentUserObj = {
@@ -73,6 +86,6 @@ function autoUpdateUserObject(currentUser) {
 }
 
 // example of ID check func
-export function userExist(token) { 
-    return ( db.collection('users').doc(token) != null ) ?  true : false
+export function userExist(token) {
+    return (db.collection('users').doc(token) != null) ? true : false
 }
