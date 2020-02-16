@@ -26,7 +26,7 @@ export function googleSignIn() {
         return -1
     });
 
-    if (!tempDoesUserExist(userToken)) {
+    if (!userExist(userToken)) {
         // Creates new document with token as name of doc
         db.collection('users').doc(userToken).set({
             bio: "",
@@ -73,4 +73,6 @@ function autoUpdateUserObject(currentUser) {
 }
 
 // example of ID check func
-export function tempDoesUserExist(token) { return true }
+export function userExist(token) { 
+    return ( db.collection('users').doc(token) != null ) ?  true : false
+}

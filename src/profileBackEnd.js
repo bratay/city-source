@@ -1,6 +1,6 @@
 import * as firebase from 'firebase';
 import { db } from './index.js';
-import { currentUserObj } from './signIn.js';
+import { currentUserObj, userExist } from './signIn.js';
 
 export function getUserProfileObj(userKey) {
     if (!userExist(userKey))
@@ -68,7 +68,3 @@ export function getUserPost(userKey) {
 
     return listOfPost
 }
-
-//Temp user Exist 
-//this will be in singIn.js
-export function userExist(userKey) { return true }
