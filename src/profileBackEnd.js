@@ -3,7 +3,7 @@ import { db } from './index.js';
 import { currentUserObj } from './signIn.js';
 
 export function getUserProfileObj(userKey) {
-    if (!userExist())
+    if (!userExist(userKey))
         return false
 
     let rawUser = db.collection('user').doc(userKey)
@@ -71,4 +71,4 @@ export function getUserPost(userKey) {
 
 //Temp user Exist 
 //this will be in singIn.js
-function userExist() { return true }
+export function userExist(userKey) { return true }

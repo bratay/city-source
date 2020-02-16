@@ -37,24 +37,13 @@ export function googleSignIn() {
             userType: 0
         })
 
-        updateCurrentUser(db.collection('user').doc(userToken))
+        autoUpdateUserObject(db.collection('user').doc(userToken))
 
         return 0
     } else {
-        updateCurrentUser(db.collection('user').doc(userToken))
+        autoUpdateUserObject(db.collection('user').doc(userToken))
 
         return 1
-    }
-}
-
-function updateCurrentUser(userDoc){
-    currentUserObj = {
-        bio: userDoc.bio,
-        hometown: userDoc.hometown,
-        picUrl: userDoc.picUrl,
-        userID: userDoc.userID,
-        username: userDoc.username,
-        userType: userDoc.userType
     }
 }
 
@@ -69,8 +58,19 @@ export function saveHometown(hometown) {
     return true
 }
 
-// example of ID check func
-export function tempDoesUserExist(token) {
-    //probably some firebase calls
-    return true
+//Auto updates user Object when doc value is changed via firebase snapshot
+function autoUpdateUserObject(currentUser) {
+    currentUser.onSnapshot(doc => {
+        currentUserObj = {
+            bio: doc.bio,
+            hometown: doc.hometown,
+            picUrl: doc.picUrl,
+            userID: doc.userID,
+            username: doc.username,
+            userType: doc.userType
+        }
+    });
 }
+
+// example of ID check func
+export function tempDoesUserExist(token) { return true }
