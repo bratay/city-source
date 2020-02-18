@@ -71,3 +71,13 @@ export function getUserPost(userKey) {
 
     return listOfPost
 }
+
+export function dynamicProfileSearch(currentInput){
+
+}
+
+function dynamicProfileSearchHelp(usersDoc){
+    var userObj;
+
+    return userObj;
+}
