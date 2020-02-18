@@ -7,8 +7,8 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import RoomIcon from '@material-ui/icons/Room';
 import StarIcon from '@material-ui/icons/Star';
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
+import SearchIcon from '@material-ui/icons/Search'
 import SignInModal from './components/SignInModal/SignInModal.jsx'
-import { googleSignIn } from './signIn';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -30,30 +30,6 @@ const useStyles = makeStyles(theme => ({
 function ListItemLink(props) {
 	return <ListItem button component="a" {...props} />
 }
-
-// function TopRight(props) {
-// 	const classes = useStyles();
-// 	if (props.login === true) {
-// 		return (
-// 			<Hidden xsdown>
-// 				<IconButton color="inherit">
-// 					<NotificationsIcon />
-// 				</IconButton>
-// 				<IconButton className={classes.menuButton}>
-// 					<Avatar />
-// 				</IconButton>
-// 			</Hidden>
-// 		);
-// 	}
-// 	else {
-// 		return (
-// 			<React.Fragment>
-// 				<Button color="inherit">About CitySource</Button>
-// 				<Button color="inherit" onClick = {() => {}} >Log In/Sign Up</Button>
-// 			</React.Fragment>
-// 		);
-// 	}
-// }
 
 function Navbar(props) {
 	const classes = useStyles();
@@ -96,15 +72,6 @@ function Navbar(props) {
 			}
 		}
 
-	const signInModal = () => {
-		if (signIn){
-			return (<SignInModal />);
-		}
-		else {
-			return null;
-		}
-	}
-
 	const sideMenu = side => (
 		<div className={classes.list} role="presentation" onClick={toggleDrawer(side, false)} onKeyDown={toggleDrawer(side, false)}>
 			<List>
@@ -115,6 +82,10 @@ function Navbar(props) {
 			</List>
 			<Divider />
 			<List>
+			<ListItemLink button key='profileSearch' href="/profileSearch">
+				<ListItemIcon><SearchIcon /></ListItemIcon>
+				<ListItemText primary="Search" />
+			</ListItemLink>
 				<ListItemLink button key='recommended' href="/recommended">
 					<ListItemIcon><StarIcon /></ListItemIcon>
 					<ListItemText primary="Recommended" />
@@ -147,7 +118,7 @@ function Navbar(props) {
 					<TopRight login={props.login} />
 				</Toolbar>
 			</AppBar>
-			{signInModal()}
+			<SignInModal open={signIn} action={setSignIn} />
 		</React.Fragment>
 	);
 }
