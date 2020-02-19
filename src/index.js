@@ -11,7 +11,7 @@ import * as firebase from 'firebase';
 
 // Firebase App configuration
 var firebaseConfig = {
-	apiKey: "Firebase API-Key",
+	apiKey: "FIREBASE-API-KEY",
 	authDomain: "city-source-8a88a.firebaseapp.com",
 	databaseURL: "https://city-source-8a88a.firebaseio.com",
 	projectId: "city-source-8a88a",
@@ -29,8 +29,6 @@ ReactDOM.render(
 	<ThemeProvider theme={theme}>
 		<CssBaseline />
 		<CitySourceContainer />
-		<Navbar login={false} current="index" />
-		<CSMap />
 	</ThemeProvider>,
 	document.querySelector('#root')
 );
