@@ -35,7 +35,7 @@ class CSMap extends Component {
         return(
             <div style = {{height: '92vh', width: '100%'}}>
             <GoogleMapReact
-                bootstrapURLKeys={{ key: 'API Key' }}
+                bootstrapURLKeys={{ key: 'MAPS API KEY ' }}
                 defaultCenter={this.props.center}
                 defaultZoom={this.props.zoom}
             >

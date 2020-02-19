@@ -13,6 +13,7 @@ export function getUserProfileObj(userKey) {
 
     let userObj = {
         bio: "",
+        email: "",
         hometown: "",
         picUrl: "",
         userID: 0,
@@ -30,6 +31,7 @@ export function getUserProfileObj(userKey) {
             userObj = {
                 bio: doc.bio,
                 hometown: doc.hometown,
+                email: doc.email,
                 picUrl: doc.picUrl,
                 userID: doc.userID,
                 username: doc.username,
