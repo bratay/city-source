@@ -6,12 +6,12 @@ import CitySourceContainer from './CitySourceContainer.jsx';
 import theme from './theme';
 import "./index.css";
 import Navbar from "./Navbar.js"
-import CSMap from "./Map.js"
+import CSMap from "./components/MapUI/Map.js"
 import * as firebase from 'firebase';
 
 // Firebase App configuration
 var firebaseConfig = {
-	apiKey: "FIREBASE API KEY",
+	apiKey: "FIREBASE-API-KEY",
 	authDomain: "city-source-8a88a.firebaseapp.com",
 	databaseURL: "https://city-source-8a88a.firebaseio.com",
 	projectId: "city-source-8a88a",
@@ -29,8 +29,6 @@ ReactDOM.render(
 	<ThemeProvider theme={theme}>
 		<CssBaseline />
 		<CitySourceContainer />
-		<Navbar login={false} current="index" />
-		<CSMap />
 	</ThemeProvider>,
 	document.querySelector('#root')
 );
