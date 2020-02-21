@@ -6,7 +6,7 @@ export var profileSearchList = []
 
 export function getUserProfileObj(userKey) {
 
-    if(userKey === currentUserObj.userID)
+    if (userKey === currentUserObj.userID)
         return currentUserObj
     else if (!userExist(userKey))
         return false
@@ -17,7 +17,7 @@ export function getUserProfileObj(userKey) {
         bio: "",
         email: "",
         hometown: "",
-        hometownCoor: new firebase.firestore.GeoPoint( 0, 0),
+        hometownCoor: new firebase.firestore.GeoPoint(0, 0),
         picUrl: "",
         userID: 0,
         username: "",
@@ -34,7 +34,7 @@ export function getUserProfileObj(userKey) {
             userObj = {
                 bio: doc.bio,
                 hometown: doc.hometown,
-                hometownCoor: new firebase.firestore.GeoPoint( 0, 0),
+                hometownCoor: new firebase.firestore.GeoPoint(0, 0),
                 email: doc.email,
                 picUrl: doc.picUrl,
                 userID: doc.userID,
@@ -78,48 +78,70 @@ export function getUserPost(userKey) {
     return listOfPost
 }
 
-export function dynamicProfileSearch(currentInput){
-    var maxHeap = new PriorityQueue() //to sort distance
-    var hasSeen = new Set() //to make sure we don't show the same user, stores userID
-    let result = []
+///////////////////////////////////////////////////////
+//Profile search
+///////////////////////////////////////////////////////
+export var profileSearchList = []//should be alphabetical order // but it's Not right now
+
+var maxHeap = new PriorityQueue() //to sort top distance
+var hasSeen = new Set() //to make sure we don't show the same user, stores userID
+var lastLength = 0;
+
+//updates the profile Search List exported variable
+export function dynamicProfileSearch(currentInput) {
+    if(currentInput.length < 2){
+        maxHeap = new PriorityQueue() //to sort top distance
+        hasSeen = new Set() 
+        return
+    }else if(lastLength > currentInput.length){
+        deleteLastCharResults()
+        return
+    }
 
     //limiting amount of results from query
     var profileCandidates = db.ref('users').where('userName', '==', currentInput)
         .limitToFirst(100);
-    
+
     //calculate distance from current user
     //put in max heap of size 20 to be used by front end
-    profileCandidates.get().then( allProfileDocs => {
-        allProfileDocs.forEach( profile => {
-            if(hasSeen.has(profile.userID))
+    profileCandidates.get().then(allProfileDocs => {
+        allProfileDocs.forEach(profile => {
+            if (hasSeen.has(profile.userID))
                 continue
 
-            hasSeen.add( profile.userID )
+            hasSeen.add(profile.userID)
 
-            let dis = getDisFromCurUser( profile.GeoPoint.lat(), profile.GeoPoint.long() )
+            let dis = getDisFromCurUser(profile.GeoPoint.lat(), profile.GeoPoint.long())
 
-            if(maxHeap.length < 20 ){
-                maxHeap.enqueue( profile, dis )
-            }else if( dis < maxHeap.front().priority ){
+            if (maxHeap.length < 20) {
+                maxHeap.enqueue(profile, dis)
+            } else if (dis < maxHeap.front().priority) {
                 maxHeap.dequeue()
-                maxHeap.enqueue( profile, dis )
+                maxHeap.enqueue(profile, dis)
             }
         })
     })
 
     let tempHeap = maxHeap
-    // tempHeap.sort(function(a, b){return a-b});
-    // result = tempHeap
+    profileSearchList.clear()
 
-    for(let i = 0; i < 20; i++){
-        result.push(tempHeap.front())
+    for (let i = tempHeap.length; i >= 0; i--) {
+        profileSearchList.push(tempHeap.front().element)
         tempHeap.dequeue()
     }
-
-    return result
 }
 
-function getDisFromCurUser(lat, long){
-    var sum = Math.pow( currentUserObj.hometownCoor.lat() - lat   , 2) + Math.pow( currentUserObj.hometownCoor.long() - long, 2 )
-    return Math.sqrt( sum )
+function deleteLastCharResults(){
+
+}
+
+function getDisFromCurUser(lat, long) {
+    var sum = Math.pow(currentUserObj.hometownCoor.lat() - lat, 2) + Math.pow(currentUserObj.hometownCoor.long() - long, 2)
+    return Math.sqrt(sum)
+}
+
+//call after done searching
+export function endSearch() {
+    maxHeap = new PriorityQueue() //to sort distance
+    hasSeen = new Set() //to make sure we don't show the same user, stores userID
 }
