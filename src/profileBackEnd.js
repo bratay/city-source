@@ -2,6 +2,8 @@ import * as firebase from 'firebase';
 import { db } from './index.js';
 import { currentUserObj, userExist } from './signIn.js';
 
+export var profileSearchList = []
+
 export function getUserProfileObj(userKey) {
 
     if(userKey === currentUserObj.userID)
@@ -77,11 +79,47 @@ export function getUserPost(userKey) {
 }
 
 export function dynamicProfileSearch(currentInput){
+    var maxHeap = new PriorityQueue() //to sort distance
+    var hasSeen = new Set() //to make sure we don't show the same user, stores userID
+    let result = []
 
+    //limiting amount of results from query
+    var profileCandidates = db.ref('users').where('userName', '==', currentInput)
+        .limitToFirst(100);
+    
+    //calculate distance from current user
+    //put in max heap of size 20 to be used by front end
+    profileCandidates.get().then( allProfileDocs => {
+        allProfileDocs.forEach( profile => {
+            if(hasSeen.has(profile.userID))
+                continue
+
+            hasSeen.add( profile.userID )
+
+            let dis = getDisFromCurUser( profile.GeoPoint.lat(), profile.GeoPoint.long() )
+
+            if(maxHeap.length < 20 ){
+                maxHeap.enqueue( profile, dis )
+            }else if( dis < maxHeap.front().priority ){
+                maxHeap.dequeue()
+                maxHeap.enqueue( profile, dis )
+            }
+        })
+    })
+
+    let tempHeap = maxHeap
+    // tempHeap.sort(function(a, b){return a-b});
+    // result = tempHeap
+
+    for(let i = 0; i < 20; i++){
+        result.push(tempHeap.front())
+        tempHeap.dequeue()
+    }
+
+    return result
 }
 
-function dynamicProfileSearchHelp(usersDoc){
-    var userObj;
-
-    return userObj;
+function getDisFromCurUser(lat, long){
+    var sum = Math.pow( currentUserObj.hometownCoor.lat() - lat   , 2) + Math.pow( currentUserObj.hometownCoor.long() - long, 2 )
+    return Math.sqrt( sum )
 }

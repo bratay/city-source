@@ -1,13 +1,7 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import { ThemeProvider } from '@material-ui/core/styles';
-import CitySourceContainer from './CitySourceContainer.jsx';
-import theme from './theme';
-import "./index.css";
-import Navbar from "./Navbar.js"
-import CSMap from "./components/MapUI/Map.js"
 import * as firebase from 'firebase';
+import { dynamicProfileSearch } from '../src/profileBackEnd'
+import { currentUserObj, userExist } from './src/signIn.js';
+import { firestore } from 'firebase';
 import { Firebase-API-Key } from '../apiKey.js'
 
 // Firebase App configuration
@@ -26,10 +20,20 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 export var db = firebase.firestore()
 
-ReactDOM.render(
-	<ThemeProvider theme={theme}>
-		<CssBaseline />
-		<CitySourceContainer />
-	</ThemeProvider>,
-	document.querySelector('#root')
-);
+currentUserObj = {
+    bio: "",
+    hometown: "The middle of no where",
+    hometownCoor: new firebase.firestore.GeoPoint( 100, 100),
+    email: "",
+    picUrl: "",
+    userID: 1234567,
+    username: "The Current user",
+    userType: 0
+}
+
+var results = dynamicProfileSearch('Branden Taylor')
+
+console.log(results)
+
+
+
