@@ -15,6 +15,7 @@ export function getUserProfileObj(userKey) {
         bio: "",
         email: "",
         hometown: "",
+        hometownCoor: new firebase.firestore.GeoPoint( 0, 0),
         picUrl: "",
         userID: 0,
         username: "",
@@ -31,6 +32,7 @@ export function getUserProfileObj(userKey) {
             userObj = {
                 bio: doc.bio,
                 hometown: doc.hometown,
+                hometownCoor: new firebase.firestore.GeoPoint( 0, 0),
                 email: doc.email,
                 picUrl: doc.picUrl,
                 userID: doc.userID,

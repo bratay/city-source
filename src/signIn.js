@@ -1,5 +1,8 @@
 import * as firebase from 'firebase/app';
+import { firestore } from 'firebase';
 import { db } from './index.js';
+import { getHometownCoor } from './components/MapUI/Map.js';
+import { Component } from 'react';
 
 export var user;
 var userToken;
@@ -7,6 +10,7 @@ var userToken;
 export var currentUserObj = {
     bio: "",
     hometown: "",
+    hometownCoor: new firebase.firestore.GeoPoint( 0, 0),
     email: "",
     picUrl: "",
     userID: 0,
@@ -24,7 +28,7 @@ export function googleSignIn() {
         console.log('Sign in fail! Error message: ', error.message)
         return -1
     });
-    
+
     user = firebase.auth().currentUser
     userToken = String(user.uid)  // Use User.getToken() instead. Need to fix this in the future
 
@@ -33,6 +37,7 @@ export function googleSignIn() {
         db.collection('users').doc(userToken).set({
             bio: "",
             hometown: "",
+            hometownCoor: new firebase.firestore.GeoPoint.init( 0, 0),
             email: user.email,
             picUrl: String(user.photoURL),
             userID: user.uid,
@@ -55,6 +60,7 @@ export function signOut() {
     currentUserObj = {
         bio: "",
         hometown: "",
+        hometownCoor: new firebase.firestore.GeoPoint.init( 0, 0),
         email: "",
         picUrl: "",
         userID: 0,
@@ -64,8 +70,10 @@ export function signOut() {
 }
 
 export function saveHometown(hometown) {
+    var homeTownGeoPoint = getHometownCoor(hometown)
     db.collection('users').doc(user.credential.accessToken).update({
-        hometown: hometown
+        hometown: hometown,
+        hometownCoor: homeTownGeoPoint
     }).catch(function (error) {
         // The document probably doesn't exist.
         console.error("Error updating document: ", error);
@@ -81,6 +89,7 @@ function autoUpdateUserObject(currentUser) {
         currentUserObj = {
             bio: doc.bio,
             hometown: doc.hometown,
+            hometownCoor: new firebase.firestore.GeoPoint.init( 0, 0),
             email: doc.email,
             picUrl: doc.picUrl,
             userID: doc.userID,

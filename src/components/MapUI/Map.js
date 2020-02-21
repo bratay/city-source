@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import GoogleMapReact from 'google-map-react';
+import * as firebase from 'firebase/app';
+import { firestore } from 'firebase';
 
 //TODO: we will need to create markers for each post type. Markers
 //      are just divs that are rendered at specific lat longs on
@@ -50,6 +52,13 @@ class CSMap extends Component {
             </div>
         );
     }
+}
+
+//returns a geopoint object
+export function getHometownCoor(hometown){
+    var geoPointResult = new firebase.firestore.GeoPoint( 0, 0)
+
+    return geoPointResult
 }
 
 export default CSMap;
