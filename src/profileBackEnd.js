@@ -63,7 +63,7 @@ export function getUserPost(userKey) {
                     devPost: singleDoc.devPost,
                     pic: singleDoc.pic,
                     postID: singleDoc.postID,
-                    timestamp: singleDoc.timestamp, //how are we doing time 
+                    timestamp: getTimeDate(timestamp), //convert from epoch to normal time date
                     title: singleDoc.title,
                     userID: singleDoc.userID
                 }
@@ -76,6 +76,15 @@ export function getUserPost(userKey) {
     });
 
     return listOfPost
+}
+
+export function getTimeDate(epochSeconds){
+    var rawDate = new Date(epochSeconds*1000).toString()
+
+    var formattedDate = rawDate.slice(4, 10) // date
+    formattedDate += " " +  rawDate.slice(11, 24) //time
+
+    return formattedDate
 }
 
 ///////////////////////////////////////////////////////
