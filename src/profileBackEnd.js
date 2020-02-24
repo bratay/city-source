@@ -78,11 +78,13 @@ export function getUserPost(userKey) {
     return listOfPost
 }
 
-export function getTimeDate(epochSeconds){
-    var rawDate = new Date(epochSeconds*1000).toString()
+//convert epoch time (number of seconds from 1/1/1970) to
+//month day year hours:minutes:seconds
+export function getTimeDate(epochSeconds) {
+    var rawDate = new Date(epochSeconds * 1000).toString()
 
     var formattedDate = rawDate.slice(4, 10) // date
-    formattedDate += " " +  rawDate.slice(11, 24) //time
+    formattedDate += " " + rawDate.slice(11, 24) //time
 
     return formattedDate
 }
@@ -92,20 +94,47 @@ export function getTimeDate(epochSeconds){
 ///////////////////////////////////////////////////////
 export var profileSearchList = []//should be alphabetical order // but it's Not right now
 
-var maxHeap = new PriorityQueue() //to sort top distance
-var hasSeen = new Set() //to make sure we don't show the same user, stores userID
+var cache = []
+var trash = []
 var lastLength = 0;
 
-//updates the profile Search List exported variable
-export function dynamicProfileSearch(currentInput) {
-    if(currentInput.length < 2){
-        maxHeap = new PriorityQueue() //to sort top distance
-        hasSeen = new Set() 
-        return
-    }else if(lastLength > currentInput.length){
-        deleteLastCharResults()
-        return
+function createObjectWithDis(doc, distance) {
+    var fullObject = {
+        bio: doc.bio,
+        hometown: doc.hometown,
+        hometownCoor: doc.hometownCoor,
+        email: doc.email,
+        picUrl: doc.picUrl,
+        userID: doc.userID,
+        username: doc.username,
+        userType: doc.userType,
+        dis: distance
     }
+
+    return fullObject
+}
+
+//main func for search
+export function dynamicProfileSearch(currentInput) {
+    if (currentInput.length > lastLength && currentInput.length == 2) {
+        fullAdd(currentInput)
+    } else if (currentInput.length > lastLength && currentInput.length > 2) {
+        addLetter(currentInput)
+    } else if (currentInput.length < lastLength && currentInput.length > 2) {
+        removeLetter(currentInput)
+    } else if (currentInput.length < lastLength && currentInput.length < 2) {
+        profileSearchList = []
+    }
+
+    lastLength = currentInput.length
+}
+
+//updates the profile Search List
+//But does a fresh querey to Firebase
+function fullAdd(currentInput) {
+    //Fresh cache and trash
+    cache = []
+    trash = []
 
     //limiting amount of results from query
     var profileCandidates = db.ref('users').where('userName', '==', currentInput)
@@ -115,42 +144,37 @@ export function dynamicProfileSearch(currentInput) {
     //put in max heap of size 20 to be used by front end
     profileCandidates.get().then(allProfileDocs => {
         allProfileDocs.forEach(profile => {
-            if (hasSeen.has(profile.userID))
-                continue
-
-            hasSeen.add(profile.userID)
-
             let dis = getDisFromCurUser(profile.GeoPoint.lat(), profile.GeoPoint.long())
-
-            if (maxHeap.length < 20) {
-                maxHeap.enqueue(profile, dis)
-            } else if (dis < maxHeap.front().priority) {
-                maxHeap.dequeue()
-                maxHeap.enqueue(profile, dis)
-            }
+            cache.push(createObjectWithDis(profile, dis))
         })
     })
 
-    let tempHeap = maxHeap
+    //sort cache by distance from current user
+    cache.sort((a, b) => (a.dis > b.dis) ? 1 : -1)
+
     profileSearchList.clear()
 
-    for (let i = tempHeap.length; i >= 0; i--) {
-        profileSearchList.push(tempHeap.front().element)
-        tempHeap.dequeue()
+    var numResults = (cache.length > 20) ? 20 : cache.length
+
+    for (let i = 0; i < numResults; i++) {
+        profileSearchList.push(cache[i])
     }
 }
 
-function deleteLastCharResults(){
+//updates the profile Search List
+//But with out new firebase querey only with cache
+function addLetter(currentInput) {
 
 }
 
+//updates the profile Search List
+//When letter is removed
+function removeLetter(currentInput) {
+
+}
+
+//Simple distance func
 function getDisFromCurUser(lat, long) {
     var sum = Math.pow(currentUserObj.hometownCoor.lat() - lat, 2) + Math.pow(currentUserObj.hometownCoor.long() - long, 2)
     return Math.sqrt(sum)
-}
-
-//call after done searching
-export function endSearch() {
-    maxHeap = new PriorityQueue() //to sort distance
-    hasSeen = new Set() //to make sure we don't show the same user, stores userID
 }
