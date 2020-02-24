@@ -5,10 +5,8 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import CitySourceContainer from './CitySourceContainer.jsx';
 import theme from './theme';
 import "./index.css";
-import Navbar from "./Navbar.js"
-import CSMap from "./components/MapUI/Map.js"
 import * as firebase from 'firebase';
-import { Firebase-API-Key } from '../apiKey.js'
+import { Firebase-API-Key } from '../apiKey.js';
 
 // Firebase App configuration
 var firebaseConfig = {

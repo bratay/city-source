@@ -1,8 +1,6 @@
 import * as firebase from 'firebase/app';
-import { firestore } from 'firebase';
 import { db } from './index.js';
 import { getHometownCoor } from './components/MapUI/Map.js';
-import { Component } from 'react';
 
 export var user;
 var userToken;

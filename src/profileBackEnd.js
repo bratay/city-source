@@ -97,6 +97,7 @@ export var profileSearchList = []//should be alphabetical order // but it's Not 
 var cache = []
 var trash = []
 var lastLength = 0;
+var currentInput = ""
 
 function createObjectWithDis(doc, distance) {
     var fullObject = {
@@ -115,7 +116,9 @@ function createObjectWithDis(doc, distance) {
 }
 
 //main func for search
-export function dynamicProfileSearch(currentInput) {
+export function dynamicProfileSearch(input) {
+    currentInput = input
+
     if (currentInput.length > lastLength && currentInput.length == 2) {
         fullAdd(currentInput)
     } else if (currentInput.length > lastLength && currentInput.length > 2) {
@@ -131,7 +134,7 @@ export function dynamicProfileSearch(currentInput) {
 
 //updates the profile Search List
 //But does a fresh querey to Firebase
-function fullAdd(currentInput) {
+function fullAdd() {
     //Fresh cache and trash
     cache = []
     trash = []
@@ -159,17 +162,43 @@ function fullAdd(currentInput) {
     for (let i = 0; i < numResults; i++) {
         profileSearchList.push(cache[i])
     }
+    
+    //alphabetical sort
+    profileSearchList.sort((a, b) => (a.username > b.username) ? 1 : -1)
+}
+
+//helper function for add letter
+function cleanCache(user){
+    let result = user.username.slice(0, currentInput.length - 1 ) != currentInput
+
+    //checking if it still matches
+    if( !result ){
+        trash.push( user )
+    }
+    return result
 }
 
 //updates the profile Search List
 //But with out new firebase querey only with cache
-function addLetter(currentInput) {
+function addLetter() {
+    //Clean cache
+    cache = cache.filter(cleanCache)
 
+    profileSearchList.clear()
+
+    var numResults = (cache.length > 20) ? 20 : cache.length
+
+    for (let i = 0; i < numResults; i++) {
+        profileSearchList.push(cache[i])
+    }
+    
+    //alphabetical sort
+    profileSearchList.sort((a, b) => (a.username > b.username) ? 1 : -1)
 }
 
 //updates the profile Search List
 //When letter is removed
-function removeLetter(currentInput) {
+function removeLetter() {
 
 }
 
