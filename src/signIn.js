@@ -8,7 +8,7 @@ var userToken;
 export var currentUserObj = {
     bio: "",
     hometown: "",
-    hometownCoor: new firebase.firestore.GeoPoint( 0, 0),
+    hometownCoor: [0,0],
     email: "",
     picUrl: "",
     userID: 0,
@@ -18,6 +18,7 @@ export var currentUserObj = {
 
 //returns 1 = user has account, 0 = new user,  -1 = sign in fail
 export function googleSignIn() {
+    console.log(' Start sign in ')
     var provider = new firebase.auth.GoogleAuthProvider(); //Google sign in object
 
     firebase.auth().signInWithRedirect(provider).then(function (result) {
@@ -31,11 +32,12 @@ export function googleSignIn() {
     userToken = String(user.uid)  // Use User.getToken() instead. Need to fix this in the future
 
     if (!userExist(userToken)) {
+        console.log(' Adding user')
         // Creates new document with token as name of doc
         db.collection('users').doc(userToken).set({
             bio: "",
             hometown: "",
-            hometownCoor: new firebase.firestore.GeoPoint.init( 0, 0),
+            hometownCoor: [0, 0], 
             email: user.email,
             picUrl: String(user.photoURL),
             userID: user.uid,
@@ -58,7 +60,7 @@ export function signOut() {
     currentUserObj = {
         bio: "",
         hometown: "",
-        hometownCoor: new firebase.firestore.GeoPoint.init( 0, 0),
+        hometownCoor: [0, 0],
         email: "",
         picUrl: "",
         userID: 0,
@@ -87,7 +89,7 @@ function autoUpdateUserObject(currentUser) {
         currentUserObj = {
             bio: doc.bio,
             hometown: doc.hometown,
-            hometownCoor: new firebase.firestore.GeoPoint.init( 0, 0),
+            hometownCoor: [0, 0],
             email: doc.email,
             picUrl: doc.picUrl,
             userID: doc.userID,
