@@ -18,7 +18,6 @@ export var currentUserObj = {
 
 //returns 1 = user has account, 0 = new user,  -1 = sign in fail
 export function googleSignIn() {
-    console.log(' Start sign in ')
     var provider = new firebase.auth.GoogleAuthProvider(); //Google sign in object
 
     firebase.auth().signInWithRedirect(provider).then(function (result) {
@@ -32,7 +31,6 @@ export function googleSignIn() {
     userToken = String(user.uid)  // Use User.getToken() instead. Need to fix this in the future
 
     if (!userExist(userToken)) {
-        console.log(' Adding user')
         // Creates new document with token as name of doc
         db.collection('users').doc(userToken).set({
             bio: "",
@@ -63,7 +61,7 @@ export function signOut() {
         hometownCoor: [0, 0],
         email: "",
         picUrl: "",
-        userID: 0,
+        userID: "",
         username: "",
         userType: 0
     }
@@ -71,7 +69,7 @@ export function signOut() {
 
 export function saveHometown(hometown) {
     var homeTownGeoPoint = getHometownCoor(hometown)
-    db.collection('users').doc(user.credential.accessToken).update({
+    db.collection('users').doc(currentUserObj.userID).update({
         hometown: hometown,
         hometownCoor: homeTownGeoPoint
     }).catch(function (error) {

@@ -2,47 +2,43 @@ import * as firebase from 'firebase';
 import { db } from './index.js';
 import { currentUserObj, userExist } from './signIn.js';
 
-export var profileSearchList = []
-
-export function getUserProfileObj(userKey) {
-
+export async function getUserProfileObj(userKey) {
     if (userKey === currentUserObj.userID)
         return currentUserObj
-    else if (!userExist(userKey))
-        return false
 
-    let rawUser = db.collection('user').doc(userKey)
+    //We aren't using this right now
+    // else if (userExist(userKey))
+    //     return false
+
+    let rawUser = db.collection('users').doc(userKey)
 
     let userObj = {
         bio: "",
         email: "",
         hometown: "",
-        hometownCoor: new firebase.firestore.GeoPoint(0, 0),
+        hometownCoor: [0, 0],
         picUrl: "",
-        userID: 0,
+        userID: "",
         username: "",
         userType: 0
     }
 
-    rawUser.get().then(function (doc) {
+    await rawUser.get().then(function (doc) {
         if (!doc.exists) {
             // doc.data() will be undefined in this case
             console.log("No such document");
         } else {
-            console.log("Document data for test:", doc.data());
-
             userObj = {
-                bio: doc.bio,
-                hometown: doc.hometown,
-                hometownCoor: new firebase.firestore.GeoPoint(0, 0),
-                email: doc.email,
-                picUrl: doc.picUrl,
-                userID: doc.userID,
-                username: doc.username,
-                userType: doc.userType
+                bio: doc.data().bio,
+                hometown: doc.data().hometown,
+                hometownCoor: [0, 0],
+                email: doc.data().email,
+                picUrl: doc.data().picUrl,
+                userID: doc.data().userID,
+                username: doc.data().username,
+                userType: doc.data().userType
             }
         }
-
     }).catch(function (error) {
         console.log("Error getting document:", error);
     });
@@ -57,15 +53,14 @@ export function getUserPost(userKey) {
     queryResult.get().then(queriedDocs => {
         if (queriedDocs.empty === false) {
             queriedDocs.forEach(singleDoc => {
-
                 let currentPost = {
-                    comments: singleDoc.comments,
-                    devPost: singleDoc.devPost,
-                    pic: singleDoc.pic,
-                    postID: singleDoc.postID,
-                    timestamp: getTimeDate(timestamp), //convert from epoch to normal time date
-                    title: singleDoc.title,
-                    userID: singleDoc.userID
+                    comments: singleDoc.data().comments,
+                    devPost: singleDoc.data().devPost,
+                    pic: singleDoc.data().pic,
+                    postID: singleDoc.data().postID,
+                    timestamp: singleDoc.data().timestamp, //convert from epoch to normal time date
+                    title: singleDoc.data().title,
+                    userID: singleDoc.data().userID
                 }
 
                 listOfPost.push(currentPost)
@@ -101,14 +96,14 @@ var currentInput = ""
 
 function createObjectWithDis(doc, distance) {
     var fullObject = {
-        bio: doc.bio,
-        hometown: doc.hometown,
-        hometownCoor: doc.hometownCoor,
-        email: doc.email,
-        picUrl: doc.picUrl,
-        userID: doc.userID,
-        username: doc.username,
-        userType: doc.userType,
+        bio: doc.data().bio,
+        hometown: doc.data().hometown,
+        hometownCoor: doc.data().hometownCoor,
+        email: doc.data().email,
+        picUrl: doc.data().picUrl,
+        userID: doc.data().userID,
+        username: doc.data().username,
+        userType: doc.data().userType,
         dis: distance
     }
 
@@ -159,7 +154,7 @@ function fullAdd() {
 
     var numResults = (cache.length > 20) ? 20 : cache.length
     var unsortedList = []
-    
+
     for (let i = 0; i < numResults; i++) {
         unsortedList.push(cache[i])
     }
@@ -199,7 +194,7 @@ function addLetter() {
     profileSearchList.sort((a, b) => (a.username > b.username) ? 1 : -1)
 }
 
-function searchTrash(user){
+function searchTrash(user) {
     let result = user.username.slice(0, currentInput.length - 1) != currentInput
 
     if (!result) {
