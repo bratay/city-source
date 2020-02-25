@@ -5,13 +5,12 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import CitySourceContainer from './CitySourceContainer.jsx';
 import theme from './theme';
 import "./index.css";
-import Navbar from "./Navbar.js"
-import CSMap from "./Map.js"
 import * as firebase from 'firebase';
+import { Firebase_API_Key } from './apiKey.js';
 
 // Firebase App configuration
 var firebaseConfig = {
-	apiKey: "Firebase API-Key",
+	apiKey: Firebase_API_Key,
 	authDomain: "city-source-8a88a.firebaseapp.com",
 	databaseURL: "https://city-source-8a88a.firebaseio.com",
 	projectId: "city-source-8a88a",

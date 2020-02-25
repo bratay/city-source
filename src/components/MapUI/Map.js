@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import GoogleMapReact from 'google-map-react';
+import * as firebase from 'firebase/app';
+import { firestore } from 'firebase';
+import { Google_Maps_API_Key } from '../../apiKey.js'
 
 //TODO: we will need to create markers for each post type. Markers
 //      are just divs that are rendered at specific lat longs on
@@ -35,7 +38,7 @@ class CSMap extends Component {
         return(
             <div style = {{height: '92vh', width: '100%'}}>
             <GoogleMapReact
-                bootstrapURLKeys={{ key: 'AIzaSyBinmwUubW272RSTBZ8FPtLNZUXaskt488' }}
+                bootstrapURLKeys={{ key: Google_Maps_API_Key }}
                 defaultCenter={this.props.center}
                 defaultZoom={this.props.zoom}
             >
@@ -50,6 +53,13 @@ class CSMap extends Component {
             </div>
         );
     }
+}
+
+//returns a geopoint object
+export function getHometownCoor(hometown){
+    var geoPointResult = new firebase.firestore.GeoPoint( 0, 0)
+
+    return geoPointResult
 }
 
 export default CSMap;
