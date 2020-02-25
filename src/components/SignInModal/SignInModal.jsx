@@ -51,29 +51,25 @@ const SignInModal = (props) => {
     setOpen(props.open)
   }, [props.open])
 
-  const modal = open ? (
-      <Grid container justify="center" spacing={2}>
-        <Grid item xs={12}>
-          <Modal
-            aria-labelledby="simple-modal-title"
-            aria-describedby="simple-modal-description"
-            open={open}
-            onClose={() => {setOpen(false); action(false);}}
-          >
-            <div style={modalStyle} className={classes.paper}>
-              <Typography variant="h4" className={classes.title} style={{textAlign: "center", paddingTop: "2%", color: "#F06E38"}}>
-                SIGN IN
-              </Typography>
-              <div style={{textAlign: "center", paddingTop: "25%"}}>
-                 <Button variant="contained" style={{backgroundColor: "#F06E38", color: "white"}} onClick={googleSignIn}>
-                    Sign in With Google
-                 </Button>
-              </div>
-            </div>
-          </Modal>
-        </Grid>
-      </Grid>
-    ) : null;
+  const modal = (
+    <Modal
+      aria-labelledby="simple-modal-title"
+      aria-describedby="simple-modal-description"
+      open={open}
+      onClose={() => {setOpen(false); action(false);}}
+    >
+      <div style={modalStyle} className={classes.paper}>
+        <Typography variant="h4" className={classes.title} style={{textAlign: "center", paddingTop: "2%", color: "#F06E38"}}>
+          SIGN IN
+        </Typography>
+        <div style={{textAlign: "center", paddingTop: "25%"}}>
+           <Button variant="contained" style={{backgroundColor: "#F06E38", color: "white"}} onClick={googleSignIn}>
+              Sign in With Google
+           </Button>
+        </div>
+      </div>
+    </Modal>
+    );
 
   return modal;
 }
