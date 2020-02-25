@@ -1,7 +1,6 @@
 import React from 'react';
 import { Avatar, Button, Card, Container, Dialog, DialogActions, DialogContent, DialogContentText, Divider, Grid, IconButton, Slide, Snackbar, TextField, Tooltip, Typography, InputBase } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import MuiAlert from '@material-ui/lab/Alert';
 import { getUserProfileObj } from "./profileBackEnd.js";
 import CloseIcon from '@material-ui/icons/Close';
 import RoomIcon from '@material-ui/icons/Room';
@@ -52,11 +51,11 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 	return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function Alert(props) {
-	return (
-		<MuiAlert elevation={6} variant="filled" {...props} />
-	);
-}
+// function Alert(props) {
+// 	return (
+// 		<MuiAlert elevation={6} variant="filled" {...props} />
+// 	);
+// }
 
 export function ProfileEdit(props) {
 	const userId = props.userId;
