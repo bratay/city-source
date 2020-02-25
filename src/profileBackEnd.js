@@ -158,22 +158,25 @@ function fullAdd() {
     profileSearchList.clear()
 
     var numResults = (cache.length > 20) ? 20 : cache.length
-
-    for (let i = 0; i < numResults; i++) {
-        profileSearchList.push(cache[i])
-    }
+    var unsortedList = []
     
+    for (let i = 0; i < numResults; i++) {
+        unsortedList.push(cache[i])
+    }
+
     //alphabetical sort
-    profileSearchList.sort((a, b) => (a.username > b.username) ? 1 : -1)
+    unsortedList.sort((a, b) => (a.username > b.username) ? 1 : -1)
+
+    profileSearchList = unsortedList
 }
 
 //helper function for add letter
-function cleanCache(user){
-    let result = user.username.slice(0, currentInput.length - 1 ) != currentInput
+function cleanCache(user) {
+    let result = user.username.slice(0, currentInput.length - 1) != currentInput
 
     //checking if it still matches
-    if( !result ){
-        trash.push( user )
+    if (!result) {
+        trash.push(user)
     }
     return result
 }
@@ -191,15 +194,42 @@ function addLetter() {
     for (let i = 0; i < numResults; i++) {
         profileSearchList.push(cache[i])
     }
-    
+
     //alphabetical sort
     profileSearchList.sort((a, b) => (a.username > b.username) ? 1 : -1)
+}
+
+function searchTrash(user){
+    let result = user.username.slice(0, currentInput.length - 1) != currentInput
+
+    if (!result) {
+        cache.push(user)
+    }
+
+    return result
 }
 
 //updates the profile Search List
 //When letter is removed
 function removeLetter() {
+    //Search Trash
+    trash = trash.filter(searchTrash)
 
+    cache.sort((a, b) => (a.dis > b.dis) ? 1 : -1)
+
+    profileSearchList.clear()
+
+    var numResults = (cache.length > 20) ? 20 : cache.length
+    var unsortedList = []
+
+    for (let i = 0; i < numResults; i++) {
+        unsortedList.push(cache[i])
+    }
+
+    //alphabetical sort
+    unsortedList.sort((a, b) => (a.username > b.username) ? 1 : -1)
+
+    profileSearchList = unsortedList
 }
 
 //Simple distance func
