@@ -1,12 +1,14 @@
 import React from 'react';
 import Navbar from './Navbar.js';
 import CSMap from './components/MapUI/Map.js';
-import ProfileEdit from './components/Profiles/ProfileEdit.jsx';
 
 const CitySourceContainer = () => {
+
+  let signedIn = true;
+
   return (
     <React.Fragment>
-      <Navbar login={true} current="index"/>
+      <Navbar login={signedIn}/>
       <CSMap />
     </React.Fragment>
   );
