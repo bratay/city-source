@@ -21,5 +21,10 @@ restaurants.  With this tool, companies and cities will be able to
 better understand public opinion regarding the projects they work on, 
 and citizens will have more influence over community development.
 
+## Team Members
 
-**Team Members:**  Branden Taylor, Sydney Combs, Daniel Gonzalez, Jacob Parnell, Nathan Pelletier
+**Jacob Parnell** - [compoundfraxure](https://github.com/compoundfraxure)
+**Branden Taylor** - [bratay](https://github.com/bratay)
+**Sydney Combs** - [sycombs](https://github.com/sycombs)
+**Daniel Gonzalez** - [dgonzalez346](https://github.com/dgonzalez346)
+**Nathan Pelletier** - [npelletier](https://github.com/npelletier)
