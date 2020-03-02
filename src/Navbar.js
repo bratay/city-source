@@ -2,6 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { AppBar, Avatar, Button, Divider, Drawer, Hidden, IconButton, List, ListItem, ListItemIcon, ListItemText, Menu, MenuItem, Toolbar, Typography } from '@material-ui/core';
 import { ProfileEdit } from './components/Profiles/ProfileEdit.jsx';
+import { ProfileDialog } from "./components/Profiles/ProfileView.jsx";
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import HomeIcon from '@material-ui/icons/Home';
@@ -39,6 +40,9 @@ function AccountMenu(props) {
 	const classes = useStyles();
 	const [anchorEl, setAnchorEl] = React.useState(null);
 
+	const [profileView, setProfileView] = React.useState(false);
+	const [profileEdit, setProfileEdit] = React.useState(false);
+
 	const handleClick = event => {
 		setAnchorEl(event.currentTarget);
 	};
@@ -69,13 +73,13 @@ function AccountMenu(props) {
 					horizontal: 'center',
 				}}
 			>
-				<MenuItem onClick={handleClose}>
+				<MenuItem onClick={() => {handleClose(); setProfileView(true);}}>
 					<ListItemIcon>
 						<AccountCircleIcon />
 					</ListItemIcon>
-					<ListItemText primary="Edit Profile" />
+					<ListItemText primary="My Profile" />
 				</MenuItem>
-				<MenuItem onClick={handleClose}>
+				<MenuItem onClick={() => {handleClose(); setProfileEdit(true);}}>
 					<ListItemIcon>
 						<SettingsIcon />
 					</ListItemIcon>
@@ -89,6 +93,8 @@ function AccountMenu(props) {
 					<ListItemText primary="Log Out" />
 				</MenuItem>
 			</Menu>
+			<ProfileDialog open={profileView} action={setProfileView} />
+			<ProfileEdit open={profileEdit} action={setProfileEdit} />
 		</React.Fragment>
 	);
 }

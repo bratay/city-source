@@ -45,33 +45,39 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 	return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function ProfileEdit(props) {
+export function ProfileEdit(props) {
+	const action = props.action;
+
 	const userId = props.userId;
 	const classes = useStyles();
-	const [open, setOpen] = React.useState(false);
+	const [open, setOpen] = React.useState(props.open);
 
+	React.useEffect(() => {
+		setOpen(props.open)
+	}, [props.open]);
+	
 	const handleClickOpen = () => {
 		setOpen(true);
 	};
 	const handleClose = () => {
 		setOpen(false);
-	}
+		action(false);
+	};
 
 	const saveChanges = () => {
 		modified = false;
-	}
+	};
 
 	const onModify = () => {
 		modified = true;
-	}
+	};
 
-	let profileObj = getUserProfileObj(userId);
+	// let profileObj = getUserProfileObj(userId);
 
 	let modified = false;
 
 	return (
 		<React.Fragment>
-			<Button variant="contained" color="secondary" onClick={handleClickOpen}>Profile Edit Test</Button>
 			<Dialog open={open} onClose={handleClose} TransitionComponent={Transition} keepMounted fullWidth={true} maxWidth={'md'} scroll={'body'}>
 			<IconButton aria-label="close" className={classes.closeButton} onClick={handleClose}>
           		<CloseIcon />
