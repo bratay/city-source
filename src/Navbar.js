@@ -1,6 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { AppBar, Avatar, Button, Divider, Drawer, Hidden, IconButton, List, ListItem, ListItemIcon, ListItemText, Menu, MenuItem, Toolbar, Typography } from '@material-ui/core';
+import { ProfileEdit } from './components/Profiles/ProfileEdit.jsx';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import HomeIcon from '@material-ui/icons/Home';
@@ -72,7 +73,7 @@ function AccountMenu(props) {
 					<ListItemIcon>
 						<AccountCircleIcon />
 					</ListItemIcon>
-					<ListItemText primary="Profile" />
+					<ListItemText primary="Edit Profile" />
 				</MenuItem>
 				<MenuItem onClick={handleClose}>
 					<ListItemIcon>

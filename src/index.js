@@ -10,7 +10,7 @@ import { Firebase_API_Key } from './apiKey.js';
 
 // Firebase App configuration
 var firebaseConfig = {
-	// apiKey: Firebase_API_Key,
+	apiKey: Firebase_API_Key,
 	authDomain: "city-source-8a88a.firebaseapp.com",
 	databaseURL: "https://city-source-8a88a.firebaseio.com",
 	projectId: "city-source-8a88a",

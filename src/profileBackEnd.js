@@ -119,7 +119,7 @@ function createObjectWithDis(doc, distance) {
 export function dynamicProfileSearch(input) {
     currentInput = input
 
-    if (currentInput.length > lastLength && currentInput.length == 2) {
+    if (currentInput.length > lastLength && currentInput.length === 2) {
         fullAdd(currentInput)
     } else if (currentInput.length > lastLength && currentInput.length > 2) {
         addLetter(currentInput)
@@ -172,7 +172,7 @@ function fullAdd() {
 
 //helper function for add letter
 function cleanCache(user) {
-    let result = user.username.slice(0, currentInput.length - 1) != currentInput
+    let result = user.username.slice(0, currentInput.length - 1) !== currentInput
 
     //checking if it still matches
     if (!result) {
@@ -200,7 +200,7 @@ function addLetter() {
 }
 
 function searchTrash(user){
-    let result = user.username.slice(0, currentInput.length - 1) != currentInput
+    let result = user.username.slice(0, currentInput.length - 1) !== currentInput
 
     if (!result) {
         cache.push(user)
