@@ -8,7 +8,6 @@ const CitySourceContainer = () => {
     <React.Fragment>
       <Navbar login={true} current="index"/>
       <CSMap />
-      <ProfileEdit/>
     </React.Fragment>
   );
 }
