@@ -31,9 +31,13 @@ currentUserObj = {
     userType: 0
 }
 
-var results = dynamicProfileSearch('Branden Taylor')
+// var results = dynamicProfileSearch('Branden Taylor')
 
-console.log(results)
+
+function testSearch(){
+    var input = "Branden Taylor"
+    dynamicProfileSearch(input)
+}
 
 
 

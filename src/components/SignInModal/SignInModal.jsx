@@ -2,6 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, Grid, Modal, Typography } from '@material-ui/core'
 import { googleSignIn } from '../../signIn';
+import { testSearch } from '../../profileSearch';
 
 function getModalStyle() {
   const top = 50;
@@ -67,6 +68,9 @@ const SignInModal = (props) => {
               <div style={{textAlign: "center", paddingTop: "25%"}}>
                  <Button variant="contained" style={{backgroundColor: "#F06E38", color: "white"}} onClick={googleSignIn}>
                     Sign in With Google
+                 </Button>
+                 <Button variant="contained" style={{backgroundColor: "#F06E38", color: "white"}} onClick={testSearch}>
+                    Test Search
                  </Button>
               </div>
             </div>
