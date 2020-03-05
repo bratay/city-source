@@ -34,9 +34,12 @@ currentUserObj = {
 // var results = dynamicProfileSearch('Branden Taylor')
 
 
-function testSearch(){
-    var input = "Branden Taylor"
-    dynamicProfileSearch(input)
+
+export async function testSearch() {
+    console.log("a")
+    await dynamicProfileSearch("B")
+    console.log("==================================================================")
+    dynamicProfileSearch("Brand")
 }
 
 

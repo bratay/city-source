@@ -1,7 +1,5 @@
-import * as firebase from 'firebase';
-import { db, dbRef } from './index.js';
+import { db } from './index.js';
 import { currentUserObj, userExist } from './signIn.js';
-import { getUserProfileObj, getUserPost } from './profileBackEnd.js';
 
 export var profileSearchList = []//should be alphabetical order // but it's Not right now
 
@@ -10,13 +8,6 @@ var cache = []
 var trash = []
 var lastLength = 0;
 var currentInput = ""
-
-export async function testSearch() {
-    console.log("a")
-    await dynamicProfileSearch("B")
-    console.log("==================================================================")
-    dynamicProfileSearch("Brand")
-}
 
 function createObjectWithDis(doc, distance) {
     var fullObject = {
@@ -38,11 +29,10 @@ function createObjectWithDis(doc, distance) {
 export async function dynamicProfileSearch(input) {
     currentInput = input
 
-    // if (currentInput.length > lastLength && currentInput.length == 2) {
     if (input.length == 1) {
         console.log("get all users")
         await getAllUsers()
-    } else if (currentInput.length > lastLength) {
+    } else if (currentInput.length > lastLength && currentInput.length == 2) {
         console.log('Full add')
         fullAdd(currentInput)
     } else if (currentInput.length > lastLength && currentInput.length > 2) {
@@ -60,21 +50,17 @@ export async function dynamicProfileSearch(input) {
 }
 
 async function getAllUsers() {
-    console.log("b")
     var usersTemp = db.collection('users')
-    console.log("c")
+
     await usersTemp.get().then(allProfileDocs => {
-        console.log("All docs")
         allProfileDocs.forEach(profile => {
-            // console.log("single docs")
-            console.log(profile.data().username.toString())
+            //calculate distance from current user and caches results
             let dis = 10//getDisFromCurUser(profile.data().hometownCoor[0], profile.data().hometownCoor[1])
             allUsers.push(createObjectWithDis(profile, dis))
         })
     })
     console.log("d")
     allUsers.sort((a, b) => (a.username > b.username) ? 1 : -1)
-    // console.log(allUsers)
 }
 
 function rangeSearchUser(start) {
@@ -84,7 +70,6 @@ function rangeSearchUser(start) {
         if (allUsers[i].username.search(start) != -1)
             result.push(allUsers[i])
     }
-    console.log("2")
     return result
 }
 
@@ -96,53 +81,7 @@ async function fullAdd() {
     trash = []
 
     //limiting amount of results from query
-    // var profileCandidates = db.collection('users').where('username', '==', currentInput)
-    //     .limitToFirst(100);
-    // var profileCandidates = db.collection('users').where('username', '==', currentInput)
-    console.log("1")
-    // var profileCandidates = db.collection('users').query().startAt(currentInput)//.endAt(currentInput + "\uf8ff")
-
-    //bWYOnaT0tCdYRhb5JozfLnpGwUk1
-    // var profileCandidates = await dbRef.ref('users')//.orderByChild('username').startAt(currentInput)//.endAt(currentInput + '\uf8ff')
-    // var profileCandidates = rangeSearchUser(currentInput)
     cache = rangeSearchUser(currentInput)
-    console.log("Range search length" + cache.length.toString())
-    // var profileCandidates = dbRef.ref('users').orderByValue()//.startAt(currentInput).endAt(currentInput + '\uf8ff')
-    console.log("3")
-    // console.log(profileCandidates)
-
-    //calculate distance from current user and caches results
-
-    // await profileCandidates.on("value", (profile) => {
-    //     console.log("3")
-    //     // console.log("All docs")
-    //     // allProfileDocs.forEach(profile => {
-    //     console.log("single docs val = " + profile.data().val())
-    //     // console.log(profile.data().val())
-    //     // console.log(profile.data().username.toString())
-    //     let dis = 10//getDisFromCurUser(profile.data().hometownCoor[0], profile.data().hometownCoor[1])
-    //     cache.push(createObjectWithDis(profile, dis))
-    //     // })
-    // })
-    // await profileCandidates.get().then(allProfileDocs => {
-    //     console.log("All docs")
-    //     allProfileDocs.forEach(profile => {
-    //         // console.log("single docs")
-    //         console.log(profile.data().username.toString())
-    //         let dis = 10//getDisFromCurUser(profile.data().hometownCoor[0], profile.data().hometownCoor[1])
-    //         cache.push(createObjectWithDis(profile, dis))
-    //     })
-    // })
-
-    // for (var cur in profileCandidates) {
-    //     console.log(cur.toString())
-    //     let dis = 10//getDisFromCurUser(profile.data().hometownCoor[0], profile.data().hometownCoor[1])
-    //     cache.push(createObjectWithDis(cur, dis))
-    // }
-
-    console.log("4")
-    console.log("Cache before sort")
-    console.log(cache)
 
     //sort cache by distance from current user
     cache.sort((a, b) => (a.dis > b.dis) ? 1 : -1)
@@ -151,8 +90,6 @@ async function fullAdd() {
 
     var numResults = (cache.length > 20) ? 20 : cache.length
     var unsortedList = []
-    console.log("unsorted List")
-    console.log(unsortedList)
 
     for (let i = 0; i < numResults; i++) {
         unsortedList.push(cache[i])
@@ -162,8 +99,6 @@ async function fullAdd() {
     unsortedList.sort((a, b) => (a.username > b.username) ? 1 : -1)
 
     profileSearchList = unsortedList
-    console.log("sorted List")
-    console.log(profileSearchList)
 }
 
 //helper function for add letter

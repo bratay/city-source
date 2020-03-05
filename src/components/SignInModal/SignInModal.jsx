@@ -69,9 +69,6 @@ const SignInModal = (props) => {
                  <Button variant="contained" style={{backgroundColor: "#F06E38", color: "white"}} onClick={googleSignIn}>
                     Sign in With Google
                  </Button>
-                 <Button variant="contained" style={{backgroundColor: "#F06E38", color: "white"}} onClick={testSearch}>
-                    Test Search
-                 </Button>
               </div>
             </div>
           </Modal>
