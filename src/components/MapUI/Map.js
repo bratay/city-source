@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import GoogleMapReact from 'google-map-react';
 import * as firebase from 'firebase/app';
 import { Google_Maps_API_Key } from '../../apiKey.js'
+import HometownModal from '../../components/HometownModal/HometownModal.jsx';
+
 
 //TODO: we will need to create markers for each post type. Markers
 //      are just divs that are rendered at specific lat longs on
@@ -22,7 +24,9 @@ import { Google_Maps_API_Key } from '../../apiKey.js'
     </div>
   );
 */
-
+const apiIsLoaded = (map,maps) => {
+    return <HometownModal open={true} mapObj={map} mapsObj={maps}/>
+}
 class CSMap extends Component {
     //TODO: obtain initial lat long from user coords
     static defaultProps = {
@@ -35,11 +39,14 @@ class CSMap extends Component {
 
     render() {
         return(
+            <React.Fragment>
             <div style = {{height: '92vh', width: '100%'}}>
             <GoogleMapReact
                 bootstrapURLKeys={{ key: Google_Maps_API_Key }}
                 defaultCenter={this.props.center}
+                yesIWantToUseGoogleMapApiInternals
                 defaultZoom={this.props.zoom}
+                onGoogleApiLoaded={({ map,maps }) => apiIsLoaded(map,maps)}
             >
                 {/* TODO: this is where we'd include markers
                 <simpleMarker
@@ -50,6 +57,7 @@ class CSMap extends Component {
                 */}
             </GoogleMapReact>
             </div>
+            </React.Fragment>
         );
     }
 }
