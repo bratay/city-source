@@ -1,10 +1,9 @@
 import React from 'react';
-import { Avatar, Button, Container, Dialog, DialogActions, DialogContent, DialogContentText, Divider, Grid, IconButton, Slide, Snackbar, TextField, Tooltip, Typography, InputBase } from '@material-ui/core';
+import { Button, Container, Dialog, DialogActions, DialogContent, DialogContentText, Divider, Grid, IconButton, InputLabel, LinearProgress, Slide, TextField, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { getUserProfileObj } from "../../profileBackEnd.js";
 import CloseIcon from '@material-ui/icons/Close';
 import RoomIcon from '@material-ui/icons/Room';
-import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
 
 const useStyles = makeStyles(theme => ({
 	avatar: {
@@ -21,6 +20,9 @@ const useStyles = makeStyles(theme => ({
 		right: theme.spacing(1),
 		top: theme.spacing(1),
 		color: theme.palette.grey[500],
+	},
+	editHead: {
+		marginTop: theme.spacing(2),
 	},
 	avatarParent: {
 		position: 'relative',
@@ -42,6 +44,9 @@ const useStyles = makeStyles(theme => ({
 	inputField: {
 		marginBottom: "1em",
 	},
+	inputLabel: {
+		marginBottom: "5px",
+	},
 }));
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -50,16 +55,30 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export function ProfileEdit(props) {
 	const action = props.action;
-
-	const userId = props.userId;
 	const classes = useStyles();
+	const [userObj, setUserObj] = React.useState(null);
 	const [open, setOpen] = React.useState(props.open);
+
+	const [username, setUsername] = React.useState(undefined);
+	const [hometown, setHometown] = React.useState(undefined);
+	const [bio, setBio] = React.useState(undefined);
 
 	let modified = false;
 
 	React.useEffect(() => {
 		setOpen(props.open)
 	}, [props.open]);
+
+	React.useEffect(() => {
+		async function fetchUserObj() {
+			const obj = await getUserProfileObj(props.userId);
+			setUserObj(obj);
+			setUsername(obj.username);
+			setHometown(obj.hometown);
+			setBio(obj.bio);
+		}
+		fetchUserObj();
+	 }, [props.userId]);
 
 	const handleClickOpen = () => {
 		setOpen(true);
@@ -69,26 +88,11 @@ export function ProfileEdit(props) {
 		action(false);
 	};
 
-	let userObj = {
-		bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam id elit nec velit finibus lacinia. Quisque ex nunc, bibendum vitae ligula eu, vestibulum rutrum ligula. Nulla facilisi. Morbi lobortis, nibh at sagittis sodales, lorem massa dignissim augue, ut aliquam quam justo sit amet nunc. Ut at magna dignissim, faucibus mauris sed, auctor purus. Aenean vehicula sagittis diam vel imperdiet. Integer et ante tellus. ",
-		hometown: "Washington, IA",
-		hometownCoor: [0,0],
-		email: "",
-		picUrl: "https://i.imgur.com/PCg1Avs.png",
-		userID: 0,
-		username: "Micl Jrod",
-		userType: 0
-	}
-
-	const [username, setUsername] = React.useState(userObj.username);
-	const [hometown, setHometown] = React.useState(userObj.hometown);
-	const [bio, setBio] = React.useState(userObj.bio);
-
 	const saveChanges = () => {
 		modified = false;
-		userObj.username = username;
-		userObj.hometown = hometown;
-		userObj.bio = bio;
+		// userObj.username = username;
+		// userObj.hometown = hometown;
+		// userObj.bio = bio;
 	};
 
 	const modifyName = (event) => {
@@ -104,82 +108,143 @@ export function ProfileEdit(props) {
 		setBio(event.target.value);
 	};
 
-	// let profileObj = getUserProfileObj(userId);
-
-	
-
-	return (
-		<React.Fragment>
-			<Dialog open={open} onClose={handleClose} TransitionComponent={Transition} keepMounted fullWidth={true} maxWidth={'md'} scroll={'body'}>
-			<IconButton aria-label="close" className={classes.closeButton} onClick={handleClose}>
-          		<CloseIcon />
-        	</IconButton>
-				<DialogContent>
-					<DialogContentText>
-						<Container>
-							<Typography variant="h3">Edit Profile</Typography>
-							<Grid container spacing={2} alignItems="flex-end" className={classes.userBasics}>
-								<Grid item>
-									<div className ={classes.avatarParent}>
-										<Avatar className={classes.avatar} src={userObj.picUrl} />
-									</div>
-								</Grid>
-								<Grid item sm={12} md container>
-									<Grid item sm={12} container direction="column" spacing={2} justify="flex-end">
-										<Grid item xs>
-											<TextField 
-												className={classes.inputField} 
-												defaultValue={userObj.username} 
-												fullWidth 
-												id="usernameField"
-												label="Name" 
-												onChange={modifyName} 
-												required 
-												value={username} 
-											/>
-											<Grid container spacing={1} alignItems="flex-end">
-												<Grid item>
-													<RoomIcon />
-												</Grid>
-												<Grid item>
-													<TextField 
-														defaultValue={userObj.hometown}
-														fullWidth 
-														id="hometownField" 
-														label="Hometown" 
-														onChange={modifyHome} 
-														required
-														value={hometown}
-													/>
+	if (userObj === null) {
+		return (
+			<React.Fragment>
+				<Dialog open={open} onClose={handleClose} TransitionComponent={Transition} keepMounted fullWidth={true} maxWidth={'md'} scroll={'body'}>
+				<IconButton aria-label="close" className={classes.closeButton} onClick={handleClose}>
+					  <CloseIcon />
+				</IconButton>
+					<DialogContent>
+						<DialogContentText>
+							<Container>
+								<Typography variant="h3" className={classes.editHead}>Edit Profile</Typography>
+								<Grid container spacing={2} alignItems="flex-end" className={classes.userBasics}>
+									<Grid item sm={12} md container>
+										<Grid item sm={12} container direction="column" spacing={2} justify="flex-end">
+											<Grid item xs>
+												<InputLabel htmlFor="usernameField" className={classes.inputLabel}>Display Name *</InputLabel>
+												<TextField 
+													className={classes.inputField} 
+													disabled
+													fullWidth
+													id="usernameField" 
+													onChange={modifyName} 
+													required
+												/>
+												<Grid container spacing={1} alignItems="flex-end">
+													<Grid item>
+														<RoomIcon />
+													</Grid>
+													<Grid item>
+														<InputLabel htmlFor="hometownField" className={classes.inputLabel}>Hometown *</InputLabel>
+														<TextField 
+															disabled
+															fullWidth 
+															id="hometownField" 
+															onChange={modifyHome} 
+															required
+														/>
+													</Grid>
 												</Grid>
 											</Grid>
 										</Grid>
 									</Grid>
 								</Grid>
-							</Grid>
-							<Divider style={{ marginBottom: "1em" }}/>
-							<TextField 
-								defaultValue={userObj.bio} 
-								fullWidth 
-								id="bioField" 
-								label="Bio" 
-								multiline 
-								onChange={modifyBio} 
-								rows="4" 
-								value={bio}
-								variant="outlined"
-							/>
-						</Container>
-					</DialogContentText>
-				</DialogContent>
-				<DialogActions>
-					<Button onClick={saveChanges} color="primary">
-            			Save Changes
-          			</Button>
-				</DialogActions>
-			</Dialog>
-		</React.Fragment>
-	);
+								<LinearProgress />
+								<InputLabel htmlFor="bioField" className={classes.inputLabel}>Bio</InputLabel>
+								<TextField 
+									disabled 
+									fullWidth 
+									id="bioField"
+									multiline 
+									onChange={modifyBio} 
+									rows="4" 
+									variant="outlined"
+								/>
+								<Typography variant="body2">* denotes required field</Typography>
+							</Container>
+						</DialogContentText>
+					</DialogContent>
+					<DialogActions>
+						<Button color="primary">
+							Save Changes
+						  </Button>
+					</DialogActions>
+				</Dialog>
+			</React.Fragment>
+		);
+	}
+	else {
+		return (
+			<React.Fragment>
+				<Dialog open={open} onClose={handleClose} TransitionComponent={Transition} keepMounted fullWidth={true} maxWidth={'md'} scroll={'body'}>
+				<IconButton aria-label="close" className={classes.closeButton} onClick={handleClose}>
+					  <CloseIcon />
+				</IconButton>
+					<DialogContent>
+						<DialogContentText>
+							<Container>
+								<Typography variant="h3" className={classes.editHead}>Edit Profile</Typography>
+								<Grid container spacing={2} alignItems="flex-end" className={classes.userBasics}>
+									<Grid item sm={12} md container>
+										<Grid item sm={12} container direction="column" spacing={2} justify="flex-end">
+											<Grid item xs>
+												<InputLabel htmlFor="usernameField" className={classes.inputLabel}>Display Name *</InputLabel>
+												<TextField 
+													className={classes.inputField} 
+													fullWidth 
+													id="usernameField"
+													onChange={modifyName} 
+													required
+													value={username}
+												/>
+												<Grid container spacing={1} alignItems="flex-end">
+													<Grid item>
+														<RoomIcon />
+													</Grid>
+													<Grid item>
+														<InputLabel htmlFor="hometownField" className={classes.inputLabel}>Hometown *</InputLabel>
+														<TextField 
+															defaultValue={userObj.hometown}
+															fullWidth 
+															id="hometownField"
+															onChange={modifyHome} 
+															required
+															value={hometown}
+														/>
+													</Grid>
+												</Grid>
+											</Grid>
+										</Grid>
+									</Grid>
+								</Grid>
+								<Divider style={{ marginBottom: "1em" }}/>
+								<InputLabel htmlFor="bioField" className={classes.inputLabel}>Bio</InputLabel>
+								<TextField 
+									defaultValue={userObj.bio} 
+									fullWidth 
+									id="bioField" 
+									multiline 
+									onChange={modifyBio} 
+									rows="4" 
+									value={bio}
+									variant="outlined"
+								/>
+								<Typography variant="body2">* denotes required field</Typography>
+							</Container>
+						</DialogContentText>
+					</DialogContent>
+					<DialogActions>
+						<Button onClick={saveChanges} color="primary">
+							Save Changes
+						  </Button>
+					</DialogActions>
+				</Dialog>
+			</React.Fragment>
+		);
+	}
+	
 }
 
 export default ProfileEdit;
