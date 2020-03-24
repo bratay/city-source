@@ -8,7 +8,7 @@ var userToken;
 export var currentUserObj = {
     bio: "",
     hometown: "",
-    hometownCoor: new firebase.firestore.GeoPoint( 0, 0),
+    hometownCoor: [0,0],
     email: "",
     picUrl: "",
     userID: 0,
@@ -35,7 +35,7 @@ export function googleSignIn() {
         db.collection('users').doc(userToken).set({
             bio: "",
             hometown: "",
-            hometownCoor: new firebase.firestore.GeoPoint.init( 0, 0),
+            hometownCoor: [0, 0], 
             email: user.email,
             picUrl: String(user.photoURL),
             userID: user.uid,
@@ -58,10 +58,10 @@ export function signOut() {
     currentUserObj = {
         bio: "",
         hometown: "",
-        hometownCoor: new firebase.firestore.GeoPoint.init( 0, 0),
+        hometownCoor: [0, 0],
         email: "",
         picUrl: "",
-        userID: 0,
+        userID: "",
         username: "",
         userType: 0
     }
@@ -69,7 +69,7 @@ export function signOut() {
 
 export function saveHometown(hometown) {
     var homeTownGeoPoint = getHometownCoor(hometown)
-    db.collection('users').doc(user.credential.accessToken).update({
+    db.collection('users').doc(currentUserObj.userID).update({
         hometown: hometown,
         hometownCoor: homeTownGeoPoint
     }).catch(function (error) {
@@ -87,7 +87,7 @@ function autoUpdateUserObject(currentUser) {
         currentUserObj = {
             bio: doc.bio,
             hometown: doc.hometown,
-            hometownCoor: new firebase.firestore.GeoPoint.init( 0, 0),
+            hometownCoor: [0, 0],
             email: doc.email,
             picUrl: doc.picUrl,
             userID: doc.userID,

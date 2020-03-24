@@ -2,11 +2,11 @@ import * as firebase from 'firebase';
 import { dynamicProfileSearch } from '../src/profileBackEnd'
 import { currentUserObj, userExist } from './src/signIn.js';
 import { firestore } from 'firebase';
-import { Firebase-API-Key } from '../apiKey.js'
+import { Firebase_API_Key } from '../apiKey.js'
 
 // Firebase App configuration
 var firebaseConfig = {
-	apiKey: Firebase-API-Key,
+	apiKey: Firebase_API_Key,
 	authDomain: "city-source-8a88a.firebaseapp.com",
 	databaseURL: "https://city-source-8a88a.firebaseio.com",
 	projectId: "city-source-8a88a",
@@ -31,9 +31,16 @@ currentUserObj = {
     userType: 0
 }
 
-var results = dynamicProfileSearch('Branden Taylor')
+// var results = dynamicProfileSearch('Branden Taylor')
 
-console.log(results)
+
+
+export async function testSearch() {
+    console.log("a")
+    await dynamicProfileSearch("B")
+    console.log("==================================================================")
+    dynamicProfileSearch("Brand")
+}
 
 
 
