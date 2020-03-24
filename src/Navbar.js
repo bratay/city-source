@@ -93,8 +93,8 @@ function AccountMenu(props) {
 					<ListItemText primary="Log Out" />
 				</MenuItem>
 			</Menu>
-			<ProfileDialog open={profileView} action={setProfileView} />
-			<ProfileEdit open={profileEdit} action={setProfileEdit} />
+			<ProfileDialog open={profileView} action={setProfileView} userId="PLACEHOLDER" />
+			<ProfileEdit open={profileEdit} action={setProfileEdit} userId="PLACEHOLDER" />
 		</React.Fragment>
 	);
 }
