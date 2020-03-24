@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
 
 const SignInModal = (props) => {
 
-  const action = props.action
+  const action = props.action;
 
   const classes = useStyles();
   const [modalStyle] = React.useState(getModalStyle);
