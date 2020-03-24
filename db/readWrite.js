@@ -1,3 +1,5 @@
+import { Firebase_API_Key } from './apiKey.js';
+
 //Great video 
 //https://www.youtube.com/watch?v=9kRgVxULbag&t=1s
 
@@ -7,7 +9,7 @@
 
 // Firebase App configuration
 var firebaseConfig = {
-    apiKey: "YOU SHOULD HAVE THIS IF NOT ASK",
+    apiKey: Firebase_API_Key,
     authDomain: "city-source-8a88a.firebaseapp.com",
     databaseURL: "https://city-source-8a88a.firebaseio.com",
     projectId: "city-source-8a88a",
