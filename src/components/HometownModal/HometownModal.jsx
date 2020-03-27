@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, Grid, Modal, Typography } from '@material-ui/core'
 import {currentUserObj, saveHometown} from '../../signIn';
+import AutocompleteSearchBox from '../MapUI/AutocompleteSearchBox.jsx';
 
 function getModalStyle() {
     const top = 50;
@@ -38,22 +39,24 @@ const useStyles = makeStyles(theme => ({
       color: "inherit",
     },
 }));
-  
+
+
 const HometownModal = (props) => {
-    
-  
+
     const classes = useStyles();
-    const [modalStyle] = React.useState(getModalStyle);
-    const [open, setOpen] = React.useState(props.open);
+    const [modalStyle] = useState(getModalStyle);
+    const [open, setOpen] = useState(props.open);
+    const [coordinates, setCoordinates] = useState({lat: null, lng: null});
   
-    React.useEffect(() => {
+    useEffect(() => {
       setOpen(props.open)
     }, [props.open])
 
     if(currentUserObj.hometown !== ""){
         return null;
     }
-
+    const confirmHometown = () =>{}
+    
     const modal = 
         <Grid container justify="center" spacing={2}>
           <Grid item xs={12}>
@@ -65,11 +68,16 @@ const HometownModal = (props) => {
             >
               <div style={modalStyle} className={classes.paper}>
                 <Typography variant="h4" className={classes.title} style={{textAlign: "center", paddingTop: "2%", color: "#F06E38"}}>
-                  SELECT YOUR HOMETOWN
+                    SELECT YOUR HOMETOWN
                 </Typography>
-                <div style={{textAlign: "center", paddingTop: "10%"}}>
-                   DROPDOWN HERE
+                <div style={{textAlign: "center"}}>
+                    <AutocompleteSearchBox onSelect={setCoordinates}/>
                 </div>
+                <div style={{textAlign: "center", paddingTop: "25%"}}>
+                 <Button variant="contained" style={{backgroundColor: "#F06E38", color: "white"}} onClick={confirmHometown}>
+                    Confirm
+                 </Button>
+              </div>
               </div>
             </Modal>
           </Grid>

@@ -8,7 +8,7 @@ const CitySourceContainer = () => {
     <React.Fragment>
       <Navbar login={false} current="index"/>
       <CSMap />
-      <HometownModal open={true}/>
+      <HometownModal open={true} />
     </React.Fragment>
   );
 }
