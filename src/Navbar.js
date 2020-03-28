@@ -1,6 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { AppBar, Avatar, Button, Divider, Drawer, Hidden, IconButton, List, ListItem, ListItemIcon, ListItemText, Menu, MenuItem, Toolbar, Typography } from '@material-ui/core';
+import { ProfileEdit } from './components/Profiles/ProfileEdit.jsx';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import HomeIcon from '@material-ui/icons/Home';
@@ -33,6 +34,65 @@ const useStyles = makeStyles(theme => ({
 function ListItemLink(props) {
 	return <ListItem button component="a" {...props} />
 }
+
+function AccountMenu(props) {
+	const classes = useStyles();
+	const [anchorEl, setAnchorEl] = React.useState(null);
+
+	const handleClick = event => {
+		setAnchorEl(event.currentTarget);
+	};
+
+	const handleClose = () => {
+		setAnchorEl(null);
+	}
+
+	const open = Boolean(anchorEl);
+	const id = open ? 'account-menu' : undefined;
+
+	return (
+		<React.Fragment>
+			<IconButton className={classes.menuButton} aria-describedby={id} onClick={handleClick}>
+				<Avatar />
+			</IconButton>
+			<Menu 
+				id={id} 
+				open={open} 
+				anchorEl={anchorEl} 
+				onClose={handleClose}
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'center',
+				}}
+				transformOrigin={{
+					vertical: 'top',
+					horizontal: 'center',
+				}}
+			>
+				<MenuItem onClick={handleClose}>
+					<ListItemIcon>
+						<AccountCircleIcon />
+					</ListItemIcon>
+					<ListItemText primary="Edit Profile" />
+				</MenuItem>
+				<MenuItem onClick={handleClose}>
+					<ListItemIcon>
+						<SettingsIcon />
+					</ListItemIcon>
+					<ListItemText primary="Settings" />
+				</MenuItem>
+				<Divider />
+				<MenuItem onClick={handleClose}>
+					<ListItemIcon>
+						<ExitToAppIcon />
+					</ListItemIcon>
+					<ListItemText primary="Log Out" />
+				</MenuItem>
+			</Menu>
+		</React.Fragment>
+	);
+}
+
 function Navbar(props) {
 	const classes = useStyles();
 	const [state, setState] = React.useState({
