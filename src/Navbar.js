@@ -11,9 +11,9 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import RoomIcon from '@material-ui/icons/Room';
 import SettingsIcon from '@material-ui/icons/Settings';
 import StarIcon from '@material-ui/icons/Star';
-import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import SearchIcon from '@material-ui/icons/Search'
 import SignInModal from './components/SignInModal/SignInModal.jsx'
+import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -118,27 +118,25 @@ function Navbar(props) {
 	};
 
 	const TopRight = () => {
-			if (props.login === true) {
-				return (
-					<Hidden xsdown>
-						<IconButton color="inherit">
-							<NotificationsIcon />
-						</IconButton>
-						<IconButton className={classes.menuButton}>
-							<Avatar />
-						</IconButton>
-					</Hidden>
-				);
-			}
-			else {
-				return (
-					<React.Fragment>
-						<Button color="inherit">About CitySource</Button>
-						<Button color="inherit" onClick={() => {setSignIn(true)}} >Log In/Sign Up</Button>
-					</React.Fragment>
-				);
-			}
+		if (props.login === true) {
+			return (
+				<Hidden xsdown>
+					<IconButton color="inherit">
+						<NotificationsIcon />
+					</IconButton>
+					<AccountMenu />
+				</Hidden>
+			);
 		}
+		else {
+			return (
+				<React.Fragment>
+					<Button color="inherit">About CitySource</Button>
+					<Button color="inherit" onClick={() => {setSignIn(true)}} >Log In/Sign Up</Button>
+				</React.Fragment>
+			);
+		}
+	}
 
 	const sideMenu = side => (
 		<div className={classes.list} role="presentation" onClick={toggleDrawer(side, false)} onKeyDown={toggleDrawer(side, false)}>

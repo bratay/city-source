@@ -3,8 +3,7 @@ import Navbar from './Navbar.js';
 import CSMap from './components/MapUI/Map.js';
 
 const CitySourceContainer = () => {
-
-  let signedIn = true;
+  let signedIn = false;
 
   return (
     <React.Fragment>
