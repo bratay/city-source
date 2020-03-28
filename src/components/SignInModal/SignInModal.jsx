@@ -2,7 +2,6 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, Grid, Modal, Typography } from '@material-ui/core'
 import { googleSignIn } from '../../signIn';
-import { testSearch } from '../../profileSearch';
 
 function getModalStyle() {
   const top = 50;
