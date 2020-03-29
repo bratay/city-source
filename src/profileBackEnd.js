@@ -54,13 +54,15 @@ export function getUserPost(userKey) {
     let queryResult = db.collection('post').where('userID', '==', userKey)
 
     queryResult.get().then(queriedDocs => {
-        if (queriedDocs.empty === false) {
+        if (queriedDocs.empty == false) {
             queriedDocs.forEach(singleDoc => {
                 let currentPost = {
                     comments: singleDoc.data().comments,
                     devPost: singleDoc.data().devPost,
                     pic: singleDoc.data().pic,
                     postID: singleDoc.data().postID,
+                    likes: singleDoc.likes,
+                    dislikes: singleDoc.dislikes,
                     timestamp: singleDoc.data().timestamp, //convert from epoch to normal time date
                     title: singleDoc.data().title,
                     userID: singleDoc.data().userID
