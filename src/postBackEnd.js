@@ -1,5 +1,5 @@
 import { db } from './index.js';
-import { currentUserObj, userExist } from './signIn.js';
+import { currentUserObj } from './signIn.js';
 
 //Returns a list of comments obj in chronological order with a local or non-local flag
 export async function getCommentsFromPost(postID) {
@@ -13,6 +13,7 @@ export async function getCommentsFromPost(postID) {
         })
     })
 
+    //sort list in chronological order
     commentsObjList.sort((a, b) => (a.timestamp > b.timestamp) ? 1 : -1)
 
     return commentsObjList
@@ -38,7 +39,7 @@ function createCommentObj(commentDoc) {
 
 export async function createComment(commentString, postID) {
     let commentID = Math.random().toString(36).substr(2, 9) //Generate unique comment ID
-    let isLocalComment = isLocal()
+    let isLocalComment = isLocal(postID)
     let newComment = {}
 
     //Making sure Generated ID is unique 
@@ -53,7 +54,7 @@ export async function createComment(commentString, postID) {
         likes = 0,
         dislikes = 0,
         reported = false,
-        timestamp = 0,//TODO
+        timestamp = Date.now(),
         local = isLocalComment
     }
 
@@ -61,10 +62,19 @@ export async function createComment(commentString, postID) {
         newComment
     })
 
+    //Update post doc with new comment ID
+    db.collection('post').doc(postID).add({
+        comments: commentID
+    }).catch(function (error) {
+        // The document probably doesn't exist.
+        console.error("Error updating post document: ", error)
+        return false
+    });
+
     return newComment
 }
 
-function isLocal() {
+function isLocal(postID) {
     let local = true
     //TODO
     return local
