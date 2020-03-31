@@ -1,6 +1,5 @@
 import React from 'react';
 import GoogleMapReact from 'google-map-react';
-import * as firebase from 'firebase/app';
 import { Google_Maps_API_Key } from '../../apiKey.js'
 
 
@@ -50,13 +49,6 @@ const CSMap = () => {
         </div>
         </React.Fragment>
     );
-}
-
-//returns a geopoint object
-export function getHometownCoor(hometown){
-    var geoPointResult = new firebase.firestore.GeoPoint( 0, 0)
-
-    return geoPointResult
 }
 
 export default CSMap;

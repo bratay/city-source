@@ -11,16 +11,17 @@ import PlacesAutocomplete, {
     const [value, setValue] = useState("");
     const [coordinates, setCoordinates] = useState({lat: null, lng: null})
      
-    const gotCoords = ({lat, lng}) => {
+    const gotCoords = (hometown, {lat, lng}) => {
         console.log({lat, lng});
         setCoordinates({lat, lng});
-        props.onSelect({lat, lng});
+        props.setCoords({lat, lng});
+        props.setHometown(hometown);
     }
     // const handleSelect = async value => { console.log(value)};
     const handleSelect = async address => {
         geocodeByAddress(address)
             .then(results => getLatLng(results[0]))
-            .then(({ lat, lng }) => gotCoords({ lat, lng }))
+            .then(({ lat, lng }) => gotCoords(address, { lat, lng }))
             .catch(error => console.error('Error', error));
         setValue(address);
     };

@@ -47,6 +47,7 @@ const HometownModal = (props) => {
     const [modalStyle] = useState(getModalStyle);
     const [open, setOpen] = useState(props.open);
     const [coordinates, setCoordinates] = useState({lat: null, lng: null});
+    const [hometownStr, setHometownStr] = useState("");
   
     useEffect(() => {
       setOpen(props.open)
@@ -55,7 +56,9 @@ const HometownModal = (props) => {
     if(currentUserObj.hometown !== ""){
         return null;
     }
-    const confirmHometown = () =>{}
+    const confirmHometown = () =>{
+        saveHometown(hometownStr, coordinates.lat, coordinates.lng);
+    }
 
     const modal = 
         <Grid container justify="center" spacing={2}>
@@ -71,7 +74,7 @@ const HometownModal = (props) => {
                     SELECT YOUR HOMETOWN
                 </Typography>
                 <div display="inline" style={{zIndex:"1300", textAlign: "center"}}>
-                    <AutocompleteSearchBox onSelect={setCoordinates}/>
+                    <AutocompleteSearchBox setCoords={setCoordinates} setHometown={setHometownStr}/>
                 </div>
                 <div display="inline" style={{zIndex:"1", textAlign: "center", paddingTop: "2%"}}>
                  <Button variant="contained" style={{backgroundColor: "#F06E38", color: "white"}} onClick={confirmHometown}>
