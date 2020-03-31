@@ -56,8 +56,13 @@ const HometownModal = (props) => {
     if(currentUserObj.hometown !== ""){
         return null;
     }
+
     const confirmHometown = () =>{
-        saveHometown(hometownStr, coordinates.lat, coordinates.lng);
+        if (coordinates == null || hometownStr == null) {
+            return null;
+        } else{
+            saveHometown(hometownStr, coordinates.lat, coordinates.lng);
+        }
     }
 
     const modal = 
