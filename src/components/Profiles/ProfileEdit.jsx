@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Container, Dialog, DialogActions, DialogContent, DialogContentText, Divider, Grid, IconButton, InputLabel, LinearProgress, Slide, TextField, Typography } from '@material-ui/core';
+import { Button, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, IconButton, InputLabel, LinearProgress, Slide, TextField, Typography, Snackbar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { getUserProfileObj } from "../../profileBackEnd.js";
 import CloseIcon from '@material-ui/icons/Close';
@@ -78,33 +78,41 @@ export function ProfileEdit(props) {
 			setBio(obj.bio);
 		}
 		fetchUserObj();
-	 }, [props.userId]);
+	 }, [props.open]);
 
-	const handleClickOpen = () => {
-		setOpen(true);
-	};
 	const handleClose = () => {
 		setOpen(false);
 		action(false);
 	};
 
 	const saveChanges = () => {
-		modified = false;
-		// userObj.username = username;
-		// userObj.hometown = hometown;
-		// userObj.bio = bio;
+		if (username === "" || hometown === "") {
+			// TODO: Add some sort of error message like a snackbar, but snackbars are being a bit difficult for me
+			return;
+		}
+		// TODO: Add any other necessary validation
+		Object.defineProperties(userObj, {
+			username: {
+				value: username,
+			},
+			hometown: {
+				value: hometown,
+			},
+			bio: {
+				value: bio,
+			},
+		});
+		
+		// TODO: At this point, userObj is updated and ready to be sent back to the DB
 	};
 
 	const modifyName = (event) => {
-		modified = true;
 		setUsername(event.target.value);
 	};
 	const modifyHome = (event) => {
-		modified = true;
 		setHometown(event.target.value);
 	};
 	const modifyBio = (event) => {
-		modified = true;
 		setBio(event.target.value);
 	};
 
@@ -131,6 +139,7 @@ export function ProfileEdit(props) {
 													id="usernameField" 
 													onChange={modifyName} 
 													required
+													variant="filled"
 												/>
 												<Grid container spacing={1} alignItems="flex-end">
 													<Grid item>
@@ -144,6 +153,7 @@ export function ProfileEdit(props) {
 															id="hometownField" 
 															onChange={modifyHome} 
 															required
+															variant="filled"
 														/>
 													</Grid>
 												</Grid>
@@ -182,37 +192,39 @@ export function ProfileEdit(props) {
 				<IconButton aria-label="close" className={classes.closeButton} onClick={handleClose}>
 					  <CloseIcon />
 				</IconButton>
+				<DialogTitle>Edit Your Profile</DialogTitle>
 					<DialogContent>
 						<DialogContentText>
 							<Container>
-								<Typography variant="h3" className={classes.editHead}>Edit Profile</Typography>
 								<Grid container spacing={2} alignItems="flex-end" className={classes.userBasics}>
 									<Grid item sm={12} md container>
 										<Grid item sm={12} container direction="column" spacing={2} justify="flex-end">
 											<Grid item xs>
-												<InputLabel htmlFor="usernameField" className={classes.inputLabel}>Display Name *</InputLabel>
 												<TextField 
-													className={classes.inputField} 
+													className={classes.inputField}
 													fullWidth 
 													id="usernameField"
+													label="Display Name"
 													onChange={modifyName} 
 													required
 													value={username}
+													variant="filled"
 												/>
 												<Grid container spacing={1} alignItems="flex-end">
 													<Grid item>
 														<RoomIcon />
 													</Grid>
 													<Grid item>
-														<InputLabel htmlFor="hometownField" className={classes.inputLabel}>Hometown *</InputLabel>
-														<TextField 
-															defaultValue={userObj.hometown}
+														<TextField
 															fullWidth 
 															id="hometownField"
+															label="Hometown"
 															onChange={modifyHome} 
 															required
 															value={hometown}
+															variant="filled"
 														/>
+														
 													</Grid>
 												</Grid>
 											</Grid>
@@ -220,17 +232,16 @@ export function ProfileEdit(props) {
 									</Grid>
 								</Grid>
 								<Divider style={{ marginBottom: "1em" }}/>
-								<InputLabel htmlFor="bioField" className={classes.inputLabel}>Bio</InputLabel>
-								<TextField 
-									defaultValue={userObj.bio} 
-									fullWidth 
-									id="bioField" 
-									multiline 
-									onChange={modifyBio} 
-									rows="4" 
-									value={bio}
-									variant="outlined"
-								/>
+									<InputLabel htmlFor="bioField" className={classes.inputLabel}>Bio</InputLabel>
+									<TextField 
+										fullWidth 
+										id="bioField" 
+										multiline 
+										onChange={modifyBio} 
+										rows="4" 
+										value={bio}
+										variant="outlined"
+									/>
 								<Typography variant="body2">* denotes required field</Typography>
 							</Container>
 						</DialogContentText>
@@ -238,7 +249,7 @@ export function ProfileEdit(props) {
 					<DialogActions>
 						<Button onClick={saveChanges} color="primary">
 							Save Changes
-						  </Button>
+						</Button>
 					</DialogActions>
 				</Dialog>
 			</React.Fragment>
