@@ -19,9 +19,6 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 export var db = firebase.firestore()
 
-
-
-
 testGetProfileObject()
 
 //Test ID's
@@ -44,4 +41,11 @@ export function createCommentTest() {
     var obj = createComment(newComment, postID)
 
     console.log(obj)
+}
+
+export async function testGetComments(){
+    var postID = "123456"
+
+    var commentList = await getCommentsFromPost(postID)
+    console.log(commentList)
 }

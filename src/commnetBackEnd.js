@@ -2,6 +2,13 @@ import * as firebase from 'firebase';
 import { currentUserObj } from './signIn.js';
 import { db } from './index.js';
 
+export async function testGetComments(){
+    var postID = "123456"
+
+    var commentList = await getCommentsFromPost(postID)
+    console.log(commentList)
+}
+
 //Returns a list of comments obj in chronological order with a local or non-local flag
 export async function getCommentsFromPost(postID) {
     var commentsObjList = []
@@ -24,15 +31,15 @@ function createCommentObj(commentDoc) {
     let commentObj = {}
 
     commentObj = {
-        comment: commentDoc.comment,
-        userID: commentDoc.userID,
-        postID: commentDoc.postID,
-        commentID: commentDoc.commentID,
-        likes: commentDoc.likes,
-        dislikes: commentDoc.dislikes,
-        reported: commentDoc.reported,
-        timestamp: commentDoc.timestamp,
-        local: commentDoc.local
+        comment: commentDoc.data().comment,
+        userID: commentDoc.data().userID,
+        postID: commentDoc.data().postID,
+        commentID: commentDoc.data().commentID,
+        likes: commentDoc.data().likes,
+        dislikes: commentDoc.data().dislikes,
+        reported: commentDoc.data().reported,
+        timestamp: commentDoc.data().timestamp,
+        local: commentDoc.data().local
     }
 
     return commentObj
