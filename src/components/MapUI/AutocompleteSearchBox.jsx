@@ -59,6 +59,7 @@ import PlacesAutocomplete, {
                     {loading && <div>Loading...</div>}
                     {suggestions.map(suggestion => {
                         const style = {
+                            position: 'relative',
                             backgroundColor: suggestion.active ? "#f29c2b" : "#f5f4e8"
                         };
                         return <ListItem button {...getSuggestionItemProps(suggestion, {style})}>

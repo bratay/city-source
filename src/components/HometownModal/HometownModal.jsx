@@ -56,7 +56,7 @@ const HometownModal = (props) => {
         return null;
     }
     const confirmHometown = () =>{}
-    
+
     const modal = 
         <Grid container justify="center" spacing={2}>
           <Grid item xs={12}>
@@ -70,10 +70,10 @@ const HometownModal = (props) => {
                 <Typography variant="h4" className={classes.title} style={{textAlign: "center", paddingTop: "2%", color: "#F06E38"}}>
                     SELECT YOUR HOMETOWN
                 </Typography>
-                <div style={{textAlign: "center"}}>
+                <div display="inline" style={{zIndex:"1300", textAlign: "center"}}>
                     <AutocompleteSearchBox onSelect={setCoordinates}/>
                 </div>
-                <div style={{textAlign: "center", paddingTop: "25%"}}>
+                <div display="inline" style={{zIndex:"1", textAlign: "center", paddingTop: "2%"}}>
                  <Button variant="contained" style={{backgroundColor: "#F06E38", color: "white"}} onClick={confirmHometown}>
                     Confirm
                  </Button>
