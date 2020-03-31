@@ -22,7 +22,7 @@ const CitySourceContainer = () => {
   const classes = useStyles();
   const [postCreateDialog, setPostCreateDialog] = React.useState(false);
 
-  let signedIn = true;
+  let signedIn = false;
 
   return (
     <React.Fragment>
