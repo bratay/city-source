@@ -31,10 +31,6 @@ currentUserObj = {
     userType: 0
 }
 
-// var results = dynamicProfileSearch('Branden Taylor')
-
-
-
 export async function testSearch() {
     console.log("a")
     await dynamicProfileSearch("B")
@@ -42,5 +38,32 @@ export async function testSearch() {
     dynamicProfileSearch("Brand")
 }
 
-
-
+export async function testSearch() {
+    await dynamicProfileSearch("J") // get all
+    console.log("================================================================")
+    await dynamicProfileSearch("Ja") // full add
+    console.log("================================================================")
+    await dynamicProfileSearch("Jac") //  add
+    console.log("================================================================")
+    await dynamicProfileSearch("Ja") // remove
+    console.log("================================================================")
+    await dynamicProfileSearch("Jar") //get all
+    console.log("================================================================")
+    await dynamicProfileSearch("Jarb") //get all
+    console.log("================================================================")
+    await dynamicProfileSearch("Jar") //get all
+    console.log("================================================================")
+    await dynamicProfileSearch("Ja") //get all
+    console.log("================================================================")
+    await dynamicProfileSearch("Jac") //get all
+    console.log("================================================================")
+    await dynamicProfileSearch("") //get all
+    console.log("================================================================")
+    await dynamicProfileSearch("B") //get all
+    console.log("================================================================")
+    await dynamicProfileSearch("Br") //get all
+    console.log("================================================================")
+    await dynamicProfileSearch("Bra") //get all
+    console.log("================================================================")
+    await dynamicProfileSearch("Braw") //get all
+}

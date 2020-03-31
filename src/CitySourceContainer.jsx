@@ -4,9 +4,11 @@ import CSMap from './components/MapUI/Map.js';
 import HometownModal from './components/HometownModal/HometownModal.jsx';
 
 const CitySourceContainer = () => {
+  let signedIn = false;
+
   return (
     <React.Fragment>
-      <Navbar login={false} current="index"/>
+      <Navbar login={signedIn}/>
       <CSMap />
       <HometownModal open={true} />
     </React.Fragment>

@@ -1,7 +1,7 @@
 import { db } from './index.js';
 import { currentUserObj, userExist } from './signIn.js';
 
-export var profileSearchList = []//should be alphabetical order // but it's Not right now
+export var profileSearchList = []
 
 var allUsers = []
 var cache = []
@@ -29,20 +29,15 @@ function createObjectWithDis(doc, distance) {
 export async function dynamicProfileSearch(input) {
     currentInput = input
 
-    if (input.length == 1) {
-        console.log("get all users")
+    if (currentInput.length == 1 && currentInput.length > lastLength) {//get all users
         await getAllUsers()
-    } else if (currentInput.length > lastLength && currentInput.length == 2) {
-        console.log('Full add')
+    } else if (currentInput.length > lastLength && currentInput.length == 2) {//full add
         fullAdd(currentInput)
-    } else if (currentInput.length > lastLength && currentInput.length > 2) {
-        console.log('add letter')
+    } else if (currentInput.length > lastLength && currentInput.length >= 2) {//add letter
         addLetter(currentInput)
-    } else if (currentInput.length < lastLength && currentInput.length > 2) {
-        console.log('Remove letter')
+    } else if (currentInput.length < lastLength && currentInput.length >= 2) {//remove letter
         removeLetter(currentInput)
-    } else if (currentInput.length < lastLength && currentInput.length < 2) {
-        console.log('Reset')
+    } else if (currentInput.length < lastLength && currentInput.length < 2) {//reset
         profileSearchList = []
     }
 
@@ -50,6 +45,7 @@ export async function dynamicProfileSearch(input) {
 }
 
 async function getAllUsers() {
+    allUsers = []
     var usersTemp = db.collection('users')
 
     await usersTemp.get().then(allProfileDocs => {
@@ -59,7 +55,7 @@ async function getAllUsers() {
             allUsers.push(createObjectWithDis(profile, dis))
         })
     })
-    console.log("d")
+
     allUsers.sort((a, b) => (a.username > b.username) ? 1 : -1)
 }
 
@@ -67,6 +63,9 @@ function rangeSearchUser(start) {
     var result = [];
     for (var i = 0; i < allUsers.length; i++) {
         // if( allUsers[i].username.startsWith(start))
+
+        // searchs the string for the input 
+        //i.e. input: "nde" will return "BraNDEn taylor"
         if (allUsers[i].username.search(start) != -1)
             result.push(allUsers[i])
     }
@@ -103,12 +102,13 @@ async function fullAdd() {
 
 //helper function for add letter
 function cleanCache(user) {
-    let result = user.username.slice(0, currentInput.length - 1) != currentInput
-
+    let result = user.username.slice(0, currentInput.length).toLowerCase() == currentInput.toLowerCase()
+    
     //checking if it still matches
     if (!result) {
         trash.push(user)
     }
+
     return result
 }
 
@@ -117,26 +117,26 @@ function cleanCache(user) {
 function addLetter() {
     //Clean cache
     cache = cache.filter(cleanCache)
-
+    
     profileSearchList = []
-
-    var numResults = (cache.length > 20) ? 20 : cache.length
-
-    for (let i = 0; i < numResults; i++) {
+    
+    var listLength = (cache.length >= 20) ? 20 : cache.length
+    
+    for (let i = 0; i < listLength; i++) {
         profileSearchList.push(cache[i])
     }
-
+    
     //alphabetical sort
     profileSearchList.sort((a, b) => (a.username > b.username) ? 1 : -1)
 }
 
 function searchTrash(user) {
-    let result = user.username.slice(0, currentInput.length - 1) != currentInput
-
+    let result = user.username.slice(0, currentInput.length).toLowerCase() != currentInput.toLowerCase()
+    
     if (!result) {
         cache.push(user)
     }
-
+    
     return result
 }
 
