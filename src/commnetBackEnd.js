@@ -1,5 +1,6 @@
-import { db } from './index.js';
+import * as firebase from 'firebase';
 import { currentUserObj } from './signIn.js';
+import { db } from './index.js';
 
 //Returns a list of comments obj in chronological order with a local or non-local flag
 export async function getCommentsFromPost(postID) {
@@ -23,15 +24,15 @@ function createCommentObj(commentDoc) {
     let commentObj = {}
 
     commentObj = {
-        comment = commentDoc.comment,
-        userID = commentDoc.userID,
-        postID = commentDoc.postID,
-        commentID = commentDoc.commentID,
-        likes = commentDoc.likes,
-        dislikes = commentDoc.dislikes,
-        reported = commentDoc.reported,
-        timestamp = commentDoc.timestamp,
-        local = commentDoc.local
+        comment: commentDoc.comment,
+        userID: commentDoc.userID,
+        postID: commentDoc.postID,
+        commentID: commentDoc.commentID,
+        likes: commentDoc.likes,
+        dislikes: commentDoc.dislikes,
+        reported: commentDoc.reported,
+        timestamp: commentDoc.timestamp,
+        local: commentDoc.local
     }
 
     return commentObj
@@ -43,28 +44,40 @@ export async function createComment(commentString, postID) {
     let newComment = {}
 
     //Making sure Generated ID is unique 
-    while (db.collection('comment').doc(commentID) == undefined)
+    while (db.collection('comments').doc(commentID) == undefined) {
         commentID = Math.random().toString(36).substr(2, 9)
-
-    newComment = {
-        comment = commentString,
-        userID = currentUserObj.userID,
-        postID = postID,
-        commentID = commentID,
-        likes = 0,
-        dislikes = 0,
-        reported = false,
-        timestamp = Date.now(),
-        local = isLocalComment
+        console.log("bad key")
     }
 
-    db.collection('comment').doc(commentID).set({
-        newComment
+    newComment = {
+        comment: commentString,
+        userID: currentUserObj.userID,
+        postID: postID,
+        commentID: commentID,
+        likes: 0,
+        dislikes: 0,
+        reported: false,
+        timestamp: Date.now(),
+        local: isLocalComment
+    }
+
+    db.collection('comments').doc(commentID).set({
+        comment: commentString,
+        userID: currentUserObj.userID,
+        postID: postID,
+        commentID: commentID,
+        likes: 0,
+        dislikes: 0,
+        reported: false,
+        timestamp: Date.now(), //firebase.firestore.FieldValue.serverTimestamp(),
+        local: isLocalComment
     })
 
-    //Update post doc with new comment ID
-    db.collection('post').doc(postID).add({
-        comments: commentID
+    // Update post doc with new comment ID
+    db.collection('post').doc(postID).update({
+        comments: firebase.firestore.FieldValue.arrayUnion(
+            commentID
+        )
     }).catch(function (error) {
         // The document probably doesn't exist.
         console.error("Error updating post document: ", error)
@@ -75,7 +88,6 @@ export async function createComment(commentString, postID) {
 }
 
 function isLocal(postID) {
-    let local = true
     //TODO
-    return local
+    return true
 }

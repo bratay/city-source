@@ -36,3 +36,12 @@ export async function testGetProfileObject() {
     console.log(use.email)
     console.log("Finish")
 }
+
+export function createCommentTest() {
+    var newComment = "This is a new comment"
+    var postID = "123456"
+
+    var obj = createComment(newComment, postID)
+
+    console.log(obj)
+}
