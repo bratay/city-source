@@ -54,15 +54,13 @@ export function getUserPost(userKey) {
     let queryResult = db.collection('post').where('userID', '==', userKey)
 
     queryResult.get().then(queriedDocs => {
-        if (queriedDocs.empty == false) {
+        if (queriedDocs.empty === false) {
             queriedDocs.forEach(singleDoc => {
                 let currentPost = {
                     comments: singleDoc.data().comments,
                     devPost: singleDoc.data().devPost,
                     pic: singleDoc.data().pic,
                     postID: singleDoc.data().postID,
-                    likes: singleDoc.likes,
-                    dislikes: singleDoc.dislikes,
                     timestamp: singleDoc.data().timestamp, //convert from epoch to normal time date
                     title: singleDoc.data().title,
                     userID: singleDoc.data().userID
@@ -90,150 +88,125 @@ export function getTimeDate(epochSeconds) {
 }
 
 ///////////////////////////////////////////////////////
-//Profile search
+//Post gets and sets
 ///////////////////////////////////////////////////////
-export var profileSearchList = []//should be alphabetical order // but it's Not right now
-
-var cache = []
-var trash = []
-var lastLength = 0;
-var currentInput = ""
-
-function createObjectWithDis(doc, distance) {
-    var fullObject = {
-        bio: doc.bio,
-        hometown: doc.hometown,
-        hometownCoor: doc.hometownCoor,
-        email: doc.email,
-        picUrl: doc.picUrl,
-        userID: doc.userID,
-        username: doc.username,
-        userType: doc.userType,
-        dis: distance
-    }
-
-    return fullObject
+export function getBio(google_id){
+  const collect = db.collection('TestCollection')//get wanted collection
+  query = collect.where('user_id', '==', google_id)
+  query.get().then(queriedDocs => {
+      if (queriedDocs.empty == false) {
+          queriedDocs.forEach(singleDoc => {
+              return singleDoc.data().bio;
+          })
+      } else {
+          console.log("No docs match");
+      }
+  });
 }
 
-//main func for search
-export function dynamicProfileSearch(input) {
-    currentInput = input
-
-    if (currentInput.length > lastLength && currentInput.length === 2) {
-        fullAdd(currentInput)
-    } else if (currentInput.length > lastLength && currentInput.length > 2) {
-        addLetter(currentInput)
-    } else if (currentInput.length < lastLength && currentInput.length > 2) {
-        removeLetter(currentInput)
-    } else if (currentInput.length < lastLength && currentInput.length < 2) {
-        profileSearchList = []
-    }
-
-    lastLength = currentInput.length
+export function setBio(newBioString){
+  db.collection('users').doc(user.credential.accessToken).update({
+      bio: newBioString
+  }).catch(function (error) {
+      // The document probably doesn't exist.
+      console.error("Error updating document: ", error);
+      return false
+  });
+  return true
 }
 
-//updates the profile Search List
-//But does a fresh querey to Firebase
-function fullAdd() {
-    //Fresh cache and trash
-    cache = []
-    trash = []
-
-    //limiting amount of results from query
-    var profileCandidates = db.ref('users').where('userName', '==', currentInput)
-        .limitToFirst(100);
-
-    //calculate distance from current user
-    //put in max heap of size 20 to be used by front end
-    profileCandidates.get().then(allProfileDocs => {
-        allProfileDocs.forEach(profile => {
-            let dis = getDisFromCurUser(profile.GeoPoint.lat(), profile.GeoPoint.long())
-            cache.push(createObjectWithDis(profile, dis))
-        })
-    })
-
-    //sort cache by distance from current user
-    cache.sort((a, b) => (a.dis > b.dis) ? 1 : -1)
-
-    profileSearchList.clear()
-
-    var numResults = (cache.length > 20) ? 20 : cache.length
-    var unsortedList = []
-    
-    for (let i = 0; i < numResults; i++) {
-        unsortedList.push(cache[i])
-    }
-
-    //alphabetical sort
-    unsortedList.sort((a, b) => (a.username > b.username) ? 1 : -1)
-
-    profileSearchList = unsortedList
+export function getHometown(google_id){
+  const collect = db.collection('TestCollection')//get wanted collection
+  query = collect.where('user_id', '==', google_id)
+  query.get().then(queriedDocs => {
+      if (queriedDocs.empty == false) {
+          queriedDocs.forEach(singleDoc => {
+              return singleDoc.data().hometown;
+          })
+      } else {
+          console.log("No docs match");
+      }
+  });
 }
 
-//helper function for add letter
-function cleanCache(user) {
-    let result = user.username.slice(0, currentInput.length - 1) !== currentInput
-
-    //checking if it still matches
-    if (!result) {
-        trash.push(user)
-    }
-    return result
+export function setHometown(newHometown){
+  db.collection('users').doc(user.credential.accessToken).update({
+      hometown: newHometown
+  }).catch(function (error) {
+      // The document probably doesn't exist.
+      console.error("Error updating document: ", error);
+      return false
+  });
+  return true
 }
 
-//updates the profile Search List
-//But with out new firebase querey only with cache
-function addLetter() {
-    //Clean cache
-    cache = cache.filter(cleanCache)
-
-    profileSearchList.clear()
-
-    var numResults = (cache.length > 20) ? 20 : cache.length
-
-    for (let i = 0; i < numResults; i++) {
-        profileSearchList.push(cache[i])
-    }
-
-    //alphabetical sort
-    profileSearchList.sort((a, b) => (a.username > b.username) ? 1 : -1)
+export function getUserPic(google_id){
+  const collect = db.collection('TestCollection')//get wanted collection
+  query = collect.where('user_id', '==', google_id)
+  query.get().then(queriedDocs => {
+      if (queriedDocs.empty == false) {
+          queriedDocs.forEach(singleDoc => {
+              return singleDoc.data().picURL;
+          })
+      } else {
+          console.log("No docs match");
+      }
+  });
 }
 
-function searchTrash(user){
-    let result = user.username.slice(0, currentInput.length - 1) !== currentInput
-
-    if (!result) {
-        cache.push(user)
-    }
-
-    return result
+export function setUserPic(newPicURI){
+  db.collection('users').doc(user.credential.accessToken).update({
+      picUrl: newPicURI
+  }).catch(function (error) {
+      // The document probably doesn't exist.
+      console.error("Error updating document: ", error);
+      return false
+  });
+  return true
 }
-
-//updates the profile Search List
-//When letter is removed
-function removeLetter() {
-    //Search Trash
-    trash = trash.filter(searchTrash)
-
-    cache.sort((a, b) => (a.dis > b.dis) ? 1 : -1)
-
-    profileSearchList.clear()
-
-    var numResults = (cache.length > 20) ? 20 : cache.length
-    var unsortedList = []
-
-    for (let i = 0; i < numResults; i++) {
-        unsortedList.push(cache[i])
-    }
-
-    //alphabetical sort
-    unsortedList.sort((a, b) => (a.username > b.username) ? 1 : -1)
-
-    profileSearchList = unsortedList
+export function getUserId(google_id){
+  const collect = db.collection('TestCollection')//get wanted collection
+  query = collect.where('user_id', '==', google_id)
+  query.get().then(queriedDocs => {
+      if (queriedDocs.empty == false) {
+          queriedDocs.forEach(singleDoc => {
+              return singleDoc.data().userID;
+          })
+      } else {
+          console.log("No docs match");
+      }
+  });
 }
-
-//Simple distance func
-function getDisFromCurUser(lat, long) {
-    var sum = Math.pow(currentUserObj.hometownCoor.lat() - lat, 2) + Math.pow(currentUserObj.hometownCoor.long() - long, 2)
-    return Math.sqrt(sum)
+export function setUserId(newUserID){
+  db.collection('users').doc(user.credential.accessToken).update({
+      userID: newUserID
+  }).catch(function (error) {
+      // The document probably doesn't exist.
+      console.error("Error updating document: ", error);
+      return false
+  });
+  return true
+}
+export function getUsername(google_id){
+  const collect = db.collection('users')//get wanted collection
+  query = collect.where('user_id', '==', google_id)
+  query.get().then(queriedDocs => {
+      if (queriedDocs.empty == false) {
+          queriedDocs.forEach(singleDoc => {
+              return singleDoc.data().username;
+          })
+      } else {
+          console.log("No docs match");
+      }
+  });
+}
+export function setUsername(newUserName){
+  db.collection('users').doc(user.credential.accessToken).update({
+      username: newUserName
+  }).catch(function (error) {
+      // The document probably doesn't exist.
+      console.error("Error updating document: ", error);
+      return false
+  });
+  return true
 }
