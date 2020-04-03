@@ -9,7 +9,11 @@ import { Avatar,
          ListItemText,
          Modal,
          TextField,
-         Typography } from '@material-ui/core'
+         Typography } from '@material-ui/core';
+import ProfileItem from './ProfileItem.jsx';
+import ProfileList from './ProfileList.jsx';
+import { dynamicProfileSearch } from '../../profileSearch.js';
+import { profileSearchList } from '../../profileSearch.js';
 
 function getModalStyle() {
   const top = 50;
@@ -48,32 +52,21 @@ const ProfileSearchModal =  (props) => {
     setOpen(props.open)
   }, [props.open])
 
+  async function search(e) {
+    console.log(e.target.value);
+    await dynamicProfileSearch(e.target.value);
+    console.log(profileSearchList);
+  };
+
   const modal = (
       <Modal
         open={open}
         onClose={() => {setOpen(false); action(false);}}
       >
         <div style={modalStyle} className={classes.paper}>
-          <TextField id="profile-search-field" label="Search" variant="outlined" fullWidth />
+          <TextField onChange={(e) => {search(e)}} id="profile-search-field" label="Search" variant="outlined" fullWidth />
           <div style={{maxHeight: 450, overflow: 'auto'}}>
-            <List>
-              <ListItem button>
-                <Avatar/>
-                <ListItemText className={classes.name} primary="John Williams" />
-              </ListItem>
-              <ListItem button>
-                <Avatar/>
-                <ListItemText className={classes.name} primary="Karen Smith" />
-              </ListItem>
-              <ListItem button>
-                <Avatar/>
-                <ListItemText className={classes.name} primary="Robert Jones" />
-              </ListItem>
-              <ListItem button>
-                <Avatar/>
-                <ListItemText className={classes.name} primary="Mary Johnson" />
-              </ListItem>
-            </List>
+            <ProfileList/>
           </div>
         </div>
       </Modal>

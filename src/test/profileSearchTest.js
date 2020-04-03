@@ -41,6 +41,3 @@ export async function testSearch() {
     console.log("==================================================================")
     dynamicProfileSearch("Brand")
 }
-
-
-
