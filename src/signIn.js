@@ -1,6 +1,5 @@
 import * as firebase from 'firebase/app';
 import { db } from './index.js';
-import { getHometownCoor } from './components/MapUI/Map.js';
 
 export var user;
 var userToken;
@@ -67,10 +66,10 @@ export function signOut() {
     }
 }
 
-export function saveHometown(hometown) {
-    var homeTownGeoPoint = getHometownCoor(hometown)
+export function saveHometown(hometownStr, lat, long) {
+    var homeTownGeoPoint = new firebase.firestore.GeoPoint(lat, long)
     db.collection('users').doc(currentUserObj.userID).update({
-        hometown: hometown,
+        hometown: hometownStr,
         hometownCoor: homeTownGeoPoint
     }).catch(function (error) {
         // The document probably doesn't exist.
