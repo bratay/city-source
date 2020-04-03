@@ -14,6 +14,7 @@ import StarIcon from '@material-ui/icons/Star';
 import SearchIcon from '@material-ui/icons/Search'
 import SignInModal from './components/SignInModal/SignInModal.jsx'
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
+import ProfileSearchModal from './components/ProfileSearch/ProfileSearchModal.jsx'
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -59,10 +60,10 @@ function AccountMenu(props) {
 			<IconButton className={classes.menuButton} aria-describedby={id} onClick={handleClick}>
 				<Avatar />
 			</IconButton>
-			<Menu 
-				id={id} 
-				open={open} 
-				anchorEl={anchorEl} 
+			<Menu
+				id={id}
+				open={open}
+				anchorEl={anchorEl}
 				onClose={handleClose}
 				anchorOrigin={{
 					vertical: 'bottom',
@@ -109,6 +110,7 @@ function Navbar(props) {
 	});
 
 	const [signIn, setSignIn] = React.useState(false);
+	const [profileSearch, setProfileSearch] = React.useState(false);
 
 	const toggleDrawer = (side, open) => event => {
 		if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -148,7 +150,7 @@ function Navbar(props) {
 			</List>
 			<Divider />
 			<List>
-			<ListItemLink button key='profileSearch' href="/profileSearch">
+			<ListItemLink button key='profileSearch'onClick={() => {setProfileSearch(true)}}>
 				<ListItemIcon><SearchIcon /></ListItemIcon>
 				<ListItemText primary="Search" />
 			</ListItemLink>
@@ -185,6 +187,7 @@ function Navbar(props) {
 				</Toolbar>
 			</AppBar>
 			<SignInModal open={signIn} action={setSignIn} />
+			<ProfileSearchModal open={profileSearch} action = {setProfileSearch} />
 		</React.Fragment>
 	);
 }
