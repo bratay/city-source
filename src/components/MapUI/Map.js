@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import GoogleMapReact from 'google-map-react';
 import * as firebase from 'firebase/app';
-import { Google_Maps_API_Key } from '../../apiKey.js'
+import {Google_Maps_API_Key} from '../../apiKey.js'
 
 //TODO: we will need to create markers for each post type. Markers
 //      are just divs that are rendered at specific lat longs on
@@ -37,7 +37,7 @@ class CSMap extends Component {
         return(
             <div style = {{height: '92vh', width: '100%'}}>
             <GoogleMapReact
-                bootstrapURLKeys={{ key: Google_Maps_API_Key }}
+                bootstrapURLKeys={ Google_Maps_API_Key }
                 defaultCenter={this.props.center}
                 defaultZoom={this.props.zoom}
             >
