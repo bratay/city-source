@@ -49,6 +49,16 @@ export function PostCreate(props) {
 		setDescription(event.target.value);
 	};
 
+	const post = () => {
+		if (title === "" || description === "") {
+			// TODO: Add some sort of error message like a snackbar, but snackbars are being a bit difficult for me
+			return;
+		}
+		// TODO: Add any other necessary validation
+		// TODO: Get a function to add a new post
+		
+	};
+
 	return (
 		<React.Fragment>
 			<Dialog 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, IconButton, InputLabel, LinearProgress, Slide, TextField, Typography, Snackbar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { getUserProfileObj } from "../../profileBackEnd.js";
+import { getUserProfileObj, setUsername, setHometown, setBio } from "../../profileBackEnd.js";
 import CloseIcon from '@material-ui/icons/Close';
 import RoomIcon from '@material-ui/icons/Room';
 
@@ -59,23 +59,24 @@ export function ProfileEdit(props) {
 	const [userObj, setUserObj] = React.useState(null);
 	const [open, setOpen] = React.useState(props.open);
 
-	const [username, setUsername] = React.useState(undefined);
-	const [hometown, setHometown] = React.useState(undefined);
-	const [bio, setBio] = React.useState(undefined);
+	const [username, setUsernameLocal] = React.useState(undefined);
+	const [hometown, setHometownLocal] = React.useState(undefined);
+	const [bio, setBioLocal] = React.useState(undefined);
 
 	let modified = false;
 
 	React.useEffect(() => {
-		setOpen(props.open)
+		setOpen(props.open);
+		console.log(currentUserObj);
 	}, [props.open]);
 
 	React.useEffect(() => {
 		async function fetchUserObj() {
 			const obj = await getUserProfileObj(props.userId);
 			setUserObj(obj);
-			setUsername(obj.username);
-			setHometown(obj.hometown);
-			setBio(obj.bio);
+			setUsernameLocal(obj.username);
+			setHometownLocal(obj.hometown);
+			setBioLocal(obj.bio);
 		}
 		fetchUserObj();
 	 }, [props.open]);
@@ -91,29 +92,19 @@ export function ProfileEdit(props) {
 			return;
 		}
 		// TODO: Add any other necessary validation
-		Object.defineProperties(userObj, {
-			username: {
-				value: username,
-			},
-			hometown: {
-				value: hometown,
-			},
-			bio: {
-				value: bio,
-			},
-		});
-		
-		// TODO: At this point, userObj is updated and ready to be sent back to the DB
+		setUsername(String(username));
+		setHometown(String(hometown));
+		setBio(String(bio));
 	};
 
 	const modifyName = (event) => {
-		setUsername(event.target.value);
+		setUsernameLocal(event.target.value);
 	};
 	const modifyHome = (event) => {
-		setHometown(event.target.value);
+		setHometownLocal(event.target.value);
 	};
 	const modifyBio = (event) => {
-		setBio(event.target.value);
+		setBioLocal(event.target.value);
 	};
 
 	if (userObj === null) {
