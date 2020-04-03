@@ -3,9 +3,11 @@ import Navbar from './Navbar.js';
 import CSMap from './components/MapUI/Map.js';
 
 const CitySourceContainer = () => {
+  let signedIn = false;
+
   return (
     <React.Fragment>
-      <Navbar login={false} current="index"/>
+      <Navbar login={signedIn}/>
       <CSMap />
     </React.Fragment>
   );

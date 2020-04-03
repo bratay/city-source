@@ -2,7 +2,6 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, Grid, Modal, Typography } from '@material-ui/core'
 import { googleSignIn } from '../../signIn';
-import { testSearch } from '../../profileSearch';
 
 function getModalStyle() {
   const top = 50;
@@ -42,7 +41,7 @@ const useStyles = makeStyles(theme => ({
 
 const SignInModal = (props) => {
 
-  const action = props.action
+  const action = props.action;
 
   const classes = useStyles();
   const [modalStyle] = React.useState(getModalStyle);

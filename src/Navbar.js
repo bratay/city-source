@@ -1,14 +1,19 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { AppBar, Avatar, Button, Drawer, Hidden, IconButton, List, ListItem, ListItemIcon, ListItemText, Toolbar, Typography, Divider } from '@material-ui/core';
+import { AppBar, Avatar, Button, Divider, Drawer, Hidden, IconButton, List, ListItem, ListItemIcon, ListItemText, Menu, MenuItem, Toolbar, Typography } from '@material-ui/core';
+import { ProfileEdit } from './components/Profiles/ProfileEdit.jsx';
+import { ProfileDialog } from "./components/Profiles/ProfileView.jsx";
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import HomeIcon from '@material-ui/icons/Home';
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import RoomIcon from '@material-ui/icons/Room';
+import SettingsIcon from '@material-ui/icons/Settings';
 import StarIcon from '@material-ui/icons/Star';
-import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import SearchIcon from '@material-ui/icons/Search'
 import SignInModal from './components/SignInModal/SignInModal.jsx'
+import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import ProfileSearchModal from './components/ProfileSearch/ProfileSearchModal.jsx'
 
 const useStyles = makeStyles(theme => ({
@@ -32,6 +37,69 @@ function ListItemLink(props) {
 	return <ListItem button component="a" {...props} />
 }
 
+function AccountMenu(props) {
+	const classes = useStyles();
+	const [anchorEl, setAnchorEl] = React.useState(null);
+
+	const [profileView, setProfileView] = React.useState(false);
+	const [profileEdit, setProfileEdit] = React.useState(false);
+
+	const handleClick = event => {
+		setAnchorEl(event.currentTarget);
+	};
+
+	const handleClose = () => {
+		setAnchorEl(null);
+	}
+
+	const open = Boolean(anchorEl);
+	const id = open ? 'account-menu' : undefined;
+
+	return (
+		<React.Fragment>
+			<IconButton className={classes.menuButton} aria-describedby={id} onClick={handleClick}>
+				<Avatar />
+			</IconButton>
+			<Menu
+				id={id}
+				open={open}
+				anchorEl={anchorEl}
+				onClose={handleClose}
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'center',
+				}}
+				transformOrigin={{
+					vertical: 'top',
+					horizontal: 'center',
+				}}
+			>
+				<MenuItem onClick={() => {handleClose(); setProfileView(true);}}>
+					<ListItemIcon>
+						<AccountCircleIcon />
+					</ListItemIcon>
+					<ListItemText primary="My Profile" />
+				</MenuItem>
+				<MenuItem onClick={() => {handleClose(); setProfileEdit(true);}}>
+					<ListItemIcon>
+						<SettingsIcon />
+					</ListItemIcon>
+					<ListItemText primary="Settings" />
+				</MenuItem>
+				<Divider />
+				<MenuItem onClick={handleClose}>
+					<ListItemIcon>
+						<ExitToAppIcon />
+					</ListItemIcon>
+					<ListItemText primary="Log Out" />
+				</MenuItem>
+			</Menu>
+			<ProfileDialog open={profileView} action={setProfileView} userId="PLACEHOLDER" />
+			<ProfileEdit open={profileEdit} action={setProfileEdit} userId="PLACEHOLDER" />
+		</React.Fragment>
+	);
+}
+
 function Navbar(props) {
 	const classes = useStyles();
 	const [state, setState] = React.useState({
@@ -52,27 +120,25 @@ function Navbar(props) {
 	};
 
 	const TopRight = () => {
-			if (props.login === true) {
-				return (
-					<Hidden xsdown>
-						<IconButton color="inherit">
-							<NotificationsIcon />
-						</IconButton>
-						<IconButton className={classes.menuButton}>
-							<Avatar />
-						</IconButton>
-					</Hidden>
-				);
-			}
-			else {
-				return (
-					<React.Fragment>
-						<Button color="inherit">About CitySource</Button>
-						<Button color="inherit" onClick={() => {setSignIn(true)}} >Log In/Sign Up</Button>
-					</React.Fragment>
-				);
-			}
+		if (props.login === true) {
+			return (
+				<Hidden xsdown>
+					<IconButton color="inherit">
+						<NotificationsIcon />
+					</IconButton>
+					<AccountMenu />
+				</Hidden>
+			);
 		}
+		else {
+			return (
+				<React.Fragment>
+					<Button color="inherit">About CitySource</Button>
+					<Button color="inherit" onClick={() => {setSignIn(true)}} >Log In/Sign Up</Button>
+				</React.Fragment>
+			);
+		}
+	}
 
 	const sideMenu = side => (
 		<div className={classes.list} role="presentation" onClick={toggleDrawer(side, false)} onKeyDown={toggleDrawer(side, false)}>
