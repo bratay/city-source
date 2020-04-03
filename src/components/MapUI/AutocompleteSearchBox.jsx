@@ -42,6 +42,7 @@ import PlacesAutocomplete, {
     // });
 
     return (
+        <React.Fragment>
         <div>
             <PlacesAutocomplete
                 value = {value}
@@ -54,7 +55,6 @@ import PlacesAutocomplete, {
                     <Input inputProps={getInputProps({
                         placeholder: 'Add your location',
                     })}
-
                     />
                     <div>
                     {loading && <div>Loading...</div>}
@@ -71,6 +71,7 @@ import PlacesAutocomplete, {
                 </div>}
             </PlacesAutocomplete>
         </div>
+        </React.Fragment>
     )
     
   }

@@ -18,7 +18,7 @@ function getModalStyle() {
 const useStyles = makeStyles(theme => ({
     paper: {
       position: 'absolute',
-      width: 500,
+      width: 600,
       height: 200,
       backgroundColor: theme.palette.background.paper,
       borderRadius: '25px',
@@ -58,11 +58,11 @@ const HometownModal = (props) => {
     }
 
     const confirmHometown = () =>{
-        if (coordinates == null || hometownStr == null) {
-            return null;
-        } else{
-            saveHometown(hometownStr, coordinates.lat, coordinates.lng);
-        }
+        // if (coordinates == null || hometownStr == null) {
+        //     return null;
+        // } else{
+        //     saveHometown(hometownStr, coordinates.lat, coordinates.lng);
+        // }
     }
 
     const modal = 
