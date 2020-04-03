@@ -358,4 +358,4 @@ function removeLetter() {
 function getDisFromCurUser(lat, long) {
     var sum = Math.pow(currentUserObj.hometownCoor.lat() - lat, 2) + Math.pow(currentUserObj.hometownCoor.long() - long, 2)
     return Math.sqrt(sum)
-} 
+}
