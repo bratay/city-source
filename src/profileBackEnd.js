@@ -54,15 +54,13 @@ export function getUserPost(userKey) {
     let queryResult = db.collection('post').where('userID', '==', userKey)
 
     queryResult.get().then(queriedDocs => {
-        if (queriedDocs.empty == false) {
+        if (queriedDocs.empty === false) {
             queriedDocs.forEach(singleDoc => {
                 let currentPost = {
                     comments: singleDoc.data().comments,
                     devPost: singleDoc.data().devPost,
                     pic: singleDoc.data().pic,
                     postID: singleDoc.data().postID,
-                    likes: singleDoc.likes,
-                    dislikes: singleDoc.dislikes,
                     timestamp: singleDoc.data().timestamp, //convert from epoch to normal time date
                     title: singleDoc.data().title,
                     userID: singleDoc.data().userID
@@ -87,6 +85,130 @@ export function getTimeDate(epochSeconds) {
     formattedDate += " " + rawDate.slice(11, 24) //time
 
     return formattedDate
+}
+
+///////////////////////////////////////////////////////
+//Post gets and sets
+///////////////////////////////////////////////////////
+export function getBio(google_id){
+  const collect = db.collection('TestCollection')//get wanted collection
+  query = collect.where('user_id', '==', google_id)
+  query.get().then(queriedDocs => {
+      if (queriedDocs.empty == false) {
+          queriedDocs.forEach(singleDoc => {
+              return singleDoc.data().bio;
+          })
+      } else {
+          console.log("No docs match");
+      }
+  });
+}
+
+export function setBio(newBioString){
+  db.collection('users').doc(user.credential.accessToken).update({
+      bio: newBioString
+  }).catch(function (error) {
+      // The document probably doesn't exist.
+      console.error("Error updating document: ", error);
+      return false
+  });
+  return true
+}
+
+export function getHometown(google_id){
+  const collect = db.collection('TestCollection')//get wanted collection
+  query = collect.where('user_id', '==', google_id)
+  query.get().then(queriedDocs => {
+      if (queriedDocs.empty == false) {
+          queriedDocs.forEach(singleDoc => {
+              return singleDoc.data().hometown;
+          })
+      } else {
+          console.log("No docs match");
+      }
+  });
+}
+
+export function setHometown(newHometown){
+  db.collection('users').doc(user.credential.accessToken).update({
+      hometown: newHometown
+  }).catch(function (error) {
+      // The document probably doesn't exist.
+      console.error("Error updating document: ", error);
+      return false
+  });
+  return true
+}
+
+export function getUserPic(google_id){
+  const collect = db.collection('TestCollection')//get wanted collection
+  query = collect.where('user_id', '==', google_id)
+  query.get().then(queriedDocs => {
+      if (queriedDocs.empty == false) {
+          queriedDocs.forEach(singleDoc => {
+              return singleDoc.data().picURL;
+          })
+      } else {
+          console.log("No docs match");
+      }
+  });
+}
+
+export function setUserPic(newPicURI){
+  db.collection('users').doc(user.credential.accessToken).update({
+      picUrl: newPicURI
+  }).catch(function (error) {
+      // The document probably doesn't exist.
+      console.error("Error updating document: ", error);
+      return false
+  });
+  return true
+}
+export function getUserId(google_id){
+  const collect = db.collection('TestCollection')//get wanted collection
+  query = collect.where('user_id', '==', google_id)
+  query.get().then(queriedDocs => {
+      if (queriedDocs.empty == false) {
+          queriedDocs.forEach(singleDoc => {
+              return singleDoc.data().userID;
+          })
+      } else {
+          console.log("No docs match");
+      }
+  });
+}
+export function setUserId(newUserID){
+  db.collection('users').doc(user.credential.accessToken).update({
+      userID: newUserID
+  }).catch(function (error) {
+      // The document probably doesn't exist.
+      console.error("Error updating document: ", error);
+      return false
+  });
+  return true
+}
+export function getUsername(google_id){
+  const collect = db.collection('users')//get wanted collection
+  query = collect.where('user_id', '==', google_id)
+  query.get().then(queriedDocs => {
+      if (queriedDocs.empty == false) {
+          queriedDocs.forEach(singleDoc => {
+              return singleDoc.data().username;
+          })
+      } else {
+          console.log("No docs match");
+      }
+  });
+}
+export function setUsername(newUserName){
+  db.collection('users').doc(user.credential.accessToken).update({
+      username: newUserName
+  }).catch(function (error) {
+      // The document probably doesn't exist.
+      console.error("Error updating document: ", error);
+      return false
+  });
+  return true
 }
 
 ///////////////////////////////////////////////////////
@@ -159,7 +281,7 @@ function fullAdd() {
 
     var numResults = (cache.length > 20) ? 20 : cache.length
     var unsortedList = []
-    
+
     for (let i = 0; i < numResults; i++) {
         unsortedList.push(cache[i])
     }
@@ -236,4 +358,4 @@ function removeLetter() {
 function getDisFromCurUser(lat, long) {
     var sum = Math.pow(currentUserObj.hometownCoor.lat() - lat, 2) + Math.pow(currentUserObj.hometownCoor.long() - long, 2)
     return Math.sqrt(sum)
-}
+} 
