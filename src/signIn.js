@@ -3,12 +3,11 @@ import { db } from './index.js';
 import { getHometownCoor } from './components/MapUI/Map.js';
 
 export var user;
-var userToken;
 
 export var currentUserObj = {
     bio: "",
     hometown: "",
-    hometownCoor: [0,0],
+    hometownCoor: [0, 0],
     email: "",
     picUrl: "",
     userID: 0,
@@ -17,38 +16,46 @@ export var currentUserObj = {
 }
 
 //returns 1 = user has account, 0 = new user,  -1 = sign in fail
-export function googleSignIn() {
+export async function googleSignIn() {
+    let result = await realGoogleSignIn()
+    return result
+}
+
+export async function realGoogleSignIn() {
     var provider = new firebase.auth.GoogleAuthProvider(); //Google sign in object
+    let result = null
 
-    firebase.auth().signInWithRedirect(provider).then(function (result) {
-        //Save user object
-    }).catch(function (error) {
-        console.log('Sign in fail! Error message: ', error.message)
-        return -1
-    });
+    await firebase.auth().signInWithPopup(provider).then(
+        async function (r) {
+            let user = firebase.auth().currentUser
+            let newUser = false
 
-    user = firebase.auth().currentUser
-    userToken = String(user.uid)  // Use User.getToken() instead. Need to fix this in the future
+            let query = db.collection('users').where('userID', '==', user.uid)
+            await query.get().then(doc => { newUser = (doc.empty) ? true : false });
 
-    if (!userExist(userToken)) {
-        // Creates new document with token as name of doc
-        db.collection('users').doc(userToken).set({
-            bio: "",
-            hometown: "",
-            hometownCoor: [0, 0], 
-            email: user.email,
-            picUrl: String(user.photoURL),
-            userID: user.uid,
-            username: user.displayName,
-            userType: 0
-        })
+            if (newUser) {
+                // Creates new document with token as name of doc
+                db.collection('users').doc(user.uid).set({
+                    bio: "",
+                    hometown: "",
+                    hometownCoor: [0, 0],
+                    email: user.email,
+                    picUrl: String(user.photoURL),
+                    userID: user.uid,
+                    username: user.displayName,
+                    userType: 0
+                })
 
-        autoUpdateUserObject(db.collection('user').doc(userToken))
-        return 0
-    } else {
-        autoUpdateUserObject(db.collection('user').doc(userToken))
-        return 1
-    }
+                // autoUpdateUserObject(db.collection('user').doc(userToken))
+                result = 0
+            } else {
+                // autoUpdateUserObject(db.collection('user').doc(userToken))
+                result = 1
+            }
+        }
+    )
+
+    return result
 }
 
 //signs out current user
@@ -95,10 +102,4 @@ function autoUpdateUserObject(currentUser) {
             userType: doc.userType
         }
     });
-}
-
-// example of ID check function
-export function userExist(token) {
-    // return (db.collection('users').doc(token) != null) ? true : false
-    return false;
 }
