@@ -27,16 +27,16 @@ function createObjectWithDis(doc, distance) {
 
 //main func for search
 export async function dynamicProfileSearch(input) {
-    currentInput = input
+    currentInput = input.toLowerCase()
 
-    if (currentInput.length == 1 && currentInput.length > lastLength) {//get all users
+    if (currentInput.length == 1 && currentInput.length > lastLength ) {//get all users
         await getAllUsers()
     } else if (currentInput.length > lastLength && currentInput.length == 2) {//full add
-        fullAdd(currentInput)
+        await fullAdd(currentInput)
     } else if (currentInput.length > lastLength && currentInput.length >= 2) {//add letter
-        addLetter(currentInput)
+        await addLetter(currentInput)
     } else if (currentInput.length < lastLength && currentInput.length >= 2) {//remove letter
-        removeLetter(currentInput)
+        await removeLetter(currentInput)
     } else if (currentInput.length < lastLength && currentInput.length < 2) {//reset
         profileSearchList = []
     }
@@ -45,9 +45,10 @@ export async function dynamicProfileSearch(input) {
 }
 
 async function getAllUsers() {
+    let preInput = currentInput
     allUsers = []
     var usersTemp = db.collection('users')
-
+    
     await usersTemp.get().then(allProfileDocs => {
         allProfileDocs.forEach(profile => {
             //calculate distance from current user and caches results
@@ -55,18 +56,20 @@ async function getAllUsers() {
             allUsers.push(createObjectWithDis(profile, dis))
         })
     })
-
+    
     allUsers.sort((a, b) => (a.username > b.username) ? 1 : -1)
+    
+    //The user typed REALLY fast
+    if(currentInput != preInput)
+        fullAdd(currentInput)
 }
 
 function rangeSearchUser(start) {
     var result = [];
     for (var i = 0; i < allUsers.length; i++) {
-        // if( allUsers[i].username.startsWith(start))
-
         // searchs the string for the input 
         //i.e. input: "nde" will return "BraNDEn taylor"
-        if (allUsers[i].username.search(start) != -1)
+        if (allUsers[i].username.toLowerCase().search(start) != -1)
             result.push(allUsers[i])
     }
     return result
