@@ -92,7 +92,7 @@ export function getTimeDate(epochSeconds) {
 ///////////////////////////////////////////////////////
 export function getBio(google_id){
   const collect = db.collection('TestCollection')//get wanted collection
-  query = collect.where('user_id', '==', google_id)
+  var query = collect.where('user_id', '==', google_id)
   query.get().then(queriedDocs => {
       if (queriedDocs.empty == false) {
           queriedDocs.forEach(singleDoc => {
@@ -105,6 +105,7 @@ export function getBio(google_id){
 }
 
 export function setBio(newBioString){
+  var user = firebase.auth().currentUser;
   db.collection('users').doc(user.credential.accessToken).update({
       bio: newBioString
   }).catch(function (error) {
@@ -117,7 +118,7 @@ export function setBio(newBioString){
 
 export function getHometown(google_id){
   const collect = db.collection('TestCollection')//get wanted collection
-  query = collect.where('user_id', '==', google_id)
+  var query = collect.where('user_id', '==', google_id)
   query.get().then(queriedDocs => {
       if (queriedDocs.empty == false) {
           queriedDocs.forEach(singleDoc => {
@@ -130,6 +131,7 @@ export function getHometown(google_id){
 }
 
 export function setHometown(newHometown){
+  var user = firebase.auth().currentUser;
   db.collection('users').doc(user.credential.accessToken).update({
       hometown: newHometown
   }).catch(function (error) {
@@ -142,7 +144,7 @@ export function setHometown(newHometown){
 
 export function getUserPic(google_id){
   const collect = db.collection('TestCollection')//get wanted collection
-  query = collect.where('user_id', '==', google_id)
+  var query = collect.where('user_id', '==', google_id)
   query.get().then(queriedDocs => {
       if (queriedDocs.empty == false) {
           queriedDocs.forEach(singleDoc => {
@@ -155,6 +157,7 @@ export function getUserPic(google_id){
 }
 
 export function setUserPic(newPicURI){
+  var user = firebase.auth().currentUser;
   db.collection('users').doc(user.credential.accessToken).update({
       picUrl: newPicURI
   }).catch(function (error) {
@@ -166,7 +169,7 @@ export function setUserPic(newPicURI){
 }
 export function getUserId(google_id){
   const collect = db.collection('TestCollection')//get wanted collection
-  query = collect.where('user_id', '==', google_id)
+  var query = collect.where('user_id', '==', google_id)
   query.get().then(queriedDocs => {
       if (queriedDocs.empty == false) {
           queriedDocs.forEach(singleDoc => {
@@ -178,6 +181,7 @@ export function getUserId(google_id){
   });
 }
 export function setUserId(newUserID){
+  var user = firebase.auth().currentUser;
   db.collection('users').doc(user.credential.accessToken).update({
       userID: newUserID
   }).catch(function (error) {
@@ -189,7 +193,7 @@ export function setUserId(newUserID){
 }
 export function getUsername(google_id){
   const collect = db.collection('users')//get wanted collection
-  query = collect.where('user_id', '==', google_id)
+  var query = collect.where('user_id', '==', google_id)
   query.get().then(queriedDocs => {
       if (queriedDocs.empty == false) {
           queriedDocs.forEach(singleDoc => {
@@ -201,6 +205,7 @@ export function getUsername(google_id){
   });
 }
 export function setUsername(newUserName){
+  var user = firebase.auth().currentUser;
   db.collection('users').doc(user.credential.accessToken).update({
       username: newUserName
   }).catch(function (error) {
@@ -209,4 +214,154 @@ export function setUsername(newUserName){
       return false
   });
   return true
+}
+
+
+///////////////////////////////////////////////////////
+//Profile search
+///////////////////////////////////////////////////////
+export var profileSearchList = []//should be alphabetical order // but it's Not right now
+
+var cache = []
+var trash = []
+var lastLength = 0;
+var currentInput = ""
+
+function createObjectWithDis(doc, distance) {
+    var fullObject = {
+        bio: doc.bio,
+        hometown: doc.hometown,
+        hometownCoor: doc.hometownCoor,
+        email: doc.email,
+        picUrl: doc.picUrl,
+        userID: doc.userID,
+        username: doc.username,
+        userType: doc.userType,
+        dis: distance
+    }
+
+    return fullObject
+}
+
+//main func for search
+export function dynamicProfileSearch(input) {
+    currentInput = input
+
+    if (currentInput.length > lastLength && currentInput.length === 2) {
+        fullAdd(currentInput)
+    } else if (currentInput.length > lastLength && currentInput.length > 2) {
+        addLetter(currentInput)
+    } else if (currentInput.length < lastLength && currentInput.length > 2) {
+        removeLetter(currentInput)
+    } else if (currentInput.length < lastLength && currentInput.length < 2) {
+        profileSearchList = []
+    }
+
+    lastLength = currentInput.length
+}
+
+//updates the profile Search List
+//But does a fresh querey to Firebase
+function fullAdd() {
+    //Fresh cache and trash
+    cache = []
+    trash = []
+
+    //limiting amount of results from query
+    var profileCandidates = db.ref('users').where('userName', '==', currentInput)
+        .limitToFirst(100);
+
+    //calculate distance from current user
+    //put in max heap of size 20 to be used by front end
+    profileCandidates.get().then(allProfileDocs => {
+        allProfileDocs.forEach(profile => {
+            let dis = getDisFromCurUser(profile.GeoPoint.lat(), profile.GeoPoint.long())
+            cache.push(createObjectWithDis(profile, dis))
+        })
+    })
+
+    //sort cache by distance from current user
+    cache.sort((a, b) => (a.dis > b.dis) ? 1 : -1)
+
+    profileSearchList.clear()
+
+    var numResults = (cache.length > 20) ? 20 : cache.length
+    var unsortedList = []
+
+    for (let i = 0; i < numResults; i++) {
+        unsortedList.push(cache[i])
+    }
+
+    //alphabetical sort
+    unsortedList.sort((a, b) => (a.username > b.username) ? 1 : -1)
+
+    profileSearchList = unsortedList
+}
+
+//helper function for add letter
+function cleanCache(user) {
+    let result = user.username.slice(0, currentInput.length - 1) !== currentInput
+
+    //checking if it still matches
+    if (!result) {
+        trash.push(user)
+    }
+    return result
+}
+
+//updates the profile Search List
+//But with out new firebase querey only with cache
+function addLetter() {
+    //Clean cache
+    cache = cache.filter(cleanCache)
+
+    profileSearchList.clear()
+
+    var numResults = (cache.length > 20) ? 20 : cache.length
+
+    for (let i = 0; i < numResults; i++) {
+        profileSearchList.push(cache[i])
+    }
+
+    //alphabetical sort
+    profileSearchList.sort((a, b) => (a.username > b.username) ? 1 : -1)
+}
+
+function searchTrash(user){
+    let result = user.username.slice(0, currentInput.length - 1) !== currentInput
+
+    if (!result) {
+        cache.push(user)
+    }
+
+    return result
+}
+
+//updates the profile Search List
+//When letter is removed
+function removeLetter() {
+    //Search Trash
+    trash = trash.filter(searchTrash)
+
+    cache.sort((a, b) => (a.dis > b.dis) ? 1 : -1)
+
+    profileSearchList.clear()
+
+    var numResults = (cache.length > 20) ? 20 : cache.length
+    var unsortedList = []
+
+    for (let i = 0; i < numResults; i++) {
+        unsortedList.push(cache[i])
+    }
+
+    //alphabetical sort
+    unsortedList.sort((a, b) => (a.username > b.username) ? 1 : -1)
+
+    profileSearchList = unsortedList
+}
+
+//Simple distance func
+function getDisFromCurUser(lat, long) {
+    var sum = Math.pow(currentUserObj.hometownCoor.lat() - lat, 2) + Math.pow(currentUserObj.hometownCoor.long() - long, 2)
+    return Math.sqrt(sum)
 }

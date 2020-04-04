@@ -9,7 +9,7 @@ import { currentUserObj, userExist } from './signIn.js';
 
 export function getAddress(post_id){
   const collect = db.collection('post')//get wanted collection
-  query = collect.where('post_id', '==', post_id)
+  var query =collect.where('post_id', '==', post_id)
   query.get().then(queriedDocs => {
       if (queriedDocs.empty == false) {
           queriedDocs.forEach(singleDoc => {
@@ -38,7 +38,7 @@ export function setAddress(post_id, newAddress){
 
 // export function getComments(post_id){
 //   const collect = db.collection('post')//get wanted collection
-//   query = collect.where('post_id', '==', post_id)
+//   var query =collect.where('post_id', '==', post_id)
 //   query.get().then(queriedDocs => {
 //       if (queriedDocs.empty == false) {
 //           queriedDocs.forEach(singleDoc => {
@@ -65,7 +65,7 @@ export function setAddress(post_id, newAddress){
 // Not in database currently, needs to be added
 // export function getUserPic(post_id){
 //   const collect = db.collection('post')//get wanted collection
-//   query = collect.where('post_id', '==', post_id)
+//   var query =collect.where('post_id', '==', post_id)
 //   query.get().then(queriedDocs => {
 //       if (queriedDocs.empty == false) {
 //           queriedDocs.forEach(singleDoc => {
@@ -101,7 +101,7 @@ export function setPostID(post_doc, newPostID){
 
 export function getTimeStamp(post_id){
   const collect = db.collection('post')//get wanted collection
-  query = collect.where('post_id', '==', post_id)
+  var query =collect.where('post_id', '==', post_id)
   query.get().then(queriedDocs => {
       if (queriedDocs.empty == false) {
           queriedDocs.forEach(singleDoc => {
@@ -125,7 +125,7 @@ export function setTimeStamp(post_doc, newTimeStamp){
 
 export function getTitle(post_id){
   const collect = db.collection('post')//get wanted collection
-  query = collect.where('post_id', '==', post_id)
+  var query =collect.where('post_id', '==', post_id)
   query.get().then(queriedDocs => {
       if (queriedDocs.empty == false) {
           queriedDocs.forEach(singleDoc => {
@@ -150,7 +150,7 @@ export function setTitle(post_doc, newTitle){
 
 export function getUserId(post_id){
   const collect = db.collection('post')//get wanted collection
-  query = collect.where('post_id', '==', post_id)
+  var query =collect.where('post_id', '==', post_id)
   query.get().then(queriedDocs => {
       if (queriedDocs.empty == false) {
           queriedDocs.forEach(singleDoc => {
