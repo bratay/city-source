@@ -30,7 +30,7 @@ export async function realGoogleSignIn() {
             let newUser = false
 
             let query = db.collection('users').where('userID', '==', user.uid)
-            await query.get().then(doc => { newUser = (doc.empty) ? true : false });
+            await query.get().then(doc => { newUser = (doc.empty) ? true : false })
 
             if (newUser) {
                 // Creates new document with token as name of doc
@@ -45,10 +45,10 @@ export async function realGoogleSignIn() {
                     userType: 0
                 })
 
-                // autoUpdateUserObject(db.collection('user').doc(userToken))
+                autoUpdateUserObject(db.collection('users').doc(user.uid))
                 result = 0
             } else {
-                // autoUpdateUserObject(db.collection('user').doc(userToken))
+                autoUpdateUserObject(db.collection('users').doc(user.uid))
                 result = 1
             }
         }
@@ -86,19 +86,31 @@ export function saveHometown(hometownStr, lat, long) {
     return true
 }
 
-//Auto updates user Object when doc value is changed via firebase snapshot
-//Only called once
-function autoUpdateUserObject(currentUser) {
-    currentUser.onSnapshot(doc => {
+//Auto updates user Object when doc value is changed via firebase snapshot only called once
+async function autoUpdateUserObject(doc) {
+    let userData = await doc.get()
+
+    currentUserObj = {
+        bio: userData.data().bio,
+        hometown: userData.data().hometown,
+        hometownCoor: [0, 0],
+        email: userData.data().email,
+        picUrl: userData.data().picUrl,
+        userID: userData.data().userID,
+        username: userData.data().username,
+        userType: userData.data().userType
+    }
+    
+    doc.onSnapshot(userDoc => {
         currentUserObj = {
-            bio: doc.bio,
-            hometown: doc.hometown,
-            hometownCoor: [0, 0],
-            email: doc.email,
-            picUrl: doc.picUrl,
-            userID: doc.userID,
-            username: doc.username,
-            userType: doc.userType
+            bio: userDoc.data().bio,
+            hometown: userDoc.data().hometown,
+            hometownCoor: userDoc.data().hometownCoor,
+            email: userDoc.data().email,
+            picUrl: userDoc.data().picUrl,
+            userID: userDoc.data().userID,
+            username: userDoc.data().username,
+            userType: userDoc.data().userType
         }
     });
 }
