@@ -62,3 +62,9 @@ export async function testGetComments(){
     var commentList = await getCommentsFromPost(postID)
     console.log(commentList)
 }
+
+export function testDisFromCurUser(){
+    let result = getDisFromCurUser(3, 7)
+    console.log(currentUserObj.hometownCoor)
+    console.log(result)
+}

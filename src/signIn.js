@@ -105,7 +105,7 @@ async function autoUpdateUserObject(doc) {
         currentUserObj = {
             bio: userDoc.data().bio,
             hometown: userDoc.data().hometown,
-            hometownCoor: [0, 0],
+            hometownCoor: userDoc.data().hometownCoor,
             email: userDoc.data().email,
             picUrl: userDoc.data().picUrl,
             userID: userDoc.data().userID,

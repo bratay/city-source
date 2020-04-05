@@ -1,5 +1,5 @@
 import { db } from './index.js';
-import { currentUserObj, userExist } from './signIn.js';
+import { currentUserObj } from './signIn.js';
 
 export var profileSearchList = []
 
@@ -52,7 +52,7 @@ async function getAllUsers() {
     await usersTemp.get().then(allProfileDocs => {
         allProfileDocs.forEach(profile => {
             //calculate distance from current user and caches results
-            let dis = 10//getDisFromCurUser(profile.data().hometownCoor[0], profile.data().hometownCoor[1])
+            let dis = getDisFromCurUser(profile.data().hometownCoor[0], profile.data().hometownCoor[1])
             allUsers.push(createObjectWithDis(profile, dis))
         })
     })
@@ -166,8 +166,8 @@ function removeLetter() {
     profileSearchList = unsortedList
 }
 
-//Simple distance func
+//Simple distance function
 function getDisFromCurUser(lat, long) {
-    var sum = Math.pow(currentUserObj.hometownCoor.lat() - lat, 2) + Math.pow(currentUserObj.hometownCoor.long() - long, 2)
+    var sum = Math.pow(currentUserObj.hometownCoor[0] - lat, 2) + Math.pow(currentUserObj.hometownCoor[1] - long, 2)
     return Math.sqrt(sum)
 }
