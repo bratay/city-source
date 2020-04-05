@@ -68,3 +68,18 @@ export function testDisFromCurUser(){
     console.log(currentUserObj.hometownCoor)
     console.log(result)
 }
+
+export async function testCreatePost(){
+    let post ={
+        address: "2327 N 81st Court",
+        coor: [3, 5],
+        devpost: false,
+        text: "This is a test of post creation",
+    }
+    let result = createpost(post)
+    console.log("Local post - " + result.text)
+
+    await db.collection("post").doc(result.postID).get().then(doc =>{
+        console.log("DB post - " + doc.data().text)
+    })
+}

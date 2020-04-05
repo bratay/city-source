@@ -2,13 +2,6 @@ import * as firebase from 'firebase';
 import { currentUserObj } from './signIn.js';
 import { db } from './index.js';
 
-export async function testGetComments(){
-    var postID = "123456"
-
-    var commentList = await getCommentsFromPost(postID)
-    console.log(commentList)
-}
-
 //Returns a list of comments obj in chronological order with a local or non-local flag
 export async function getCommentsFromPost(postID) {
     var commentsObjList = []
@@ -49,11 +42,11 @@ export async function createComment(commentString, postID) {
     let commentID = Math.random().toString(36).substr(2, 9) //Generate unique comment ID
     let isLocalComment = isLocal(postID)
     let newComment = {}
+    let timestamp = Date.now()
 
     //Making sure Generated ID is unique 
     while (db.collection('comments').doc(commentID) == undefined) {
         commentID = Math.random().toString(36).substr(2, 9)
-        console.log("bad key")
     }
 
     newComment = {
@@ -64,7 +57,7 @@ export async function createComment(commentString, postID) {
         likes: 0,
         dislikes: 0,
         reported: false,
-        timestamp: Date.now(),
+        timestamp: timestamp,
         local: isLocalComment
     }
 
@@ -76,7 +69,7 @@ export async function createComment(commentString, postID) {
         likes: 0,
         dislikes: 0,
         reported: false,
-        timestamp: Date.now(), //firebase.firestore.FieldValue.serverTimestamp(),
+        timestamp: timestamp,
         local: isLocalComment
     })
 
