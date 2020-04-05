@@ -59,15 +59,17 @@ export function ProfileEdit(props) {
 	const [userObj, setUserObj] = React.useState(null);
 	const [open, setOpen] = React.useState(props.open);
 
-	const [username, setUsernameLocal] = React.useState(undefined);
-	const [hometown, setHometownLocal] = React.useState(undefined);
 	const [bio, setBioLocal] = React.useState(undefined);
+	const [bioErr, setBioErr] = React.useState(false);
+	const [homeErr, setHomeErr] = React.useState(false);
+	const [hometown, setHometownLocal] = React.useState(undefined);
+	const [userErr, setUserErr] = React.useState(false);
+	const [username, setUsernameLocal] = React.useState(undefined);
 
 	let modified = false;
 
 	React.useEffect(() => {
 		setOpen(props.open);
-		console.log(currentUserObj);
 	}, [props.open]);
 
 	React.useEffect(() => {
@@ -82,11 +84,16 @@ export function ProfileEdit(props) {
 	 }, [props.open]);
 
 	const handleClose = () => {
+		setUserErr(false);
+		setHomeErr(false);
+		setBioErr(false);
+		
 		setOpen(false);
 		action(false);
 	};
 
-	const saveChanges = () => {
+	const saveChanges = (event) => {
+		event.preventDefault();
 		if (username === "" || hometown === "") {
 			// TODO: Add some sort of error message like a snackbar, but snackbars are being a bit difficult for me
 			return;
@@ -99,9 +106,21 @@ export function ProfileEdit(props) {
 
 	const modifyName = (event) => {
 		setUsernameLocal(event.target.value);
+		if (event.target.value === "") {
+			setUserErr(true);
+		}
+		else {
+			setUserErr(false);
+		}
 	};
 	const modifyHome = (event) => {
 		setHometownLocal(event.target.value);
+		if (event.target.value === "") {
+			setHomeErr(true);
+		}
+		else {
+			setHomeErr(false);
+		}
 	};
 	const modifyBio = (event) => {
 		setBioLocal(event.target.value);
@@ -125,6 +144,7 @@ export function ProfileEdit(props) {
 												<InputLabel htmlFor="usernameField" className={classes.inputLabel}>Display Name *</InputLabel>
 												<TextField 
 													className={classes.inputField} 
+													error={userErr}
 													disabled
 													fullWidth
 													id="usernameField" 
@@ -140,6 +160,7 @@ export function ProfileEdit(props) {
 														<InputLabel htmlFor="hometownField" className={classes.inputLabel}>Hometown *</InputLabel>
 														<TextField 
 															disabled
+															error={homeErr}
 															fullWidth 
 															id="hometownField" 
 															onChange={modifyHome} 
@@ -156,6 +177,7 @@ export function ProfileEdit(props) {
 								<InputLabel htmlFor="bioField" className={classes.inputLabel}>Bio</InputLabel>
 								<TextField 
 									disabled 
+									error={bioErr}
 									fullWidth 
 									id="bioField"
 									multiline 
@@ -186,6 +208,7 @@ export function ProfileEdit(props) {
 				<DialogTitle>Edit Your Profile</DialogTitle>
 					<DialogContent>
 						<DialogContentText>
+							<form id="editProfile" autoComplete="off" onSubmit={saveChanges}>
 							<Container>
 								<Grid container spacing={2} alignItems="flex-end" className={classes.userBasics}>
 									<Grid item sm={12} md container>
@@ -215,7 +238,6 @@ export function ProfileEdit(props) {
 															value={hometown}
 															variant="filled"
 														/>
-														
 													</Grid>
 												</Grid>
 											</Grid>
@@ -235,10 +257,11 @@ export function ProfileEdit(props) {
 									/>
 								<Typography variant="body2">* denotes required field</Typography>
 							</Container>
+							</form>
 						</DialogContentText>
 					</DialogContent>
 					<DialogActions>
-						<Button onClick={saveChanges} color="primary">
+						<Button form="editProfile" color="primary" type="submit">
 							Save Changes
 						</Button>
 					</DialogActions>
