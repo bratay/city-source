@@ -1,36 +1,22 @@
 import * as firebase from 'firebase';
 import { db } from './index.js';
-import { currentUserObj, userExist } from './signIn.js';
-
-//Call a functions that's not asyc then call getUserProfileOnj from there
+import { currentUserObj } from './signIn.js';
 
 export async function getUserProfileObj(userKey) {
+    let userExist, userObj
+    let query = db.collection('users').where('userID', '==', userKey)
+    await query.get().then(doc => { userExist = (doc.empty) ? false : true })
+
     if (userKey === currentUserObj.userID)
         return currentUserObj
-
-    //We aren't using this right now
-    //Need to fix userExist function first
-    // else if (userExist(userKey))
-    //     return false
-
+    else if (!userExist)
+        return false
+    
+    console.log("Not the currrent user")
     let rawUser = db.collection('users').doc(userKey)
 
-    let userObj = {
-        bio: "",
-        email: "",
-        hometown: "",
-        hometownCoor: [0, 0],
-        picUrl: "",
-        userID: "",
-        username: "",
-        userType: 0
-    }
-
     await rawUser.get().then(function (doc) {
-        if (!doc.exists) {
-            // doc.data() will be undefined in this case
-            console.log("No such document");
-        } else {
+        if (doc.exists) {
             userObj = {
                 bio: doc.data().bio,
                 hometown: doc.data().hometown,

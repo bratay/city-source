@@ -30,7 +30,7 @@ export async function realGoogleSignIn() {
             let newUser = false
 
             let query = db.collection('users').where('userID', '==', user.uid)
-            await query.get().then(doc => { newUser = (doc.empty) ? true : false });
+            await query.get().then(doc => { newUser = (doc.empty) ? true : false })
 
             if (newUser) {
                 // Creates new document with token as name of doc
