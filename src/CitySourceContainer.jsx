@@ -5,6 +5,7 @@ import { Fab } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import CreateIcon from '@material-ui/icons/Create';
 import PostCreate from './components/PostCreate/PostCreate';
+import HometownModal from './components/HometownModal/HometownModal.jsx';
 
 const useStyles = makeStyles(theme => ({
   postButton: {
@@ -37,6 +38,7 @@ const CitySourceContainer = () => {
       </Fab>
       <PostCreate open={postCreateDialog} action={setPostCreateDialog}/>
       <CSMap />
+      <HometownModal open={true} />
     </React.Fragment>
   );
 }
