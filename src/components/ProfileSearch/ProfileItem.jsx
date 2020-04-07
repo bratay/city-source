@@ -15,10 +15,11 @@ const ProfileItem = (props) => {
   const classes = useStyles();
 
   const name = props.name;
+  const url = props.url;
 
   const item = (
     <ListItem button>
-      <Avatar/>
+      <Avatar src={url}/>
       <ListItemText className={classes.name} primary={name} />
     </ListItem>
   );

@@ -9,17 +9,13 @@ import { profileSearchList } from '../../profileSearch.js';
 
 const ProfileList = (props) => {
 
-  let list = [];
+  const results = props.resultsList;
 
-  const createListItem = (value) => {
-    list += (<ProfileItem avatar={value.picUrl}  name={value.username}/>);
-  }
+  const profilelist = results.map((user) =>
+    <ProfileItem url={user.picUrl} name={user.username}/>
+  );
 
-  profileSearchList.forEach(createListItem);
-
-  console.log(profileSearchList)
-
-  return list;
+  return profilelist;
 }
 
 export default ProfileList;
