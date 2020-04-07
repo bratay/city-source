@@ -12,12 +12,13 @@ export function createpost(postObject) {
         address: postObject.address,
         comments: [],
         coor: postObject.coor,
-        devpost: postObject.devpost,
+        devpost: currentUserObj.userType,
         dislikes: 0,
         likes: 0,
         postID: postID,
         userID: currentUserObj.userID,
         text: postObject.text,
+        title: postObject.title,
         timestamp: timestamp
     }
 
@@ -25,12 +26,13 @@ export function createpost(postObject) {
         address: postObject.address,
         comments: [],
         coor: postObject.coor,
-        devpost: postObject.devpost,
+        devpost: currentUserObj.userType,
         dislikes: 0,
         likes: 0,
         postID: postID,
         userID: currentUserObj.userID,
         text: postObject.text,
+        title: postObject.title,
         timestamp: timestamp
 
         // reported: false,
