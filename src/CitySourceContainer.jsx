@@ -7,6 +7,8 @@ import CreateIcon from '@material-ui/icons/Create';
 import PostCreate from './components/PostCreate/PostCreate';
 import HometownModal from './components/HometownModal/HometownModal.jsx';
 
+import PostViewModal from './components/Post/PostViewModal.jsx'
+
 const useStyles = makeStyles(theme => ({
   postButton: {
     position: "fixed",
@@ -28,11 +30,11 @@ const CitySourceContainer = () => {
   return (
     <React.Fragment>
       <Navbar login={signedIn}/>
-      <Fab 
-      className={classes.postButton} 
+      <Fab
+      className={classes.postButton}
       color="secondary"
       onClick={() => {setPostCreateDialog(true);}}
-      variant="extended" 
+      variant="extended"
       >
         <CreateIcon className={classes.extendedIcon}/> Create Post
       </Fab>

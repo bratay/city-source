@@ -48,17 +48,17 @@ async function getAllUsers() {
     let preInput = currentInput
     allUsers = []
     var usersTemp = db.collection('users')
-    
+
     await usersTemp.get().then(allProfileDocs => {
         allProfileDocs.forEach(profile => {
             //calculate distance from current user and caches results
-            let dis = getDisFromCurUser(profile.data().hometownCoor[0], profile.data().hometownCoor[1])
+            let dis = 10; // getDisFromCurUser(profile.data().hometownCoor[0], profile.data().hometownCoor[1])
             allUsers.push(createObjectWithDis(profile, dis))
         })
     })
-    
+
     allUsers.sort((a, b) => (a.username > b.username) ? 1 : -1)
-    
+
     //The user typed REALLY fast
     if(currentInput != preInput)
         fullAdd(currentInput)
@@ -67,7 +67,7 @@ async function getAllUsers() {
 function rangeSearchUser(start) {
     var result = [];
     for (var i = 0; i < allUsers.length; i++) {
-        // searchs the string for the input 
+        // searchs the string for the input
         //i.e. input: "nde" will return "BraNDEn taylor"
         if (allUsers[i].username.toLowerCase().search(start) != -1)
             result.push(allUsers[i])
@@ -106,7 +106,7 @@ async function fullAdd() {
 //helper function for add letter
 function cleanCache(user) {
     let result = user.username.slice(0, currentInput.length).toLowerCase() == currentInput.toLowerCase()
-    
+
     //checking if it still matches
     if (!result) {
         trash.push(user)
@@ -120,26 +120,26 @@ function cleanCache(user) {
 function addLetter() {
     //Clean cache
     cache = cache.filter(cleanCache)
-    
+
     profileSearchList = []
-    
+
     var listLength = (cache.length >= 20) ? 20 : cache.length
-    
+
     for (let i = 0; i < listLength; i++) {
         profileSearchList.push(cache[i])
     }
-    
+
     //alphabetical sort
     profileSearchList.sort((a, b) => (a.username > b.username) ? 1 : -1)
 }
 
 function searchTrash(user) {
     let result = user.username.slice(0, currentInput.length).toLowerCase() != currentInput.toLowerCase()
-    
+
     if (!result) {
         cache.push(user)
     }
-    
+
     return result
 }
 

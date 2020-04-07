@@ -13,6 +13,7 @@ import { Avatar,
 import ProfileItem from './ProfileItem.jsx';
 import ProfileList from './ProfileList.jsx';
 import { dynamicProfileSearch } from '../../profileSearch.js';
+import { getAllUsers } from '../../profileSearch.js';
 import { profileSearchList } from '../../profileSearch.js';
 
 function getModalStyle() {
@@ -47,15 +48,18 @@ const ProfileSearchModal =  (props) => {
   const classes = useStyles();
   const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(props.open);
+  const [searchResultsList, updateSearchResultsList] = React.useState([]);
 
   React.useEffect(() => {
     setOpen(props.open)
   }, [props.open])
 
   async function search(e) {
-    console.log(e.target.value);
-    await dynamicProfileSearch(e.target.value);
+    const str = e.target.value
+    console.log(str);
+    await dynamicProfileSearch(str);
     console.log(profileSearchList);
+    updateSearchResultsList(profileSearchList);
   };
 
   const modal = (
@@ -66,7 +70,7 @@ const ProfileSearchModal =  (props) => {
         <div style={modalStyle} className={classes.paper}>
           <TextField onChange={(e) => {search(e)}} id="profile-search-field" label="Search" variant="outlined" fullWidth />
           <div style={{maxHeight: 450, overflow: 'auto'}}>
-            <ProfileList/>
+            <ProfileList resultsList={searchResultsList}/>
           </div>
         </div>
       </Modal>

@@ -11,7 +11,7 @@ export async function getUserProfileObj(userKey) {
         return currentUserObj
     else if (!userExist)
         return false
-    
+
     console.log("Not the currrent user")
     let rawUser = db.collection('users').doc(userKey)
 
