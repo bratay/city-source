@@ -141,7 +141,7 @@ const PostViewModal =  (props) => {
                         {showLocalComments}
                       </List>
                     </Grid>
-                    <Grid item xs={6} md={2}>
+                    <Grid item xs={6} md={6}>
                       <List
                         subheader={
                                 <ListSubheader component="div" id="nested-list-subheader">

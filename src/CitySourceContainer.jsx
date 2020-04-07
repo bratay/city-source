@@ -7,6 +7,8 @@ import CreateIcon from '@material-ui/icons/Create';
 import PostCreate from './components/PostCreate/PostCreate';
 import HometownModal from './components/HometownModal/HometownModal.jsx';
 
+import PostViewModal from './components/Post/PostViewModal.jsx'
+
 const useStyles = makeStyles(theme => ({
   postButton: {
     position: "fixed",

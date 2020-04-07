@@ -41,8 +41,6 @@ export async function dynamicProfileSearch(input) {
         profileSearchList = []
     }
 
-    console.log(profileSearchList)
-
     lastLength = currentInput.length
 }
 
@@ -53,9 +51,8 @@ async function getAllUsers() {
 
     await usersTemp.get().then(allProfileDocs => {
         allProfileDocs.forEach(profile => {
-            console.log(profile.data())
             //calculate distance from current user and caches results
-            let dis = getDisFromCurUser(profile.data().hometownCoor[0], profile.data().hometownCoor[1])
+            let dis = 10; // getDisFromCurUser(profile.data().hometownCoor[0], profile.data().hometownCoor[1])
             allUsers.push(createObjectWithDis(profile, dis))
         })
     })

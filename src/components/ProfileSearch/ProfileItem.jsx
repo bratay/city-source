@@ -17,7 +17,10 @@ const ProfileItem = (props) => {
 
   const name = props.name;
   const url = props.url;
-  const id = props.userID;
+  const id = props.id;
+
+  console.log(id);
+  console.log(typeof(id));
 
   const [openProfile, setOpenProfile] = React.useState(false);
 
