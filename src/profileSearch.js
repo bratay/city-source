@@ -1,5 +1,5 @@
 import { db } from './index.js';
-import { currentUserObj, userExist } from './signIn.js';
+import { currentUserObj } from './signIn.js';
 
 export var profileSearchList = []
 
@@ -27,16 +27,16 @@ function createObjectWithDis(doc, distance) {
 
 //main func for search
 export async function dynamicProfileSearch(input) {
-    currentInput = input
+    currentInput = input.toLowerCase()
 
-    if (currentInput.length == 1 && currentInput.length > lastLength) {//get all users
+    if (currentInput.length == 1 && currentInput.length > lastLength ) {//get all users
         await getAllUsers()
     } else if (currentInput.length > lastLength && currentInput.length == 2) {//full add
-        fullAdd(currentInput)
+        await fullAdd(currentInput)
     } else if (currentInput.length > lastLength && currentInput.length >= 2) {//add letter
-        addLetter(currentInput)
+        await addLetter(currentInput)
     } else if (currentInput.length < lastLength && currentInput.length >= 2) {//remove letter
-        removeLetter(currentInput)
+        await removeLetter(currentInput)
     } else if (currentInput.length < lastLength && currentInput.length < 2) {//reset
         profileSearchList = []
     }
@@ -46,7 +46,8 @@ export async function dynamicProfileSearch(input) {
     lastLength = currentInput.length
 }
 
-export async function getAllUsers() {
+async function getAllUsers() {
+    let preInput = currentInput
     allUsers = []
     var usersTemp = db.collection('users')
 
@@ -54,22 +55,24 @@ export async function getAllUsers() {
         allProfileDocs.forEach(profile => {
             console.log(profile.data())
             //calculate distance from current user and caches results
-            let dis = 10//getDisFromCurUser(profile.data().hometownCoor[0], profile.data().hometownCoor[1])
+            let dis = getDisFromCurUser(profile.data().hometownCoor[0], profile.data().hometownCoor[1])
             allUsers.push(createObjectWithDis(profile, dis))
         })
     })
 
     allUsers.sort((a, b) => (a.username > b.username) ? 1 : -1)
+
+    //The user typed REALLY fast
+    if(currentInput != preInput)
+        fullAdd(currentInput)
 }
 
 function rangeSearchUser(start) {
     var result = [];
     for (var i = 0; i < allUsers.length; i++) {
-        // if( allUsers[i].username.startsWith(start))
-
         // searchs the string for the input
         //i.e. input: "nde" will return "BraNDEn taylor"
-        if (allUsers[i].username.search(start) != -1)
+        if (allUsers[i].username.toLowerCase().search(start) != -1)
             result.push(allUsers[i])
     }
     return result
@@ -166,8 +169,8 @@ function removeLetter() {
     profileSearchList = unsortedList
 }
 
-//Simple distance func
+//Simple distance function
 function getDisFromCurUser(lat, long) {
-    var sum = Math.pow(currentUserObj.hometownCoor.lat() - lat, 2) + Math.pow(currentUserObj.hometownCoor.long() - long, 2)
+    var sum = Math.pow(currentUserObj.hometownCoor[0] - lat, 2) + Math.pow(currentUserObj.hometownCoor[1] - long, 2)
     return Math.sqrt(sum)
 }

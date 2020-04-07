@@ -23,7 +23,7 @@ testGetProfileObject()
 
 //Test ID's
 //bWYOnaT0tCdYRhb5JozfLnpGwUk1   Dan
-//SADR9OBQMxQzKJIUFF3VGcDg02A2   branden
+//SADR9OBQMxQzKJIUFF3VGcDg02A2   branden - out dated
 export async function testGetProfileObject() {
     console.log("Start")
     let use = await getUserProfileObj("SADR9OBQMxQzKJIUFF3VGcDg02A2")
@@ -32,6 +32,19 @@ export async function testGetProfileObject() {
     console.log(use.userID)
     console.log(use.email)
     console.log("Finish")
+}
+
+export async function testGetProfile(){
+    await googleSignIn()
+    let id = "1234567"
+    let result = await getUserProfileObj(id)
+    console.log(result)
+    id = "9XfAFzqmqyVUeUL1X6RbuRHIqAh1" // - jake This could be out dated
+    result = await getUserProfileObj(id)
+    console.log(result)
+    id = "UBj7oew8LgaMJfQ39J0nrufomWU2" // - BRanden This could be out dated
+    result = await getUserProfileObj(id)
+    console.log(result)
 }
 
 export function createCommentTest() {
@@ -48,4 +61,25 @@ export async function testGetComments(){
 
     var commentList = await getCommentsFromPost(postID)
     console.log(commentList)
+}
+
+export function testDisFromCurUser(){
+    let result = getDisFromCurUser(3, 7)
+    console.log(currentUserObj.hometownCoor)
+    console.log(result)
+}
+
+export async function testCreatePost(){
+    let post ={
+        address: "2327 N 81st Court",
+        coor: [3, 5],
+        devpost: false,
+        text: "This is a test of post creation",
+    }
+    let result = createpost(post)
+    console.log("Local post - " + result.text)
+
+    await db.collection("post").doc(result.postID).get().then(doc =>{
+        console.log("DB post - " + doc.data().text)
+    })
 }
