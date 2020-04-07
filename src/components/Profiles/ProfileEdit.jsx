@@ -1,7 +1,7 @@
 import React from 'react';
-import { Button, Container, Dialog, DialogActions, DialogContent, DialogContentText, Divider, Grid, IconButton, InputLabel, LinearProgress, Slide, TextField, Typography } from '@material-ui/core';
+import { Button, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, IconButton, InputLabel, LinearProgress, Slide, TextField, Typography, Snackbar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { getUserProfileObj } from "../../profileBackEnd.js";
+import { getUserProfileObj, setUsername, setHometown, setBio } from "../../profileBackEnd.js";
 import CloseIcon from '@material-ui/icons/Close';
 import RoomIcon from '@material-ui/icons/Room';
 
@@ -59,53 +59,71 @@ export function ProfileEdit(props) {
 	const [userObj, setUserObj] = React.useState(null);
 	const [open, setOpen] = React.useState(props.open);
 
-	const [username, setUsername] = React.useState(undefined);
-	const [hometown, setHometown] = React.useState(undefined);
-	const [bio, setBio] = React.useState(undefined);
+	const [bio, setBioLocal] = React.useState(undefined);
+	const [bioErr, setBioErr] = React.useState(false);
+	const [homeErr, setHomeErr] = React.useState(false);
+	const [hometown, setHometownLocal] = React.useState(undefined);
+	const [userErr, setUserErr] = React.useState(false);
+	const [username, setUsernameLocal] = React.useState(undefined);
 
 	let modified = false;
 
 	React.useEffect(() => {
-		setOpen(props.open)
+		setOpen(props.open);
 	}, [props.open]);
 
 	React.useEffect(() => {
 		async function fetchUserObj() {
 			const obj = await getUserProfileObj(props.userId);
 			setUserObj(obj);
-			setUsername(obj.username);
-			setHometown(obj.hometown);
-			setBio(obj.bio);
+			setUsernameLocal(obj.username);
+			setHometownLocal(obj.hometown);
+			setBioLocal(obj.bio);
 		}
 		fetchUserObj();
-	 }, [props.userId]);
+	 }, [props.open]);
 
-	const handleClickOpen = () => {
-		setOpen(true);
-	};
 	const handleClose = () => {
+		setUserErr(false);
+		setHomeErr(false);
+		setBioErr(false);
+		
 		setOpen(false);
 		action(false);
 	};
 
-	const saveChanges = () => {
-		modified = false;
-		// userObj.username = username;
-		// userObj.hometown = hometown;
-		// userObj.bio = bio;
+	const saveChanges = (event) => {
+		event.preventDefault();
+		if (username === "" || hometown === "") {
+			// TODO: Add some sort of error message like a snackbar, but snackbars are being a bit difficult for me
+			return;
+		}
+		// TODO: Add any other necessary validation
+		setUsername(String(username));
+		setHometown(String(hometown));
+		setBio(String(bio));
 	};
 
 	const modifyName = (event) => {
-		modified = true;
-		setUsername(event.target.value);
+		setUsernameLocal(event.target.value);
+		if (event.target.value === "") {
+			setUserErr(true);
+		}
+		else {
+			setUserErr(false);
+		}
 	};
 	const modifyHome = (event) => {
-		modified = true;
-		setHometown(event.target.value);
+		setHometownLocal(event.target.value);
+		if (event.target.value === "") {
+			setHomeErr(true);
+		}
+		else {
+			setHomeErr(false);
+		}
 	};
 	const modifyBio = (event) => {
-		modified = true;
-		setBio(event.target.value);
+		setBioLocal(event.target.value);
 	};
 
 	if (userObj === null) {
@@ -126,11 +144,13 @@ export function ProfileEdit(props) {
 												<InputLabel htmlFor="usernameField" className={classes.inputLabel}>Display Name *</InputLabel>
 												<TextField 
 													className={classes.inputField} 
+													error={userErr}
 													disabled
 													fullWidth
 													id="usernameField" 
 													onChange={modifyName} 
 													required
+													variant="filled"
 												/>
 												<Grid container spacing={1} alignItems="flex-end">
 													<Grid item>
@@ -140,10 +160,12 @@ export function ProfileEdit(props) {
 														<InputLabel htmlFor="hometownField" className={classes.inputLabel}>Hometown *</InputLabel>
 														<TextField 
 															disabled
+															error={homeErr}
 															fullWidth 
 															id="hometownField" 
 															onChange={modifyHome} 
 															required
+															variant="filled"
 														/>
 													</Grid>
 												</Grid>
@@ -155,6 +177,7 @@ export function ProfileEdit(props) {
 								<InputLabel htmlFor="bioField" className={classes.inputLabel}>Bio</InputLabel>
 								<TextField 
 									disabled 
+									error={bioErr}
 									fullWidth 
 									id="bioField"
 									multiline 
@@ -182,36 +205,38 @@ export function ProfileEdit(props) {
 				<IconButton aria-label="close" className={classes.closeButton} onClick={handleClose}>
 					  <CloseIcon />
 				</IconButton>
+				<DialogTitle>Edit Your Profile</DialogTitle>
 					<DialogContent>
 						<DialogContentText>
+							<form id="editProfile" autoComplete="off" onSubmit={saveChanges}>
 							<Container>
-								<Typography variant="h3" className={classes.editHead}>Edit Profile</Typography>
 								<Grid container spacing={2} alignItems="flex-end" className={classes.userBasics}>
 									<Grid item sm={12} md container>
 										<Grid item sm={12} container direction="column" spacing={2} justify="flex-end">
 											<Grid item xs>
-												<InputLabel htmlFor="usernameField" className={classes.inputLabel}>Display Name *</InputLabel>
 												<TextField 
-													className={classes.inputField} 
+													className={classes.inputField}
 													fullWidth 
 													id="usernameField"
+													label="Display Name"
 													onChange={modifyName} 
 													required
 													value={username}
+													variant="filled"
 												/>
 												<Grid container spacing={1} alignItems="flex-end">
 													<Grid item>
 														<RoomIcon />
 													</Grid>
 													<Grid item>
-														<InputLabel htmlFor="hometownField" className={classes.inputLabel}>Hometown *</InputLabel>
-														<TextField 
-															defaultValue={userObj.hometown}
+														<TextField
 															fullWidth 
 															id="hometownField"
+															label="Hometown"
 															onChange={modifyHome} 
 															required
 															value={hometown}
+															variant="filled"
 														/>
 													</Grid>
 												</Grid>
@@ -220,25 +245,25 @@ export function ProfileEdit(props) {
 									</Grid>
 								</Grid>
 								<Divider style={{ marginBottom: "1em" }}/>
-								<InputLabel htmlFor="bioField" className={classes.inputLabel}>Bio</InputLabel>
-								<TextField 
-									defaultValue={userObj.bio} 
-									fullWidth 
-									id="bioField" 
-									multiline 
-									onChange={modifyBio} 
-									rows="4" 
-									value={bio}
-									variant="outlined"
-								/>
+									<InputLabel htmlFor="bioField" className={classes.inputLabel}>Bio</InputLabel>
+									<TextField 
+										fullWidth 
+										id="bioField" 
+										multiline 
+										onChange={modifyBio} 
+										rows="4" 
+										value={bio}
+										variant="outlined"
+									/>
 								<Typography variant="body2">* denotes required field</Typography>
 							</Container>
+							</form>
 						</DialogContentText>
 					</DialogContent>
 					<DialogActions>
-						<Button onClick={saveChanges} color="primary">
+						<Button form="editProfile" color="primary" type="submit">
 							Save Changes
-						  </Button>
+						</Button>
 					</DialogActions>
 				</Dialog>
 			</React.Fragment>
