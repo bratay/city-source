@@ -57,10 +57,12 @@ import PlacesAutocomplete, {
                     })}
                     />
                     <div>
-                    {loading && <div>Loading...</div>}
+                    {loading && <ListItem><ListItemText primary={"Loading..."} /></ListItem>}
                     {suggestions.map(suggestion => {
                         const style = {
-                            position: 'relative',
+                            position: "relative",
+                            textAlign: "center",
+                            zIndex: "2100",
                             backgroundColor: suggestion.active ? "#f29c2b" : "#f5f4e8"
                         };
                         return <ListItem button {...getSuggestionItemProps(suggestion, {style})}>

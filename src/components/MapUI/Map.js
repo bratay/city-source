@@ -27,11 +27,19 @@ const CSMap = () => {
     //TODO: obtain initial lat long from user coords
     const [initCenter, setCenter] = React.useState([38.9543,-95.2558]);
     const [initZoom, setZoom] = React.useState(11);
+    const [postingMode, setPostingMode] = React.useState(false);
+    
+    const handleMapClick = ({x, y, lat, lng, event}) => {
+        //if(postingMode){
+            console.log({lat, lng, event});
+        //}
+    }
 
     return(
         <React.Fragment>
         <div style = {{height: '92vh', width: '100%'}}>
         <GoogleMapReact
+            onClick = {handleMapClick}
             bootstrapURLKeys={{ key: Google_Maps_API_Key}}
             defaultCenter={initCenter}
             defaultZoom={initZoom}
