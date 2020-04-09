@@ -4,7 +4,6 @@ import { currentUserObj } from './signIn.js';
 
 export function createpost(postObject) {
     let postID = "Temp post ID" //Generate a new ID
-    let isLocalpost = true //Create way to see if current user lives in city that post is in 
     let newpost = {}
     let timestamp = Date.now()
 
@@ -13,8 +12,8 @@ export function createpost(postObject) {
         comments: [],
         coor: postObject.coor,
         devpost: postObject.devpost,
-        dislikes: 0,
-        likes: 0,
+        dislikes: [],
+        likes: [],
         postID: postID,
         userID: currentUserObj.userID,
         text: postObject.text,
@@ -26,15 +25,12 @@ export function createpost(postObject) {
         comments: [],
         coor: postObject.coor,
         devpost: postObject.devpost,
-        dislikes: 0,
-        likes: 0,
+        dislikes: [],
+        likes: [],
         postID: postID,
         userID: currentUserObj.userID,
         text: postObject.text,
         timestamp: timestamp
-
-        // reported: false,
-        // local: isLocalpost
     })
 
     return newpost
@@ -44,9 +40,93 @@ export function createpost(postObject) {
 //Post gets and sets
 ///////////////////////////////////////////////////////
 
-export function getAddress(post_id) {
+export async function likePost(postID) {
+    if (currentUserObj.userID == 0) 
+        return false;
+
+    const collect = db.collection('post').where('postID', '==', postID)
+    let result = await collect.get().then( async q => {
+        let suc
+        await q.forEach(queriedDocs => {
+            if (queriedDocs.empty)
+                suc = false;
+
+            let likesList = queriedDocs.data().likes;
+            let dislikesList = queriedDocs.data().dislikes;
+
+            if (likesList.includes(currentUserObj.userID) == true) {
+                suc =  false;
+            } else {
+                db.collection('post').doc(postID).update({
+                    likes: firebase.firestore.FieldValue.arrayUnion(
+                        currentUserObj.userID
+                    )
+                })
+
+                //remove from dislikes list
+                if(dislikesList.includes(currentUserObj.userID) == true){
+                    db.collection('post').doc(postID).update({
+                        dislikes: firebase.firestore.FieldValue.arrayRemove(
+                            currentUserObj.userID
+                        )
+                    })
+                }
+
+                suc = true
+            }
+        })
+
+        return suc
+    });
+
+    return result
+}
+
+export async function dislikePost(postID) {
+    if (currentUserObj.userID == 0) 
+        return false;
+
+    const collect = db.collection('post').where('postID', '==', postID)
+    let result = await collect.get().then( async q => {
+        let suc
+        await q.forEach(queriedDocs => {
+            if (queriedDocs.empty)
+                suc = false;
+
+            let likesList = queriedDocs.data().likes;
+            let dislikesList = queriedDocs.data().dislikes;
+
+            if (dislikesList.includes(currentUserObj.userID) == true) {
+                suc =  false;
+            } else {
+                db.collection('post').doc(postID).update({
+                    dislikes: firebase.firestore.FieldValue.arrayUnion(
+                        currentUserObj.userID
+                    )
+                })
+
+                //remove from likes list
+                if(likesList.includes(currentUserObj.userID) == true){
+                    db.collection('post').doc(postID).update({
+                        likes: firebase.firestore.FieldValue.arrayRemove(
+                            currentUserObj.userID
+                        )
+                    })
+                }
+
+                suc = true
+            }
+        })
+
+        return suc
+    });
+
+    return result
+}
+
+export function getAddress(postID) {
     const collect = db.collection('post')//get wanted collection
-    var query = collect.where('post_id', '==', post_id)
+    var query = collect.where('postID', '==', postID)
     query.get().then(queriedDocs => {
         if (queriedDocs.empty == false) {
             queriedDocs.forEach(singleDoc => {
@@ -58,8 +138,8 @@ export function getAddress(post_id) {
     });
 }
 
-export function setAddress(post_id, newAddress) {
-    db.collection('post').doc(post_id).update({
+export function setAddress(postID, newAddress) {
+    db.collection('post').doc(postID).update({
         addres: newAddress
     }).catch(function (error) {
         // The document probably doesn't exist.
@@ -68,62 +148,6 @@ export function setAddress(post_id, newAddress) {
     });
     return true
 }
-
-// Thinking it might be better to simply do one search for every comment
-// item with a given post_id than a serach for a specific comment id for
-// every value in an array of comments.  Will talk with Branden about this
-
-// export function getComments(post_id){
-//   const collect = db.collection('post')//get wanted collection
-//   var query =collect.where('post_id', '==', post_id)
-//   query.get().then(queriedDocs => {
-//       if (queriedDocs.empty == false) {
-//           queriedDocs.forEach(singleDoc => {
-//               return singleDoc.data().comments;
-//           })
-//       } else {
-//           console.log("No docs match");
-//       }
-//   });
-// }
-//
-// export function setComments(post_doc, newComment){
-//   db.collection('post').doc(post_doc).update({
-//       hometown: newHometown
-//   }).catch(function (error) {
-//       // The document probably doesn't exist.
-//       console.error("Error updating document: ", error);
-//       return false
-//   });
-//   return true
-// }
-
-
-// Not in database currently, needs to be added
-// export function getUserPic(post_id){
-//   const collect = db.collection('post')//get wanted collection
-//   var query =collect.where('post_id', '==', post_id)
-//   query.get().then(queriedDocs => {
-//       if (queriedDocs.empty == false) {
-//           queriedDocs.forEach(singleDoc => {
-//               return singleDoc.data().pictures;
-//           })
-//       } else {
-//           console.log("No docs match");
-//       }
-//   });
-// }
-//
-// export function setUserPic(post_doc, newPicLoc){
-//   db.collection('post').doc(post_doc).update({
-//       pictures: newPicLoc
-//   }).catch(function (error) {
-//       // The document probably doesn't exist.
-//       console.error("Error updating document: ", error);
-//       return false
-//   });
-//   return true
-// }
 
 export function setPostID(post_doc, newPostID) {
     db.collection('post').doc(post_doc).update({
@@ -136,9 +160,9 @@ export function setPostID(post_doc, newPostID) {
     return true
 }
 
-export function getTimeStamp(post_id) {
+export function getTimeStamp(postID) {
     const collect = db.collection('post')//get wanted collection
-    var query = collect.where('post_id', '==', post_id)
+    var query = collect.where('postID', '==', postID)
     query.get().then(queriedDocs => {
         if (queriedDocs.empty == false) {
             queriedDocs.forEach(singleDoc => {
@@ -160,9 +184,9 @@ export function setTimeStamp(post_doc, newTimeStamp) {
     return true
 }
 
-export function getTitle(post_id) {
+export function getTitle(postID) {
     const collect = db.collection('post')//get wanted collection
-    var query = collect.where('post_id', '==', post_id)
+    var query = collect.where('postID', '==', postID)
     query.get().then(queriedDocs => {
         if (queriedDocs.empty == false) {
             queriedDocs.forEach(singleDoc => {
@@ -185,9 +209,9 @@ export function setTitle(post_doc, newTitle) {
 }
 
 
-export function getUserId(post_id) {
+export function getUserId(postID) {
     const collect = db.collection('post')//get wanted collection
-    var query = collect.where('post_id', '==', post_id)
+    var query = collect.where('postID', '==', postID)
     query.get().then(queriedDocs => {
         if (queriedDocs.empty == false) {
             queriedDocs.forEach(singleDoc => {

@@ -45,10 +45,10 @@ export async function realGoogleSignIn() {
                     userType: 0
                 })
 
-                autoUpdateUserObject(db.collection('users').doc(user.uid))
+                await autoUpdateUserObject(db.collection('users').doc(user.uid))
                 result = 0
             } else {
-                autoUpdateUserObject(db.collection('users').doc(user.uid))
+                await autoUpdateUserObject(db.collection('users').doc(user.uid))
                 result = 1
             }
         }
