@@ -4,7 +4,6 @@ import { currentUserObj } from './signIn.js';
 
 export function createpost(postObject) {
     let postID = db.collection('post').doc().id; //Generate a new ID
-    let isLocalpost = true //Create way to see if current user lives in city that post is in
     let newpost = {}
     let timestamp = Date.now()
 
@@ -14,8 +13,8 @@ export function createpost(postObject) {
         lat: postObject.lat,
         long: postObject.long,
         devpost: postObject.devpost,
-        dislikes: 0,
-        likes: 0,
+        dislikes: [],
+        likes: [],
         postID: postID,
         userID: currentUserObj.userID,
         text: postObject.text,
@@ -28,15 +27,12 @@ export function createpost(postObject) {
         lat: postObject.lat,
         long: postObject.long,
         devpost: postObject.devpost,
-        dislikes: 0,
-        likes: 0,
+        dislikes: [],
+        likes: [],
         postID: postID,
         userID: currentUserObj.userID,
         text: postObject.text,
         timestamp: timestamp
-
-        // reported: false,
-        // local: isLocalpost
     })
 
     return newpost
@@ -75,11 +71,96 @@ export function setPostInformation(newPostInfo, post_id) {
 export function getNearbyPosts(currentLat, currentLong, range) {
   let postList = [];
   let postsRef = db.collectin('post');
-  query = postsRef.where('lat', '<', (currentLat+range)).where('lat', '>', (currentLat-range)).where('long', '>', (currentLat-range)).where('long', '<', (currentLat+range));
+  query = postsRef.where('lat', '<=', (currentLat+range)).where('lat', '>=', (currentLat-range)).where('long', '>=', (currentLat-range)).where('long', '<=', (currentLat+range));
   query.get().then(function(posts) {
     posts.forEach(function(post) {
       let postObject = post.data();
       postList.push(postObject);
     });
   });
+  return postList;
+}
+
+export async function likePost(postID) {
+    if (currentUserObj.userID == 0) 
+        return false;
+
+    const collect = db.collection('post').where('postID', '==', postID)
+    let result = await collect.get().then( async q => {
+        let suc
+        await q.forEach(queriedDocs => {
+            if (queriedDocs.empty)
+                suc = false;
+
+            let likesList = queriedDocs.data().likes;
+            let dislikesList = queriedDocs.data().dislikes;
+
+            if (likesList.includes(currentUserObj.userID) == true) {
+                suc =  false;
+            } else {
+                db.collection('post').doc(postID).update({
+                    likes: firebase.firestore.FieldValue.arrayUnion(
+                        currentUserObj.userID
+                    )
+                })
+
+                //remove from dislikes list
+                if(dislikesList.includes(currentUserObj.userID) == true){
+                    db.collection('post').doc(postID).update({
+                        dislikes: firebase.firestore.FieldValue.arrayRemove(
+                            currentUserObj.userID
+                        )
+                    })
+                }
+
+                suc = true
+            }
+        })
+
+        return suc
+    });
+
+    return result
+}
+
+export async function dislikePost(postID) {
+    if (currentUserObj.userID == 0) 
+        return false;
+
+    const collect = db.collection('post').where('postID', '==', postID)
+    let result = await collect.get().then( async q => {
+        let suc
+        await q.forEach(queriedDocs => {
+            if (queriedDocs.empty)
+                suc = false;
+
+            let likesList = queriedDocs.data().likes;
+            let dislikesList = queriedDocs.data().dislikes;
+
+            if (dislikesList.includes(currentUserObj.userID) == true) {
+                suc =  false;
+            } else {
+                db.collection('post').doc(postID).update({
+                    dislikes: firebase.firestore.FieldValue.arrayUnion(
+                        currentUserObj.userID
+                    )
+                })
+
+                //remove from likes list
+                if(likesList.includes(currentUserObj.userID) == true){
+                    db.collection('post').doc(postID).update({
+                        likes: firebase.firestore.FieldValue.arrayRemove(
+                            currentUserObj.userID
+                        )
+                    })
+                }
+
+                suc = true
+            }
+        })
+
+        return suc
+    });
+
+    return result
 }
