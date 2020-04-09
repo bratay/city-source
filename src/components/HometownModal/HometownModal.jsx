@@ -18,7 +18,7 @@ function getModalStyle() {
 const useStyles = makeStyles(theme => ({
     paper: {
       position: 'absolute',
-      width: 600,
+      width: 500,
       height: 200,
       backgroundColor: theme.palette.background.paper,
       borderRadius: '25px',
@@ -78,10 +78,10 @@ const HometownModal = (props) => {
                 <Typography variant="h4" className={classes.title} style={{textAlign: "center", paddingTop: "2%", color: "#F06E38"}}>
                     SELECT YOUR HOMETOWN
                 </Typography>
-                <div display="inline" style={{zIndex:"1300", textAlign: "center"}}>
+                <div style={{position: "absolute", zIndex: "2100", textAlign: "center", paddingLeft: "25%", paddingRight: "25%", paddingTop: "2%"}}>
                     <AutocompleteSearchBox setCoords={setCoordinates} setHometown={setHometownStr}/>
                 </div>
-                <div display="inline" style={{zIndex:"1", textAlign: "center", paddingTop: "2%"}}>
+                <div style={{position: "absolute", zIndex: "2000", textAlign: "center", paddingLeft: "35%", paddingTop: "10%"}}>
                  <Button variant="contained" style={{backgroundColor: "#F06E38", color: "white"}} onClick={confirmHometown}>
                     Confirm
                  </Button>
