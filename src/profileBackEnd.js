@@ -20,7 +20,8 @@ export async function getUserProfileObj(userKey) {
             userObj = {
                 bio: doc.data().bio,
                 hometown: doc.data().hometown,
-                hometownCoor: [0, 0],
+                hometownLat: doc.data().hometownLat,
+                hometownLong: doc.data().hometownLong,
                 email: doc.data().email,
                 picUrl: doc.data().picUrl,
                 userID: doc.data().userID,
@@ -78,128 +79,31 @@ export function getTimeDate(epochSeconds) {
 ///////////////////////////////////////////////////////
 //Profile gets and sets
 ///////////////////////////////////////////////////////
-export function getBio(google_id){
-  const collect = db.collection('TestCollection')//get wanted collection
-  var query = collect.where('user_id', '==', google_id)
-  query.get().then(queriedDocs => {
-      if (queriedDocs.empty == false) {
-          queriedDocs.forEach(singleDoc => {
-              return singleDoc.data().bio;
-          })
-      } else {
-          console.log("No docs match");
-      }
-  });
-}
 
-export function setBio(newBioString){
-  var user = firebase.auth().currentUser;
-  db.collection('users').doc(user.credential.accessToken).update({
-      bio: newBioString
-  }).catch(function (error) {
-      // The document probably doesn't exist.
-      console.error("Error updating document: ", error);
-      return false
-  });
-  return true
-}
-
-export function getHometown(google_id){
-  const collect = db.collection('TestCollection')//get wanted collection
-  var query = collect.where('user_id', '==', google_id)
-  query.get().then(queriedDocs => {
-      if (queriedDocs.empty == false) {
-          queriedDocs.forEach(singleDoc => {
-              return singleDoc.data().hometown;
-          })
-      } else {
-          console.log("No docs match");
-      }
-  });
-}
-
-export function setHometown(newHometown){
-  var user = firebase.auth().currentUser;
-  db.collection('users').doc(user.credential.accessToken).update({
-      hometown: newHometown
-  }).catch(function (error) {
-      // The document probably doesn't exist.
-      console.error("Error updating document: ", error);
-      return false
-  });
-  return true
-}
-
-export function getUserPic(google_id){
-  const collect = db.collection('TestCollection')//get wanted collection
-  var query = collect.where('user_id', '==', google_id)
-  query.get().then(queriedDocs => {
-      if (queriedDocs.empty == false) {
-          queriedDocs.forEach(singleDoc => {
-              return singleDoc.data().picURL;
-          })
-      } else {
-          console.log("No docs match");
-      }
-  });
-}
-
-export function setUserPic(newPicURI){
-  var user = firebase.auth().currentUser;
-  db.collection('users').doc(user.credential.accessToken).update({
-      picUrl: newPicURI
-  }).catch(function (error) {
-      // The document probably doesn't exist.
-      console.error("Error updating document: ", error);
-      return false
-  });
-  return true
-}
-export function getUserId(google_id){
-  const collect = db.collection('TestCollection')//get wanted collection
-  var query = collect.where('user_id', '==', google_id)
-  query.get().then(queriedDocs => {
-      if (queriedDocs.empty == false) {
-          queriedDocs.forEach(singleDoc => {
-              return singleDoc.data().userID;
-          })
-      } else {
-          console.log("No docs match");
-      }
-  });
-}
-export function setUserId(newUserID){
-  var user = firebase.auth().currentUser;
-  db.collection('users').doc(user.credential.accessToken).update({
-      userID: newUserID
-  }).catch(function (error) {
-      // The document probably doesn't exist.
-      console.error("Error updating document: ", error);
-      return false
-  });
-  return true
-}
-export function getUsername(google_id){
-  const collect = db.collection('users')//get wanted collection
-  var query = collect.where('user_id', '==', google_id)
-  query.get().then(queriedDocs => {
-      if (queriedDocs.empty == false) {
-          queriedDocs.forEach(singleDoc => {
-              return singleDoc.data().username;
-          })
-      } else {
-          console.log("No docs match");
-      }
-  });
-}
-export function setUsername(newUserName){
-  var user = firebase.auth().currentUser;
-  db.collection('users').doc(user.credential.accessToken).update({
-      username: newUserName
-  }).catch(function (error) {
-      // The document probably doesn't exist.
-      console.error("Error updating document: ", error);
-      return false
-  });
-  return true
+export function setUserInformation(newUserInfo) {
+  var user = firebaase.auth().currentUser;
+  if(user){
+    if(currentUserObj.userID === user.uid){
+      var timestamp = Date.now()
+      db.collection('users').doc(user.uid).update({
+        bio: newUserInfo.bio,
+        hometown: newUserInfo.hometown,
+        hometownLat: newUserInfo.hometownLat,
+        hometownLong: newUserInfo.hometownLong,
+        email: newUserInfo.email,
+        picUrl: newUserInfo.picUrl,
+        username: newUserInfo.username,
+        userType: newUserInfo.userType
+      });
+      return true;
+    }
+    else {
+      console.log("You shouldn't be here... you're the wrong user");
+      return false;
+    }
+  }
+  else {
+    console.log("There's a problem, you aren't logged in!");
+    return false;
+  }
 }
