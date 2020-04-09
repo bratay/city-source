@@ -9,15 +9,16 @@ export var currentUserObj = {
     hometownCoor: [0, 0],
     email: "",
     picUrl: "",
-    userID: 0,
+    userID: "",
     username: "",
     userType: 0
 }
 
 //returns 1 = user has account, 0 = new user,  -1 = sign in fail
 export async function googleSignIn() {
-    let result = await realGoogleSignIn()
-    return result
+    let result = await realGoogleSignIn();
+    console.log(currentUserObj);
+    return result;
 }
 
 export async function realGoogleSignIn() {
@@ -45,11 +46,11 @@ export async function realGoogleSignIn() {
                     userType: 0
                 })
 
-                autoUpdateUserObject(db.collection('users').doc(user.uid))
-                result = 0
+                await autoUpdateUserObject(db.collection('users').doc(user.uid));
+                result = 0;
             } else {
-                autoUpdateUserObject(db.collection('users').doc(user.uid))
-                result = 1
+                await autoUpdateUserObject(db.collection('users').doc(user.uid));
+                result = 1;
             }
         }
     )
@@ -99,7 +100,7 @@ async function autoUpdateUserObject(doc) {
         userID: userData.data().userID,
         username: userData.data().username,
         userType: userData.data().userType
-    }
+    };
     
     doc.onSnapshot(userDoc => {
         currentUserObj = {

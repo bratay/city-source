@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import CreateIcon from '@material-ui/icons/Create';
 import PostCreate from './components/PostCreate/PostCreate';
 import HometownModal from './components/HometownModal/HometownModal.jsx';
+import { currentUserObj } from "./signIn.js";
 
 const useStyles = makeStyles(theme => ({
   postButton: {
@@ -23,11 +24,15 @@ const CitySourceContainer = () => {
   const classes = useStyles();
   const [postCreateDialog, setPostCreateDialog] = React.useState(false);
 
-  let signedIn = false;
+  const [signedIn, setSignedIn] = React.useState(currentUserObj.userID !== "");
+
+  React.useEffect(() => {
+    setSignedIn(currentUserObj.userID !== "");
+  }, [currentUserObj]);
 
   return (
     <React.Fragment>
-      <Navbar login={signedIn}/>
+      <Navbar login={signedIn} user={currentUserObj}/>
       <Fab 
       className={classes.postButton} 
       color="secondary"
@@ -38,7 +43,7 @@ const CitySourceContainer = () => {
       </Fab>
       <PostCreate open={postCreateDialog} action={setPostCreateDialog}/>
       <CSMap />
-      <HometownModal open={true} />
+      <HometownModal open={false} />
     </React.Fragment>
   );
 }
