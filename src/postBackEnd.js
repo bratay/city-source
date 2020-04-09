@@ -11,7 +11,8 @@ export function createpost(postObject) {
     newpost = {
         title: postObject.title,
         address: postObject.address,
-        coor: postObject.coor,
+        lat: postObject.lat,
+        long: postObject.long,
         devpost: postObject.devpost,
         dislikes: 0,
         likes: 0,
@@ -24,7 +25,8 @@ export function createpost(postObject) {
     db.collection('post').doc(postID).set({
         title: postObject.title,
         address: postObject.address,
-        coor: postObject.coor,
+        lat: postObject.lat,
+        long: postObject.long,
         devpost: postObject.devpost,
         dislikes: 0,
         likes: 0,
@@ -52,7 +54,8 @@ export function setPostInformation(newPostInfo, post_id) {
       db.collection('post').doc(post_id).update({
         title: newPostInfo.title,
         address: newPostInfo.address,
-        coor: newPostInfo.coor,
+        lat: newPostInfo.lat,
+        long: newPostInfo.long,
         text: newPostInfo.text,
         timestamp: newTimestamp
       });
@@ -67,4 +70,16 @@ export function setPostInformation(newPostInfo, post_id) {
     console.log("There's a problem, you aren't logged in!");
     return false;
   }
+}
+
+export function getNearbyPosts(currentLat, currentLong, range) {
+  let postList = [];
+  let postsRef = db.collectin('post');
+  query = postsRef.where('lat', '<', (currentLat+range)).where('lat', '>', (currentLat-range)).where('long', '>', (currentLat-range)).where('long', '<', (currentLat+range));
+  query.get().then(function(posts) {
+    posts.forEach(function(post) {
+      let postObject = post.data();
+      postList.push(postObject);
+    });
+  });
 }

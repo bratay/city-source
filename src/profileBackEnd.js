@@ -20,7 +20,8 @@ export async function getUserProfileObj(userKey) {
             userObj = {
                 bio: doc.data().bio,
                 hometown: doc.data().hometown,
-                hometownCoor: [0, 0],
+                hometownLat: doc.data().hometownLat,
+                hometownLong: doc.data().hometownLong,
                 email: doc.data().email,
                 picUrl: doc.data().picUrl,
                 userID: doc.data().userID,
@@ -87,7 +88,8 @@ export function setUserInformation(newUserInfo) {
       db.collection('users').doc(user.uid).update({
         bio: newUserInfo.bio,
         hometown: newUserInfo.hometown,
-        hometownCoor: newUserInfo.coor,
+        hometownLat: newUserInfo.hometownLat,
+        hometownLong: newUserInfo.hometownLong,
         email: newUserInfo.email,
         picUrl: newUserInfo.picUrl,
         username: newUserInfo.username,
