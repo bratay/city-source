@@ -84,7 +84,7 @@ export function getNearbyPosts(currentLat, currentLong, range) {
 }
 
 export async function likePost(postID) {
-    if (currentUserObj.userID == 0) 
+    if (currentUserObj.userID == "") 
         return false;
 
     const collect = db.collection('post').where('postID', '==', postID)
@@ -126,7 +126,7 @@ export async function likePost(postID) {
 }
 
 export async function dislikePost(postID) {
-    if (currentUserObj.userID == 0) 
+    if (currentUserObj.userID == "") 
         return false;
 
     const collect = db.collection('post').where('postID', '==', postID)
