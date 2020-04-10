@@ -53,16 +53,17 @@ const HometownModal = (props) => {
       setOpen(props.open)
     }, [props.open])
 
-    if(currentUserObj.hometown !== ""){
+    if(currentUserObj.userID === "" || currentUserObj.hometown !== ""){
         return null;
     }
 
     const confirmHometown = () =>{
-        // if (coordinates == null || hometownStr == null) {
-        //     return null;
-        // } else{
-        //     saveHometown(hometownStr, coordinates.lat, coordinates.lng);
-        // }
+        if (coordinates == null || hometownStr == null) {
+            return null;
+        } else{
+            saveHometown(hometownStr, coordinates.lat, coordinates.lng);
+            setOpen(false);
+        }
     }
 
     const modal = 

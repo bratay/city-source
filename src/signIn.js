@@ -67,10 +67,10 @@ export function signOut() {
 }
 
 export function saveHometown(hometownStr, lat, long) {
-    var homeTownGeoPoint = new firebase.firestore.GeoPoint(lat, long)
     db.collection('users').doc(currentUserObj.userID).update({
         hometown: hometownStr,
-        hometownCoor: homeTownGeoPoint
+        hometownLat: lat,
+        hometownLong: long
     }).catch(function (error) {
         // The document probably doesn't exist.
         console.error("Error updating document: ", error);
