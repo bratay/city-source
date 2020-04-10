@@ -82,7 +82,7 @@ export function ProfileDialog(props) {
 		action(false);
 	};
 
-	if (userObj === null) {
+	if (userObj === null || userObj === undefined) {
 		const sampleBio = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus blandit sodales nisi, id scelerisque metus pharetra tincidunt. Nam porta pulvinar massa nunc.";
 		return (
 			<React.Fragment>

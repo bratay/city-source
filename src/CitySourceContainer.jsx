@@ -1,4 +1,5 @@
 import React from 'react';
+import * as firebase from 'firebase/app';
 import Navbar from './Navbar.js';
 import CSMap from './components/MapUI/Map.js';
 import { Fab } from '@material-ui/core';
@@ -8,7 +9,7 @@ import PostCreate from './components/PostCreate/PostCreate';
 import HometownModal from './components/HometownModal/HometownModal.jsx';
 
 import PostViewModal from './components/Post/PostViewModal.jsx'
-import { currentUserObj } from './signIn.js';
+import { currentUserObj, cachedSignIn } from './signIn.js';
 
 const useStyles = makeStyles(theme => ({
   postButton: {
@@ -37,6 +38,14 @@ function CitySourceContainer(props) {
       signedInVar = !(signedInVar);
     }
   }, 500);
+
+  React.useEffect(() => {
+    async function checkCache() {
+      let inCache = await cachedSignIn();
+      setSignedIn(inCache);
+    }
+    checkCache();
+  }, []);
 
   return (
     <React.Fragment>

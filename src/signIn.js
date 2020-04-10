@@ -59,6 +59,17 @@ export async function realGoogleSignIn() {
     return result
 }
 
+// If there's already an account in the cache, update the currentUserObj
+// I don't know if this even does anything useful
+export async function cachedSignIn() {
+    let user = firebase.auth().currentUser;
+    if (user !== null) {
+        await autoUpdateUserObject(db.collection('users').doc(user.uid));
+        return true;
+    }
+    return false;
+}
+
 //signs out current user
 export function signOut() {
     firebase.auth().signOut();
