@@ -1,9 +1,10 @@
 import React from 'react';
 import { Button, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, IconButton, InputLabel, LinearProgress, Slide, TextField, Typography, Snackbar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { getUserProfileObj, setUsername, setHometown, setBio } from "../../profileBackEnd.js";
+import { setUserInformation } from "../../profileBackEnd.js";
 import CloseIcon from '@material-ui/icons/Close';
 import RoomIcon from '@material-ui/icons/Room';
+import { currentUserObj } from "../../signIn.js";
 
 const useStyles = makeStyles(theme => ({
 	avatar: {
@@ -56,32 +57,34 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export function ProfileEdit(props) {
 	const action = props.action;
 	const classes = useStyles();
-	const [userObj, setUserObj] = React.useState(null);
 	const [open, setOpen] = React.useState(props.open);
 
-	const [bio, setBioLocal] = React.useState(undefined);
+	const [bio, setBio] = React.useState(undefined);
 	const [bioErr, setBioErr] = React.useState(false);
 	const [homeErr, setHomeErr] = React.useState(false);
-	const [hometown, setHometownLocal] = React.useState(undefined);
+	const [hometown, setHometown] = React.useState(undefined);
 	const [userErr, setUserErr] = React.useState(false);
-	const [username, setUsernameLocal] = React.useState(undefined);
+	const [username, setUsername] = React.useState(undefined);
 
-	let modified = false;
+	
 
 	React.useEffect(() => {
 		setOpen(props.open);
+		setUsername(currentUserObj.username);
+		setHometown(currentUserObj.hometown);
+		setBio(currentUserObj.bio);
 	}, [props.open]);
 
-	React.useEffect(() => {
-		async function fetchUserObj() {
-			const obj = await getUserProfileObj(props.userId);
-			setUserObj(obj);
-			setUsernameLocal(obj.username);
-			setHometownLocal(obj.hometown);
-			setBioLocal(obj.bio);
-		}
-		fetchUserObj();
-	 }, [props.open]);
+	// React.useEffect(() => {
+	// 	async function fetchUserObj() {
+	// 		const obj = await getUserProfileObj(props.userId);
+	// 		setUserObj(obj);
+	// 		setUsernameLocal(obj.username);
+	// 		setHometownLocal(obj.hometown);
+	// 		setBioLocal(obj.bio);
+	// 	}
+	// 	// fetchUserObj();
+	//  }, [props.open]);
 
 	const handleClose = () => {
 		setUserErr(false);
@@ -98,14 +101,23 @@ export function ProfileEdit(props) {
 			// TODO: Add some sort of error message like a snackbar, but snackbars are being a bit difficult for me
 			return;
 		}
-		// TODO: Add any other necessary validation
-		setUsername(String(username));
-		setHometown(String(hometown));
-		setBio(String(bio));
-	};
+		let updatedObj = {
+			bio: String(bio),
+			email: currentUserObj.email,
+			hometown: String(hometown),
+			// hometownCoor: currentUserObj.hometownCoor,
+			hometownLat: 0,
+			hometownLong: 0,
+			picUrl: currentUserObj.picUrl,
+			userID: currentUserObj.userID,
+			userType: currentUserObj.userType,
+			username: String(username),
+		};
+		setUserInformation(updatedObj);
+	}
 
 	const modifyName = (event) => {
-		setUsernameLocal(event.target.value);
+		setUsername(event.target.value);
 		if (event.target.value === "") {
 			setUserErr(true);
 		}
@@ -114,7 +126,7 @@ export function ProfileEdit(props) {
 		}
 	};
 	const modifyHome = (event) => {
-		setHometownLocal(event.target.value);
+		setHometown(event.target.value);
 		if (event.target.value === "") {
 			setHomeErr(true);
 		}
@@ -123,10 +135,10 @@ export function ProfileEdit(props) {
 		}
 	};
 	const modifyBio = (event) => {
-		setBioLocal(event.target.value);
+		setBio(event.target.value);
 	};
 
-	if (userObj === null) {
+	if (currentUserObj.userID === "") {
 		return (
 			<React.Fragment>
 				<Dialog open={open} onClose={handleClose} TransitionComponent={Transition} keepMounted fullWidth={true} maxWidth={'md'} scroll={'body'}>

@@ -44,7 +44,7 @@ export async function createComment(commentString, postID) {
     let newComment = {}
     let timestamp = Date.now()
 
-    //Making sure Generated ID is unique 
+    //Making sure Generated ID is unique
     while (db.collection('comments').doc(commentID) == undefined) {
         commentID = Math.random().toString(36).substr(2, 9)
     }
@@ -184,4 +184,28 @@ export async function dislikeComment(commentID) {
     });
 
     return result
+}
+
+export function setCommentInformation(newCommentInfo, comment_id) {
+  var user = firebaase.auth().currentUser;
+  if(user){
+    if(currentUserObj.userID === user.uid){
+      var newTimestamp = Date.now();
+      db.collection('comments').doc(post_id).update({
+        likes: newCommentInfo.likes,
+        dislikes: newCommentInfo.dislikes,
+        reported: newCommentInfo.reported,
+        timestamp: newTimestamp,
+      });
+      return true;
+    }
+    else {
+      console.log("You shouldn't be here... you're the wrong user");
+      return false;
+    }
+  }
+  else {
+    console.log("There's a problem, you aren't logged in!");
+    return false;
+  }
 }

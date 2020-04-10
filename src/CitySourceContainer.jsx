@@ -8,6 +8,7 @@ import PostCreate from './components/PostCreate/PostCreate';
 import HometownModal from './components/HometownModal/HometownModal.jsx';
 
 import PostViewModal from './components/Post/PostViewModal.jsx'
+import { currentUserObj } from './signIn.js';
 
 const useStyles = makeStyles(theme => ({
   postButton: {
@@ -21,11 +22,21 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const CitySourceContainer = () => {
+function CitySourceContainer(props) {
   const classes = useStyles();
   const [postCreateDialog, setPostCreateDialog] = React.useState(false);
 
-  let signedIn = false;
+  const isUserObj = () => (currentUserObj.userID !== "");
+
+  const [signedIn, setSignedIn] = React.useState(isUserObj());
+  let signedInVar = isUserObj();
+
+  setInterval(() => {
+    if (signedInVar !== isUserObj()) {
+      setSignedIn(isUserObj());
+      signedInVar = !(signedInVar);
+    }
+  }, 500);
 
   return (
     <React.Fragment>
@@ -40,7 +51,7 @@ const CitySourceContainer = () => {
       </Fab>
       <PostCreate open={postCreateDialog} action={setPostCreateDialog}/>
       <CSMap />
-      <HometownModal open={true} />
+      <HometownModal open={false} />
     </React.Fragment>
   );
 }

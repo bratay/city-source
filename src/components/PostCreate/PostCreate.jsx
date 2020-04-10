@@ -3,6 +3,7 @@ import { Dialog, IconButton, Slide, DialogContent, DialogTitle, TextField, Input
 import { makeStyles } from '@material-ui/core/styles';
 import { AutocompleteSearchBox } from "../MapUI/AutocompleteSearchBox.jsx";
 import CloseIcon from '@material-ui/icons/Close';
+import { createpost } from '../../postBackEnd.js';
 
 const useStyles = makeStyles(theme => ({
 	closeButton: {
@@ -83,7 +84,7 @@ export function PostCreate(props) {
 	};
 
 	const submitPost = (event) => {
-		event.preventDefault();
+		// event.preventDefault();
 		if (title === "" || description === "" || location === "") {
 			// TODO: Add some sort of error message like a snackbar, but snackbars are being a bit difficult for me
 			return;
@@ -95,12 +96,11 @@ export function PostCreate(props) {
 		
 		let postObj = {
 			address: location,
-			devPost: true,
+			coor: [0, 0],
 			text: description,
-			title: title,
-			userId: null
+			title: title
 		}
-		// TODO: Get a function to add a new post
+		createpost(postObj);
 		
 		handleClose();
 	};
@@ -127,7 +127,7 @@ export function PostCreate(props) {
 					<form autoComplete="off" id="postCreate" onSubmit={submitPost}>
 						<TextField 
 							className={classes.inputField}
-							disabled
+							// disabled
 							fullWidth 
 							label="Location" 
 							onChange={modifyLocation}
@@ -167,7 +167,7 @@ export function PostCreate(props) {
 					<Button color="primary" onClick={handleClose}>
             			Discard
           			</Button>
-          			<Button color="secondary" variant="contained" disableElevation form="postCreate" type="submit">
+          			<Button color="secondary" variant="contained" disableElevation onClick={submitPost}>
 						Post
           			</Button>
 				</DialogActions>
