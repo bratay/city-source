@@ -77,9 +77,6 @@ export function ProfileDialog(props) {
 		fetchUserObj();
 	 }, [userId]);
 
-	const handleClickOpen = () => {
-		setOpen(true);
-	};
 	const handleClose = () => {
 		setOpen(false);
 		action(false);

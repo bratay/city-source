@@ -45,7 +45,7 @@ export function createpost(postObject) {
 ///////////////////////////////////////////////////////
 
 export function setPostInformation(newPostInfo, post_id) {
-  var user = firebaase.auth().currentUser;
+  var user = firebase.auth().currentUser;
   if(user){
     if(currentUserObj.userID === user.uid){
       var newTimestamp = Date.now()
@@ -73,7 +73,7 @@ export function setPostInformation(newPostInfo, post_id) {
 export function getNearbyPosts(currentLat, currentLong, range) {
   let postList = [];
   let postsRef = db.collectin('post');
-  query = postsRef.where('lat', '<=', (currentLat+range)).where('lat', '>=', (currentLat-range)).where('long', '>=', (currentLat-range)).where('long', '<=', (currentLat+range));
+  let query = postsRef.where('lat', '<=', (currentLat+range)).where('lat', '>=', (currentLat-range)).where('long', '>=', (currentLat-range)).where('long', '<=', (currentLat+range));
   query.get().then(function(posts) {
     posts.forEach(function(post) {
       let postObject = post.data();

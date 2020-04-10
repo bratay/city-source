@@ -81,7 +81,7 @@ export function getTimeDate(epochSeconds) {
 ///////////////////////////////////////////////////////
 
 export function setUserInformation(newUserInfo) {
-  var user = firebaase.auth().currentUser;
+  var user = firebase.auth().currentUser;
   if(user){
     if(currentUserObj.userID === user.uid){
       var timestamp = Date.now()

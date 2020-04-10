@@ -6,9 +6,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import CreateIcon from '@material-ui/icons/Create';
 import PostCreate from './components/PostCreate/PostCreate';
 import HometownModal from './components/HometownModal/HometownModal.jsx';
-import { currentUserObj } from "./signIn.js";
 
 import PostViewModal from './components/Post/PostViewModal.jsx'
+import { currentUserObj } from './signIn.js';
 
 const useStyles = makeStyles(theme => ({
   postButton: {
@@ -22,15 +22,21 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const CitySourceContainer = () => {
+function CitySourceContainer(props) {
   const classes = useStyles();
   const [postCreateDialog, setPostCreateDialog] = React.useState(false);
 
-  const [signedIn, setSignedIn] = React.useState(currentUserObj.userID !== "");
+  const isUserObj = () => (currentUserObj.userID !== "");
 
-  React.useEffect(() => {
-    setSignedIn(currentUserObj.userID !== "");
-  }, [currentUserObj]);
+  const [signedIn, setSignedIn] = React.useState(isUserObj());
+  let signedInVar = isUserObj();
+
+  setInterval(() => {
+    if (signedInVar !== isUserObj()) {
+      setSignedIn(isUserObj());
+      signedInVar = !(signedInVar);
+    }
+  }, 500);
 
   return (
     <React.Fragment>

@@ -7,6 +7,7 @@ import theme from './theme';
 import "./index.css";
 import * as firebase from 'firebase';
 import { Firebase_API_Key } from './apiKey.js';
+import { currentUserObj } from "./signIn.js";
 
 // Firebase App configuration
 var firebaseConfig = {
@@ -28,7 +29,7 @@ export var dbRef = firebase.database()
 ReactDOM.render(
 	<ThemeProvider theme={theme}>
 		<CssBaseline />
-		<CitySourceContainer />
+		<CitySourceContainer currentUsr={currentUserObj.userID}/>
 	</ThemeProvider>,
 	document.querySelector('#root')
 );

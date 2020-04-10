@@ -6,7 +6,8 @@ export var user;
 export var currentUserObj = {
     bio: "",
     hometown: "",
-    hometownCoor: [0, 0],
+    hometownLat: 0,
+    hometownLong: 0,
     email: "",
     picUrl: "",
     userID: "",
@@ -17,7 +18,6 @@ export var currentUserObj = {
 //returns 1 = user has account, 0 = new user,  -1 = sign in fail
 export async function googleSignIn() {
     let result = await realGoogleSignIn();
-    console.log(currentUserObj);
     return result;
 }
 
@@ -38,7 +38,8 @@ export async function realGoogleSignIn() {
                 db.collection('users').doc(user.uid).set({
                     bio: "",
                     hometown: "",
-                    hometownCoor: [0, 0],
+                    hometownLat: 0,
+                    hometownLong: 0,
                     email: user.email,
                     picUrl: String(user.photoURL),
                     userID: user.uid,
@@ -53,25 +54,24 @@ export async function realGoogleSignIn() {
                 result = 1;
             }
         }
-    )
+    );
 
     return result
 }
 
 //signs out current user
 export function signOut() {
-    firebase.auth().signOut()
+    firebase.auth().signOut();
 
-    currentUserObj = {
-        bio: "",
-        hometown: "",
-        hometownCoor: [0, 0],
-        email: "",
-        picUrl: "",
-        userID: "",
-        username: "",
-        userType: 0
-    }
+    currentUserObj.bio = "";
+    currentUserObj.hometown = "";
+    currentUserObj.hometownLat = 0;
+    currentUserObj.hometownLong = 0;
+    currentUserObj.email = "";
+    currentUserObj.picUrl = "";
+    currentUserObj.userID = "";
+    currentUserObj.username = "";
+    currentUserObj.userType = 0;
 }
 
 export function saveHometown(hometownStr, lat, long) {
@@ -91,27 +91,25 @@ export function saveHometown(hometownStr, lat, long) {
 async function autoUpdateUserObject(doc) {
     let userData = await doc.get()
 
-    currentUserObj = {
-        bio: userData.data().bio,
-        hometown: userData.data().hometown,
-        hometownCoor: [0, 0],
-        email: userData.data().email,
-        picUrl: userData.data().picUrl,
-        userID: userData.data().userID,
-        username: userData.data().username,
-        userType: userData.data().userType
-    };
+    currentUserObj.bio = userData.data().bio;
+    currentUserObj.hometown = userData.data().hometown;
+    currentUserObj.hometownLat = userData.data().hometownLat;
+    currentUserObj.hometownLong = userData.data().hometownLong;
+    currentUserObj.email = userData.data().email;
+    currentUserObj.picUrl = userData.data().picUrl;
+    currentUserObj.userID = userData.data().userID;
+    currentUserObj.username = userData.data().username;
+    currentUserObj.userType = userData.data().userType;
     
     doc.onSnapshot(userDoc => {
-        currentUserObj = {
-            bio: userDoc.data().bio,
-            hometown: userDoc.data().hometown,
-            hometownCoor: userDoc.data().hometownCoor,
-            email: userDoc.data().email,
-            picUrl: userDoc.data().picUrl,
-            userID: userDoc.data().userID,
-            username: userDoc.data().username,
-            userType: userDoc.data().userType
-        }
+        currentUserObj.bio = userDoc.data().bio;
+        currentUserObj.hometown = userDoc.data().hometown;
+        currentUserObj.hometownLat = userDoc.data().hometownLat;
+        currentUserObj.hometownLong = userDoc.data().hometownLong;
+        currentUserObj.email = userDoc.data().email;
+        currentUserObj.picUrl = userDoc.data().picUrl;
+        currentUserObj.userID = userDoc.data().userID;
+        currentUserObj.username = userDoc.data().username;
+        currentUserObj.userType = userDoc.data().userType;
     });
 }

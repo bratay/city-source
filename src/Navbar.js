@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { AppBar, Avatar, Button, Divider, Drawer, Hidden, IconButton, List, ListItem, ListItemIcon, ListItemText, Menu, MenuItem, Toolbar, Typography } from '@material-ui/core';
 import { ProfileEdit } from './components/Profiles/ProfileEdit.jsx';
 import { ProfileDialog } from "./components/Profiles/ProfileView.jsx";
-import { currentUserObj } from "./signIn.js";
+import { currentUserObj, signOut } from "./signIn.js";
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import HomeIcon from '@material-ui/icons/Home';
@@ -59,7 +59,7 @@ function AccountMenu(props) {
 	return (
 		<React.Fragment>
 			<IconButton className={classes.menuButton} aria-describedby={id} onClick={handleClick}>
-				<Avatar />
+				<Avatar src={currentUserObj.picUrl}/>
 			</IconButton>
 			<Menu
 				id={id}
@@ -88,21 +88,22 @@ function AccountMenu(props) {
 					<ListItemText primary="Settings" />
 				</MenuItem>
 				<Divider />
-				<MenuItem onClick={handleClose}>
+				<MenuItem onClick={() => {handleClose(); signOut();}}>
 					<ListItemIcon>
 						<ExitToAppIcon />
 					</ListItemIcon>
 					<ListItemText primary="Log Out" />
 				</MenuItem>
 			</Menu>
-			<ProfileDialog open={profileView} action={setProfileView} userId="PLACEHOLDER" />
-			<ProfileEdit open={profileEdit} action={setProfileEdit} userId="PLACEHOLDER" />
+			<ProfileDialog open={profileView} action={setProfileView} userId={currentUserObj.userID} />
+			<ProfileEdit open={profileEdit} action={setProfileEdit} />
 		</React.Fragment>
 	);
 }
 
 function Navbar(props) {
 	const classes = useStyles();
+	const [currentUserID, setCurrentUserID] = React.useState(currentUserObj.userID);
 	const [state, setState] = React.useState({
 		top: false,
 		bottom: false,
