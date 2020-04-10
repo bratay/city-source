@@ -3,14 +3,15 @@ import { db } from './index.js';
 import { currentUserObj } from './signIn.js';
 
 export function createpost(postObject) {
-    let postID = "Temp post ID" //Generate a new ID
+    let postID = db.collection('post').doc().id; //Generate a new ID
     let newpost = {}
     let timestamp = Date.now()
 
     newpost = {
+        title: postObject.title,
         address: postObject.address,
-        comments: [],
-        coor: postObject.coor,
+        lat: postObject.lat,
+        long: postObject.long,
         devpost: currentUserObj.userType,
         dislikes: [],
         likes: [],
@@ -22,9 +23,10 @@ export function createpost(postObject) {
     }
 
     db.collection('post').doc(postID).set({
+        title: postObject.title,
         address: postObject.address,
-        comments: [],
-        coor: postObject.coor,
+        lat: postObject.lat,
+        long: postObject.long,
         devpost: currentUserObj.userType,
         dislikes: [],
         likes: [],
@@ -41,6 +43,45 @@ export function createpost(postObject) {
 ///////////////////////////////////////////////////////
 //Post gets and sets
 ///////////////////////////////////////////////////////
+
+export function setPostInformation(newPostInfo, post_id) {
+  var user = firebaase.auth().currentUser;
+  if(user){
+    if(currentUserObj.userID === user.uid){
+      var newTimestamp = Date.now()
+      db.collection('post').doc(post_id).update({
+        title: newPostInfo.title,
+        address: newPostInfo.address,
+        lat: newPostInfo.lat,
+        long: newPostInfo.long,
+        text: newPostInfo.text,
+        timestamp: newTimestamp
+      });
+      return true;
+    }
+    else {
+      console.log("You shouldn't be here... you're the wrong user");
+      return false;
+    }
+  }
+  else {
+    console.log("There's a problem, you aren't logged in!");
+    return false;
+  }
+}
+
+export function getNearbyPosts(currentLat, currentLong, range) {
+  let postList = [];
+  let postsRef = db.collectin('post');
+  query = postsRef.where('lat', '<=', (currentLat+range)).where('lat', '>=', (currentLat-range)).where('long', '>=', (currentLat-range)).where('long', '<=', (currentLat+range));
+  query.get().then(function(posts) {
+    posts.forEach(function(post) {
+      let postObject = post.data();
+      postList.push(postObject);
+    });
+  });
+  return postList;
+}
 
 export async function likePost(postID) {
     if (currentUserObj.userID == 0) 
@@ -124,113 +165,4 @@ export async function dislikePost(postID) {
     });
 
     return result
-}
-
-export function getAddress(postID) {
-    const collect = db.collection('post')//get wanted collection
-    var query = collect.where('postID', '==', postID)
-    query.get().then(queriedDocs => {
-        if (queriedDocs.empty == false) {
-            queriedDocs.forEach(singleDoc => {
-                return singleDoc.data().address;
-            })
-        } else {
-            console.log("No docs match");
-        }
-    });
-}
-
-export function setAddress(postID, newAddress) {
-    db.collection('post').doc(postID).update({
-        addres: newAddress
-    }).catch(function (error) {
-        // The document probably doesn't exist.
-        console.error("Error updating document: ", error);
-        return false
-    });
-    return true
-}
-
-export function setPostID(post_doc, newPostID) {
-    db.collection('post').doc(post_doc).update({
-        postID: newPostID
-    }).catch(function (error) {
-        // The document probably doesn't exist.
-        console.error("Error updating document: ", error);
-        return false
-    });
-    return true
-}
-
-export function getTimeStamp(postID) {
-    const collect = db.collection('post')//get wanted collection
-    var query = collect.where('postID', '==', postID)
-    query.get().then(queriedDocs => {
-        if (queriedDocs.empty == false) {
-            queriedDocs.forEach(singleDoc => {
-                return singleDoc.data().timestamp;
-            })
-        } else {
-            console.log("No docs match");
-        }
-    });
-}
-export function setTimeStamp(post_doc, newTimeStamp) {
-    db.collection('post').doc(post_doc).update({
-        timestamp: newTimeStamp
-    }).catch(function (error) {
-        // The document probably doesn't exist.
-        console.error("Error updating document: ", error);
-        return false
-    });
-    return true
-}
-
-export function getTitle(postID) {
-    const collect = db.collection('post')//get wanted collection
-    var query = collect.where('postID', '==', postID)
-    query.get().then(queriedDocs => {
-        if (queriedDocs.empty == false) {
-            queriedDocs.forEach(singleDoc => {
-                return singleDoc.data().title;
-            })
-        } else {
-            console.log("No docs match");
-        }
-    });
-}
-export function setTitle(post_doc, newTitle) {
-    db.collection('post').doc(post_doc).update({
-        title: newTitle
-    }).catch(function (error) {
-        // The document probably doesn't exist.
-        console.error("Error updating document: ", error);
-        return false
-    });
-    return true
-}
-
-
-export function getUserId(postID) {
-    const collect = db.collection('post')//get wanted collection
-    var query = collect.where('postID', '==', postID)
-    query.get().then(queriedDocs => {
-        if (queriedDocs.empty == false) {
-            queriedDocs.forEach(singleDoc => {
-                return singleDoc.data().userID;
-            })
-        } else {
-            console.log("No docs match");
-        }
-    });
-}
-export function setUserId(post_doc, newUserID) {
-    db.collection('post').doc(post_doc).update({
-        userID: newUserID
-    }).catch(function (error) {
-        // The document probably doesn't exist.
-        console.error("Error updating document: ", error);
-        return false
-    });
-    return true
 }
