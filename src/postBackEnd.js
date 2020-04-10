@@ -73,7 +73,7 @@ export function setPostInformation(newPostInfo, post_id) {
 export function getNearbyPosts(currentLat, currentLong, range) {
   let postList = [];
   let postsRef = db.collectin('post');
-  let query = postsRef.where('lat', '<=', (currentLat+range)).where('lat', '>=', (currentLat-range)).where('long', '>=', (currentLat-range)).where('long', '<=', (currentLat+range));
+  let query = postsRef.where('lat', '<=', (currentLat+range)).where('lat', '>=', (currentLat-range)).where('long', '>=', (currentLong-range)).where('long', '<=', (currentLong+range));
   query.get().then(function(posts) {
     posts.forEach(function(post) {
       let postObject = post.data();
@@ -84,7 +84,7 @@ export function getNearbyPosts(currentLat, currentLong, range) {
 }
 
 export async function likePost(postID) {
-    if (currentUserObj.userID == "") 
+    if (currentUserObj.userID == "")
         return false;
 
     const collect = db.collection('post').where('postID', '==', postID)
@@ -126,7 +126,7 @@ export async function likePost(postID) {
 }
 
 export async function dislikePost(postID) {
-    if (currentUserObj.userID == "") 
+    if (currentUserObj.userID == "")
         return false;
 
     const collect = db.collection('post').where('postID', '==', postID)
