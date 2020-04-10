@@ -103,7 +103,7 @@ export async function commentDislikeTest(){
 }
 
 export async function likeComment(commentID) {
-    if (currentUserObj.userID == 0) 
+    if (currentUserObj.userID == "") 
         return false;
 
     const collect = db.collection('comments').where('commentID', '==', commentID)
@@ -145,7 +145,7 @@ export async function likeComment(commentID) {
 }
 
 export async function dislikeComment(commentID) {
-    if (currentUserObj.userID == 0) 
+    if (currentUserObj.userID == "") 
         return false;
 
     const collect = db.collection('comments').where('commentID', '==', commentID)
