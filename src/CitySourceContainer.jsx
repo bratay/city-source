@@ -51,7 +51,7 @@ function CitySourceContainer(props) {
       </Fab>
       <PostCreate open={postCreateDialog} action={setPostCreateDialog}/>
       <CSMap />
-      <HometownModal open={false} />
+      <HometownModal open={true} />
     </React.Fragment>
   );
 }
