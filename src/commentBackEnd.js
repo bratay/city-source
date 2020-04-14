@@ -39,15 +39,10 @@ function createCommentObj(commentDoc) {
 }
 
 export async function createComment(commentString, postID) {
-    let commentID = Math.random().toString(36).substr(2, 9) //Generate unique comment ID
+    let commentID = db.collection('comments').doc().id; //Generate a new ID
     let isLocalComment = isLocal(postID)
     let newComment = {}
     let timestamp = Date.now()
-
-    //Making sure Generated ID is unique
-    while (db.collection('comments').doc(commentID) == undefined) {
-        commentID = Math.random().toString(36).substr(2, 9)
-    }
 
     newComment = {
         comment: commentString,
@@ -90,16 +85,6 @@ export async function createComment(commentString, postID) {
 function isLocal(postID) {
     //TODO
     return true
-}
-
-export async function commentLikeTest(){
-    let result = await likeComment("55cc1r8e7")
-    console.log("Result - " + result)
-}
-
-export async function commentDislikeTest(){
-    let result = await dislikeComment("55cc1r8e7")
-    console.log("Result - " + result)
 }
 
 export async function likeComment(commentID) {
