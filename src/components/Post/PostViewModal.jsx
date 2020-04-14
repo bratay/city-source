@@ -9,6 +9,7 @@ import { Avatar,
          Collapse,
          Divider,
          Grid,
+         IconButton,
          List,
          ListItem,
          ListItemText,
@@ -18,7 +19,9 @@ import { Avatar,
          Typography } from '@material-ui/core'
 import MessageIcon from '@material-ui/icons/Message'
 import ShareIcon from '@material-ui/icons/Share'
+import FavoriteBorderSharpIcon from '@material-ui/icons/FavoriteBorderSharp';
 import Comment from './Comment.jsx'
+import CommentField from './CommentField.jsx'
 
 function getModalStyle() {
   const top = 50;
@@ -54,6 +57,8 @@ const useStyles = makeStyles(theme => ({
 
 const PostViewModal =  (props) => {
   const action = props.action
+
+  const postID = props.postID
 
   const classes = useStyles();
   const [modalStyle] = React.useState(getModalStyle);
@@ -120,6 +125,9 @@ const PostViewModal =  (props) => {
                     <Button size="small" color="primary" startIcon={<ShareIcon />}>
                     Share
                   </Button>
+                  <IconButton aria-label="share">
+                    <FavoriteBorderSharpIcon color="primary"/>
+                  </IconButton>
                 </CardActions>
               </Collapse>
               <Collapse in={expandedComments}>
@@ -151,6 +159,9 @@ const PostViewModal =  (props) => {
                       >
                         {showNonLocalComments}
                       </List>
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <CommentField />
                     </Grid>
                   </Grid>
                 </CardContent>

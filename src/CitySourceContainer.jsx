@@ -52,6 +52,7 @@ function CitySourceContainer(props) {
       <PostCreate open={postCreateDialog} action={setPostCreateDialog}/>
       <CSMap />
       <HometownModal open={true} />
+      <PostViewModal open={true} postID="123456"/>
     </React.Fragment>
   );
 }
