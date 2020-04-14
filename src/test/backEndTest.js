@@ -83,3 +83,23 @@ export async function testCreatePost(){
         console.log("DB post - " + doc.data().text)
     })
 }
+
+export async function testpostLike() {
+    let success = await likePost("Temp post ID")
+    console.log("Likes success - " + success)
+}
+
+export async function testpostDislike() {
+    let success = await dislikePost("Temp post ID")
+    console.log("Dislikes success - " + success)
+}
+
+export async function commentLikeTest(){
+    let result = await likeComment("55cc1r8e7")
+    console.log("Result - " + result)
+}
+
+export async function commentDislikeTest(){
+    let result = await dislikeComment("55cc1r8e7")
+    console.log("Result - " + result)
+}

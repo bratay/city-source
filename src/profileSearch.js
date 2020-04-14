@@ -1,3 +1,4 @@
+import * as firebase from 'firebase';
 import { db } from './index.js';
 import { currentUserObj } from './signIn.js';
 
@@ -41,8 +42,6 @@ export async function dynamicProfileSearch(input) {
         profileSearchList = []
     }
 
-    console.log(profileSearchList)
-
     lastLength = currentInput.length
 }
 
@@ -50,12 +49,18 @@ async function getAllUsers() {
     let preInput = currentInput
     allUsers = []
     var usersTemp = db.collection('users')
-
+    
     await usersTemp.get().then(allProfileDocs => {
         allProfileDocs.forEach(profile => {
-            console.log(profile.data())
             //calculate distance from current user and caches results
-            let dis = getDisFromCurUser(profile.data().hometownCoor[0], profile.data().hometownCoor[1])
+            //only if current user is signed in 
+            var signedIn = (currentUserObj.userID == 0) ? false : true
+            let dis = 0
+
+            if(signedIn){
+                dis = getDisFromCurUser(profile.data().hometownCoor[0], profile.data().hometownCoor[1])
+            }
+                
             allUsers.push(createObjectWithDis(profile, dis))
         })
     })

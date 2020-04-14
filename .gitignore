@@ -81,3 +81,4 @@ node_modules/
 
 #API key file
 src/apiKey.js
+index.html

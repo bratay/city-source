@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, Card, Container, Dialog, DialogContent, DialogContentText, Divider, Grid, IconButton, LinearProgress, Slide, Typography } from '@material-ui/core';
+import { Avatar, Button, Card, CardMedia, Container, Dialog, DialogContent, DialogContentText, Divider, Grid, IconButton, LinearProgress, Slide, Typography, CardContent, CardActions } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { getUserProfileObj } from "../../profileBackEnd.js";
 import CloseIcon from '@material-ui/icons/Close';
@@ -77,9 +77,6 @@ export function ProfileDialog(props) {
 		fetchUserObj();
 	 }, [userId]);
 
-	const handleClickOpen = () => {
-		setOpen(true);
-	};
 	const handleClose = () => {
 		setOpen(false);
 		action(false);
@@ -159,10 +156,27 @@ export function ProfileDialog(props) {
 								<br />
 								<Typography variant="h4" gutterBottom style={{ textAlign: "center" }}>Recent Activity</Typography>
 								<Card className={classes.post}>
-									Post content here or something idk yet
-								</Card>
-								<Card className={classes.post}>
-									Post content here or something idk yet
+									<div style ={{display: "flex",}}>
+									<CardMedia
+										style={{width: 151}}
+										component="img"
+										src="https://images.genius.com/662a88c1577b0d9816ee086e54909353.500x500x1.jpg"
+									/>
+									<CardContent>
+										<Typography component="h5" variant="h5">
+											New Parking Garage Opening Near Allen Fieldhouse
+										</Typography>
+										<Typography variant="body2">
+											Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin mattis gravida urna at rhoncus. Fusce commodo lacinia lectus non turpis duis...
+										</Typography>
+										
+									</CardContent>
+									</div>	
+									<CardActions>
+										<Button size="small" color="primary" style={{marginLeft: 'auto',}}>
+											Read More
+										</Button>
+									</CardActions>					
 								</Card>
 							</Container>
 						</DialogContentText>

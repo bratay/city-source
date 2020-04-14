@@ -39,23 +39,18 @@ function createCommentObj(commentDoc) {
 }
 
 export async function createComment(commentString, postID) {
-    let commentID = Math.random().toString(36).substr(2, 9) //Generate unique comment ID
+    let commentID = db.collection('comments').doc().id; //Generate a new ID
     let isLocalComment = isLocal(postID)
     let newComment = {}
     let timestamp = Date.now()
-
-    //Making sure Generated ID is unique 
-    while (db.collection('comments').doc(commentID) == undefined) {
-        commentID = Math.random().toString(36).substr(2, 9)
-    }
 
     newComment = {
         comment: commentString,
         userID: currentUserObj.userID,
         postID: postID,
         commentID: commentID,
-        likes: 0,
-        dislikes: 0,
+        likes: [],
+        dislikes: [],
         reported: false,
         timestamp: timestamp,
         local: isLocalComment
@@ -66,8 +61,8 @@ export async function createComment(commentString, postID) {
         userID: currentUserObj.userID,
         postID: postID,
         commentID: commentID,
-        likes: 0,
-        dislikes: 0,
+        likes: [],
+        dislikes: [],
         reported: false,
         timestamp: timestamp,
         local: isLocalComment
@@ -90,4 +85,112 @@ export async function createComment(commentString, postID) {
 function isLocal(postID) {
     //TODO
     return true
+}
+
+export async function likeComment(commentID) {
+    if (currentUserObj.userID == "") 
+        return false;
+
+    const collect = db.collection('comments').where('commentID', '==', commentID)
+    let result = await collect.get().then( async q => {
+        let suc
+        await q.forEach(queriedDocs => {
+            if (queriedDocs.empty)
+                suc = false;
+
+            let likesList = queriedDocs.data().likes;
+            let dislikesList = queriedDocs.data().dislikes;
+
+            if (likesList.includes(currentUserObj.userID) == true) {
+                suc = false;
+            } else {
+                db.collection('comments').doc(commentID).update({
+                    likes: firebase.firestore.FieldValue.arrayUnion(
+                        currentUserObj.userID
+                    )
+                })
+
+                //remove from dislikes list
+                if(dislikesList.includes(currentUserObj.userID) == true){
+                    db.collection('comments').doc(commentID).update({
+                        dislikes: firebase.firestore.FieldValue.arrayRemove(
+                            currentUserObj.userID
+                        )
+                    })
+                }
+
+                suc = true
+            }
+        })
+
+        return suc
+    });
+
+    return result
+}
+
+export async function dislikeComment(commentID) {
+    if (currentUserObj.userID == "") 
+        return false;
+
+    const collect = db.collection('comments').where('commentID', '==', commentID)
+    let result = await collect.get().then( async q => {
+        let suc
+        await q.forEach(queriedDocs => {
+            if (queriedDocs.empty)
+                suc = false;
+
+            let likesList = queriedDocs.data().likes;
+            let dislikesList = queriedDocs.data().dislikes;
+
+            if (dislikesList.includes(currentUserObj.userID) == true) {
+                suc = false;
+            } else {
+                db.collection('comments').doc(commentID).update({
+                    dislikes: firebase.firestore.FieldValue.arrayUnion(
+                        currentUserObj.userID
+                    )
+                })
+
+                //remove from likes list
+                if(likesList.includes(currentUserObj.userID) == true){
+                    db.collection('comments').doc(commentID).update({
+                        likes: firebase.firestore.FieldValue.arrayRemove(
+                            currentUserObj.userID
+                        )
+                    })
+                }
+
+                suc = true
+            }
+        })
+
+        return suc
+    });
+
+    return result
+}
+
+export function setCommentInformation(newCommentInfo, comment_id) {
+  var user = firebaase.auth().currentUser;
+  if(user){
+    if(currentUserObj.userID === user.uid){
+      var newTimestamp = Date.now();
+      db.collection('comments').doc(post_id).update({
+        likes: newCommentInfo.likes,
+        dislikes: newCommentInfo.dislikes,
+        reported: newCommentInfo.reported,
+        timestamp: newTimestamp,
+      });
+      return true;
+    }
+    else {
+      console.log("You shouldn't be here... you're the wrong user");
+      return false;
+    }
+  }
+  else {
+    console.log("There's a problem, you aren't logged in!");
+    return false;
+  }
 }

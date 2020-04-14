@@ -51,19 +51,33 @@ const SignInModal = (props) => {
     setOpen(props.open)
   }, [props.open])
 
+  const handleSignIn = () => {
+    async function handleGoogleSignIn() {
+      await googleSignIn().then(() => {
+        handleClose();
+      })
+    }
+    handleGoogleSignIn();
+  }
+
+  const handleClose = () => {
+    setOpen(false);
+    action(false);
+  }
+
   const modal = (
     <Modal
       aria-labelledby="simple-modal-title"
       aria-describedby="simple-modal-description"
       open={open}
-      onClose={() => {setOpen(false); action(false);}}
+      onClose={handleClose}
     >
       <div style={modalStyle} className={classes.paper}>
         <Typography variant="h4" className={classes.title} style={{textAlign: "center", paddingTop: "2%", color: "#F06E38"}}>
           SIGN IN
         </Typography>
         <div style={{textAlign: "center", paddingTop: "25%"}}>
-           <Button variant="contained" style={{backgroundColor: "#F06E38", color: "white"}} onClick={googleSignIn}>
+           <Button variant="contained" style={{backgroundColor: "#F06E38", color: "white"}} onClick={handleSignIn}>
               Sign in With Google
            </Button>
         </div>
