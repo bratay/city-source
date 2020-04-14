@@ -4,6 +4,7 @@ import Navbar from './Navbar.js';
 import CSMap from './components/MapUI/Map.js';
 import { Fab } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import SignInModal from "./components/SignInModal/SignInModal";
 import CreateIcon from '@material-ui/icons/Create';
 import PostCreate from './components/PostCreate/PostCreate';
 import HometownModal from './components/HometownModal/HometownModal.jsx';
@@ -26,6 +27,7 @@ const useStyles = makeStyles(theme => ({
 function CitySourceContainer(props) {
   const classes = useStyles();
   const [postCreateDialog, setPostCreateDialog] = React.useState(false);
+  const [signInModal, setSignInModal] = React.useState(false);
 
   const isUserObj = () => (currentUserObj.userID !== "");
 
@@ -53,7 +55,14 @@ function CitySourceContainer(props) {
       <Fab
       className={classes.postButton}
       color="secondary"
-      onClick={() => {setPostCreateDialog(true);}}
+      onClick={() => {
+        if (signedIn) {
+          setPostCreateDialog(true);
+        }
+        else {
+          setSignInModal(true);
+        }
+      }}
       variant="extended"
       >
         <CreateIcon className={classes.extendedIcon}/> Create Post
@@ -61,6 +70,7 @@ function CitySourceContainer(props) {
       <PostCreate open={postCreateDialog} action={setPostCreateDialog}/>
       <CSMap />
       <HometownModal open={false} />
+      <SignInModal open={signInModal} action={setSignInModal} />
     </React.Fragment>
   );
 }
