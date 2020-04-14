@@ -1,21 +1,16 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Avatar,
-         Button,
+import { Button,
          Card,
          CardActions,
          CardContent,
          CardMedia,
          Collapse,
-         Divider,
          Grid,
          IconButton,
          List,
-         ListItem,
-         ListItemText,
          ListSubheader,
          Modal,
-         TextField,
          Typography } from '@material-ui/core'
 import MessageIcon from '@material-ui/icons/Message'
 import ShareIcon from '@material-ui/icons/Share'
