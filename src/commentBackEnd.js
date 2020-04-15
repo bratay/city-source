@@ -119,6 +119,13 @@ export async function likeComment(commentID) {
 
             if (likesList.includes(currentUserObj.userID) == true) {
                 suc = false;
+
+                //unlike
+                db.collection('comments').doc(commentID).update({
+                    dislikes: firebase.firestore.FieldValue.arrayRemove(
+                        currentUserObj.userID
+                    )
+                })
             } else {
                 db.collection('comments').doc(commentID).update({
                     likes: firebase.firestore.FieldValue.arrayUnion(
@@ -161,6 +168,13 @@ export async function dislikeComment(commentID) {
 
             if (dislikesList.includes(currentUserObj.userID) == true) {
                 suc = false;
+
+                //undislike
+                db.collection('comments').doc(commentID).update({
+                    likes: firebase.firestore.FieldValue.arrayRemove(
+                        currentUserObj.userID
+                    )
+                })
             } else {
                 db.collection('comments').doc(commentID).update({
                     dislikes: firebase.firestore.FieldValue.arrayUnion(
