@@ -57,7 +57,7 @@ export const AutocompleteSearchBox = (props) => {
                 >
             {({getInputProps, suggestions, getSuggestionItemProps, loading}) =>
                 <div>
-                    <FilledInput inputProps={getInputProps(props.inputProps)}
+                    <FilledInput onChange={props.changeFunc} inputProps={getInputProps(props.inputProps)}
                     />
                     <div>
                     {loading && <ListItem><ListItemText primary={"Loading..."} /></ListItem>}

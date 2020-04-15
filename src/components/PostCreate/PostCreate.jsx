@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { AutocompleteSearchBox } from "../MapUI/AutocompleteSearchBox.jsx";
 import CloseIcon from '@material-ui/icons/Close';
 import { createpost } from '../../postBackEnd.js';
+import escape from 'validator/lib/escape';
 
 const useStyles = makeStyles(theme => ({
 	closeButton: {
@@ -89,9 +90,9 @@ export function PostCreate(props) {
 			// TODO: Add some sort of error message like a snackbar, but snackbars are being a bit difficult for me
 			return;
 		}
-		setTitle(String(title));
-		setDescription(String(description));
-		setLocation(String(location));
+		setTitle(escape(title));
+		setDescription(escape(description));
+		setLocation(escape(location));
 		// TODO: Add any other necessary validation
 		
 		let postObj = {

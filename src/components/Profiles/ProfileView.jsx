@@ -1,7 +1,7 @@
 import React from 'react';
 import { Avatar, Button, Card, CardMedia, Container, Dialog, DialogContent, DialogContentText, Divider, Grid, IconButton, LinearProgress, Slide, Typography, CardContent, CardActions } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { getUserProfileObj } from "../../profileBackEnd.js";
+import { getUserProfileObj, getUserPost } from "../../profileBackEnd.js";
 import CloseIcon from '@material-ui/icons/Close';
 import RoomIcon from '@material-ui/icons/Room';
 import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
@@ -56,7 +56,9 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 	return <Slide direction="up" ref={ref} {...props} />;
 });
 
-
+function PostCard(props) {
+	let listOfPosts = getUserPost()
+}
 
 export function ProfileDialog(props) {
 	const action = props.action;
@@ -64,17 +66,24 @@ export function ProfileDialog(props) {
 	const classes = useStyles();
 	const [open, setOpen] = React.useState(props.open);
 	const [userObj, setUserObj] = React.useState(null);
-
-	React.useEffect(() => {
-		setOpen(props.open)
-	}, [props.open]);
+	const [listOfPosts, setListofPosts] = React.useState(null);
 
 	React.useEffect(() => {
 		async function fetchUserObj() {
 			const obj = await getUserProfileObj(userId);
 			setUserObj(obj);
 		}
+		async function fetchUserPosts() {
+			const posts = await getUserPost(userId);
+			setListofPosts(posts);
+		}
 		fetchUserObj();
+		fetchUserPosts();
+		setOpen(props.open);
+	}, [props.open]);
+
+	React.useEffect(() => {
+		
 	 }, [userId]);
 
 	const handleClose = () => {
@@ -82,7 +91,37 @@ export function ProfileDialog(props) {
 		action(false);
 	};
 
-	if (userObj === null || userObj === undefined) {
+	const ListOfPosts = () => {
+		const postCompList = listOfPosts.map((post) => {
+			return (
+				<Card className={classes.post}>
+					<div style ={{display: "flex",}}>
+					<CardMedia
+						style={{width: 151}}
+						component="img"
+						src={post.pic}
+					/>
+					<CardContent>
+						<Typography component="h5" variant="h5">
+							{post.title}
+						</Typography>
+						<Typography variant="body2">
+							{post.text}
+						</Typography>
+					</CardContent>
+					</div>	
+					<CardActions>
+						<Button size="small" color="primary" style={{marginLeft: 'auto',}}>
+							Read More
+						</Button>
+					</CardActions>					
+				</Card>
+			);
+		});
+	return (<React.Fragment>{postCompList}</React.Fragment>);
+	}
+
+	if (userObj === null || listOfPosts === null) {
 		const sampleBio = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus blandit sodales nisi, id scelerisque metus pharetra tincidunt. Nam porta pulvinar massa nunc.";
 		return (
 			<React.Fragment>
@@ -114,6 +153,24 @@ export function ProfileDialog(props) {
 								</Grid>
 								<LinearProgress style={{ marginBottom: "1em" }} />
 								<Typography variant="body1" className={classes.textBlur}>{sampleBio}</Typography>
+							</Container>
+						</DialogContentText>
+					</DialogContent>
+				</Dialog>
+			</React.Fragment>
+		);
+	}
+	else if (userObj === undefined) {
+		return (
+			<React.Fragment>
+				<Dialog open={open} onClose={handleClose} TransitionComponent={Transition} keepMounted fullWidth={true} maxWidth={'md'} scroll={'body'}>
+				<IconButton aria-label="close" className={classes.closeButton} onClick={handleClose}>
+					<CloseIcon />
+				</IconButton>
+					<DialogContent>
+						<DialogContentText>
+							<Container>
+								<Typography variant="body1">Sorry, user not found.</Typography>
 							</Container>
 						</DialogContentText>
 					</DialogContent>
@@ -155,29 +212,8 @@ export function ProfileDialog(props) {
 								<Typography variant="body1">{userObj.bio}</Typography>
 								<br />
 								<Typography variant="h4" gutterBottom style={{ textAlign: "center" }}>Recent Activity</Typography>
-								<Card className={classes.post}>
-									<div style ={{display: "flex",}}>
-									<CardMedia
-										style={{width: 151}}
-										component="img"
-										src="https://images.genius.com/662a88c1577b0d9816ee086e54909353.500x500x1.jpg"
-									/>
-									<CardContent>
-										<Typography component="h5" variant="h5">
-											New Parking Garage Opening Near Allen Fieldhouse
-										</Typography>
-										<Typography variant="body2">
-											Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin mattis gravida urna at rhoncus. Fusce commodo lacinia lectus non turpis duis...
-										</Typography>
-										
-									</CardContent>
-									</div>	
-									<CardActions>
-										<Button size="small" color="primary" style={{marginLeft: 'auto',}}>
-											Read More
-										</Button>
-									</CardActions>					
-								</Card>
+								<ListOfPosts/>
+								
 							</Container>
 						</DialogContentText>
 					</DialogContent>
