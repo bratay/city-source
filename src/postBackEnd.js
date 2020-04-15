@@ -17,11 +17,12 @@ export function createpost(postObject) {
         likes: [],
         postID: postID,
         userID: currentUserObj.userID,
+        username: currentUserObj.username,
         text: postObject.text,
         title: postObject.title,
         timestamp: timestamp
     }
-
+    
     db.collection('post').doc(postID).set({
         title: postObject.title,
         address: postObject.address,
@@ -31,6 +32,7 @@ export function createpost(postObject) {
         dislikes: [],
         likes: [],
         postID: postID,
+        username: currentUserObj.username,
         userID: currentUserObj.userID,
         text: postObject.text,
         title: postObject.title,

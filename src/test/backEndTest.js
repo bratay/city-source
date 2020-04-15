@@ -103,3 +103,12 @@ export async function commentDislikeTest(){
     let result = await dislikeComment("55cc1r8e7")
     console.log("Result - " + result)
 }
+
+export async function testCommenterLocal() {
+    let postID = "eO4FqlWFDjCYZhKWK3bH"
+    currentUserObj.lat = .1
+    currentUserObj.long = .02
+
+    let result = await isLocal(postID)
+    console.log("Result (isLocal) - " + result)
+}

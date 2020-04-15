@@ -14,7 +14,8 @@ function createObjectWithDis(doc, distance) {
     var fullObject = {
         bio: doc.data().bio,
         hometown: doc.data().hometown,
-        hometownCoor: doc.data().hometownCoor,
+        hometownLat: doc.data().lat,
+        hometownLong: doc.data().long,
         email: doc.data().email,
         picUrl: doc.data().picUrl,
         userID: doc.data().userID,
@@ -30,7 +31,7 @@ function createObjectWithDis(doc, distance) {
 export async function dynamicProfileSearch(input) {
     currentInput = input.toLowerCase()
 
-    if (currentInput.length == 1 && currentInput.length > lastLength ) {//get all users
+    if (currentInput.length == 1 && currentInput.length > lastLength) {//get all users
         await getAllUsers()
     } else if (currentInput.length > lastLength && currentInput.length == 2) {//full add
         await fullAdd(currentInput)
@@ -49,7 +50,7 @@ async function getAllUsers() {
     let preInput = currentInput
     allUsers = []
     var usersTemp = db.collection('users')
-    
+
     await usersTemp.get().then(allProfileDocs => {
         allProfileDocs.forEach(profile => {
             //calculate distance from current user and caches results
@@ -57,10 +58,11 @@ async function getAllUsers() {
             var signedIn = (currentUserObj.userID == 0) ? false : true
             let dis = 0
 
-            if(signedIn){
-                dis = getDisFromCurUser(profile.data().hometownCoor[0], profile.data().hometownCoor[1])
+            if (signedIn) {
+                // dis = getDisFromCurUser(profile.data().hometownCoor[0], profile.data().hometownCoor[1])
+                dis = getDisFromCurUser(profile.data().lat, profile.data().long)
             }
-                
+
             allUsers.push(createObjectWithDis(profile, dis))
         })
     })
@@ -68,7 +70,7 @@ async function getAllUsers() {
     allUsers.sort((a, b) => (a.username > b.username) ? 1 : -1)
 
     //The user typed REALLY fast
-    if(currentInput != preInput)
+    if (currentInput != preInput)
         fullAdd(currentInput)
 }
 
@@ -176,6 +178,6 @@ function removeLetter() {
 
 //Simple distance function
 function getDisFromCurUser(lat, long) {
-    var sum = Math.pow(currentUserObj.hometownCoor[0] - lat, 2) + Math.pow(currentUserObj.hometownCoor[1] - long, 2)
+    var sum = Math.pow(currentUserObj.lat - lat, 2) + Math.pow(currentUserObj.long - long, 2)
     return Math.sqrt(sum)
 }
