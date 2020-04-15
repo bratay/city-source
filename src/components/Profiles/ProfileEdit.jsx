@@ -1,10 +1,11 @@
 import React from 'react';
-import { Button, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, IconButton, InputLabel, LinearProgress, Slide, TextField, Typography, Snackbar } from '@material-ui/core';
+import { Button, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, IconButton, InputLabel, LinearProgress, Slide, TextField, Typography, Snackbar, FormControl } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { setUserInformation } from "../../profileBackEnd.js";
 import CloseIcon from '@material-ui/icons/Close';
 import RoomIcon from '@material-ui/icons/Room';
 import { currentUserObj } from "../../signIn.js";
+import { AutocompleteSearchBox } from "../MapUI/AutocompleteSearchBox";
 
 const useStyles = makeStyles(theme => ({
 	avatar: {
@@ -63,6 +64,7 @@ export function ProfileEdit(props) {
 	const [bioErr, setBioErr] = React.useState(false);
 	const [homeErr, setHomeErr] = React.useState(false);
 	const [hometown, setHometown] = React.useState(undefined);
+	const [homeCoord, setHomeCoord] = React.useState(undefined);
 	const [userErr, setUserErr] = React.useState(false);
 	const [username, setUsername] = React.useState(undefined);
 
@@ -106,8 +108,8 @@ export function ProfileEdit(props) {
 			email: currentUserObj.email,
 			hometown: String(hometown),
 			// hometownCoor: currentUserObj.hometownCoor,
-			hometownLat: 0,
-			hometownLong: 0,
+			hometownLat: homeCoord.lat,
+			hometownLong: homeCoord.lng,
 			picUrl: currentUserObj.picUrl,
 			userID: currentUserObj.userID,
 			userType: currentUserObj.userType,
@@ -126,13 +128,13 @@ export function ProfileEdit(props) {
 		}
 	};
 	const modifyHome = (event) => {
-		setHometown(event.target.value);
-		if (event.target.value === "") {
-			setHomeErr(true);
-		}
-		else {
-			setHomeErr(false);
-		}
+		// setHometown(event.target.value);
+		// if (event.target.value === "") {
+		// 	setHomeErr(true);
+		// }
+		// else {
+		// 	setHomeErr(false);
+		// }
 	};
 	const modifyBio = (event) => {
 		setBio(event.target.value);
@@ -241,7 +243,7 @@ export function ProfileEdit(props) {
 														<RoomIcon />
 													</Grid>
 													<Grid item>
-														<TextField
+														{/* <TextField
 															fullWidth 
 															id="hometownField"
 															label="Hometown"
@@ -249,7 +251,20 @@ export function ProfileEdit(props) {
 															required
 															value={hometown}
 															variant="filled"
-														/>
+														/> */}
+														<FormControl variant="filled">
+															<InputLabel htmlFor="hometownField">Hometown</InputLabel>
+															<AutocompleteSearchBox 
+																setCoords={setHomeCoord} 
+																setHometown={setHometown}
+																inputProps={{
+																	fullWidth: true,
+																	id: 'hometownField',
+																	required: true,
+																}}
+																presetVal={hometown}
+															/>
+														</FormControl>
 													</Grid>
 												</Grid>
 											</Grid>
