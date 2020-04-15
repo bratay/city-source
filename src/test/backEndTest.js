@@ -112,3 +112,41 @@ export async function testCommenterLocal() {
     let result = await isLocal(postID)
     console.log("Result (isLocal) - " + result)
 }
+
+//Sign in first!!
+export async function unlikeUndislikeTest(){
+    let postID ="Temp post ID"
+    currentUserObj.userID = "asdfghjkl"
+        
+    await likePost("Temp post ID")
+    await likePost("Temp post ID")
+    
+    await dislikePost("Temp post ID")
+    await dislikePost("Temp post ID")
+    
+    const collect = db.collection('post').where('postID', '==', postID)
+    let result = await collect.get().then(async q => {
+        return await q.forEach(queriedDocs => {
+            if (queriedDocs.empty)
+                return false;
+            
+            let likesList = queriedDocs.data().likes
+            let suc = (likesList.includes(currentUserObj.userID) == true) ? false : true
+
+            console.log("Liked 2 times: " +  suc)
+        })
+    });
+    
+    
+    result = await collect.get().then(async q => {
+        return await q.forEach(queriedDocs => {
+            if (queriedDocs.empty)
+                return false;
+            
+            let dislikesList = queriedDocs.data().dislikes
+            let suc = (dislikesList.includes(currentUserObj.userID) == true) ? false : true
+            console.log("Disliked 2 times: " + suc)
+        })
+    });
+    
+}
