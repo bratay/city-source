@@ -72,19 +72,20 @@ export function setPostInformation(newPostInfo, post_id) {
     }
 }
 
-export function getNearbyPosts(currentLat, currentLong, range) {
-    let postList = [];
+export async function getNearbyPosts(currentLat, currentLong, range) {
     let postsRef = db.collectin('post');
-    query = postsRef.where('lat', '<=', (currentLat+range)).where('lat', '>=', (currentLat-range));
-    query.get().then(function(posts) {
-      posts.forEach(function(post) {
+    let query = postsRef.where('lat', '<=', (currentLat+range)).where('lat', '>=', (currentLat-range));
+    let result = await query.get().then(async posts => {
+      let postList = [];
+      await posts.forEach(function(post) {
         let postObject = post.data();
         if(postObject.long >= (currentLong - range) && postObject.long <= currentLong + range) {
           postList.push(postObject);
         }
       });
+      return postList;
     });
-    return postList;
+    return result;
 }
 
 export async function likePost(postID) {
@@ -183,4 +184,74 @@ export async function dislikePost(postID) {
     });
 
     return result
+}
+
+export async function deletePost(postID){
+  if (currentUserObj.userID == "")
+    return false;
+  db.collection('post').doc(postID).delete();
+  let commentList = db.collection('comments').where('postID', '==', postID);
+  commentList.get().then(function(comments){
+    var batch = db.batch();
+    comments.forEach(function(com){
+      batch.delete(com.ref);
+    });
+    return batch.commit();
+  }).then(function(){
+    return true;
+  });
+}
+
+export function getLikeCount(post_id) {
+    const collect = db.collection('post')//get wanted collection
+    var query = collect.where('post_id', '==', post_id)
+    query.get().then(queriedDocs => {
+        if (queriedDocs.empty === false) {
+            queriedDocs.forEach(singleDoc => {
+                var likeArray = singleDoc.data().likes;
+                return likeArray.length();
+            })
+        } else {
+            console.log("No docs match");
+        }
+    });
+}
+
+export function getDislikeCount(post_id) {
+    const collect = db.collection('post')//get wanted collection
+    var query = collect.where('post_id', '==', post_id)
+    query.get().then(queriedDocs => {
+        if (queriedDocs.empty === false) {
+            queriedDocs.forEach(singleDoc => {
+                var likeArray = singleDoc.data().dislikes;
+                return likeArray.length();
+            })
+        } else {
+            console.log("No docs match");
+        }
+    });
+}
+
+export function getUserInLikes(post_id, user_id) {
+    const collect = db.collection('post')//get wanted collection
+    var query = collect.where('postID', '==', post_id).where('likes', 'array-contains', user_id);
+    query.get().then(queriedDocs => {
+        if (queriedDocs.empty === false) {
+            return true;
+        } else {
+            console.log("No docs match");
+        }
+    });
+}
+
+export function getUserInDislikes(post_id, user_id) {
+    const collect = db.collection('post')//get wanted collection
+    var query = collect.where('postID', '==', post_id).where('dislikes', 'array-contains', user_id);
+    query.get().then(queriedDocs => {
+        if (queriedDocs.empty === false) {
+            return true;
+        } else {
+            console.log("No docs match");
+        }
+    });
 }
