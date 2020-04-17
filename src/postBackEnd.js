@@ -8,35 +8,35 @@ export function createpost(postObject) {
     let timestamp = Date.now()
 
     newpost = {
-        title: postObject.title,
         address: postObject.address,
-        lat: postObject.lat,
-        long: postObject.long,
         devpost: currentUserObj.userType,
         dislikes: [],
+        lat: postObject.lat,
         likes: [],
+        long: postObject.long,
+        pic: null,
         postID: postID,
+        text: postObject.text,
+        timestamp: timestamp,
+        title: postObject.title,
         userID: currentUserObj.userID,
         username: currentUserObj.username,
-        text: postObject.text,
-        title: postObject.title,
-        timestamp: timestamp
     }
 
     db.collection('post').doc(postID).set({
-        title: postObject.title,
         address: postObject.address,
-        lat: postObject.lat,
-        long: postObject.long,
         devpost: currentUserObj.userType,
         dislikes: [],
+        lat: postObject.lat,
         likes: [],
+        long: postObject.long,
+        pic: null,
         postID: postID,
-        username: currentUserObj.username,
-        userID: currentUserObj.userID,
         text: postObject.text,
+        timestamp: timestamp,
         title: postObject.title,
-        timestamp: timestamp
+        userID: currentUserObj.userID,
+        username: currentUserObj.username,
     })
 
     return newpost
@@ -52,12 +52,13 @@ export function setPostInformation(newPostInfo, post_id) {
         if (currentUserObj.userID === user.uid) {
             var newTimestamp = Date.now()
             db.collection('post').doc(post_id).update({
-                title: newPostInfo.title,
                 address: newPostInfo.address,
                 lat: newPostInfo.lat,
                 long: newPostInfo.long,
+                pic: newPostInfo.pic,
                 text: newPostInfo.text,
-                timestamp: newTimestamp
+                timestamp: newTimestamp,
+                title: newPostInfo.title,
             });
             return true;
         }

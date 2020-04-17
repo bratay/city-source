@@ -59,12 +59,14 @@ export function storePostImage(post_id, file){
     }
   }, function() {
     uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-      console.log('File available at ', downloadURL);
+      db.collection('post').doc(post_id).update({
+        pic: downloadURL
+      });
     });
   });
 }
 
-export function getUserImage(user_id){
+/* export function getUserImage(user_id){
   var imageList = [];
   var storageRef = firebase.storage().ref();
   var folderRef = storageRef.child('images/user/'+user_id);
@@ -94,4 +96,4 @@ export function getPostImage(user_id){
     })
   });
   return imageList;
-}
+} */

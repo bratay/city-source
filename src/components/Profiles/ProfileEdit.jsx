@@ -172,7 +172,7 @@ export function ProfileEdit(props) {
 														<RoomIcon />
 													</Grid>
 													<Grid item>
-													<FormControl variant="filled">
+													<FormControl variant="filled" fullWidth disabled>
 														<InputLabel htmlFor="hometownField">Hometown</InputLabel>
 														<AutocompleteSearchBox 
 															inputProps={{
@@ -248,7 +248,7 @@ export function ProfileEdit(props) {
 														<RoomIcon />
 													</Grid>
 													<Grid item>
-														<FormControl variant="filled" error={homeErr} required>
+														<FormControl variant="filled" error={homeErr} required fullWidth>
 															<InputLabel htmlFor="hometownField">Hometown</InputLabel>
 															<AutocompleteSearchBox 
 																changeFunc={modifyHome}
