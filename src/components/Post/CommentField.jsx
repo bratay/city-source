@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CommentField = () => {
+const CommentField = (props) => {
   const classes = useStyles();
 
   return (

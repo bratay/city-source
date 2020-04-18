@@ -103,11 +103,11 @@ const PostViewModal =  (props) => {
   const nonLocalComments = [5, 6]
 
   const showLocalComments = localComments.map(() =>
-    <Comment />
+    <Comment postID={post.postID} />
   );
 
   const showNonLocalComments = nonLocalComments.map(() =>
-    <Comment />
+    <Comment postID={post.postID} />
   );
 
   const deleteButton = (currentUserObj !== null) ?
@@ -126,7 +126,7 @@ const PostViewModal =  (props) => {
             <DialogContent style={{overflow: 'scroll'}}>
               <GridList className={classes.gridList} cols={2.5}>
                 <GridListTile>
-                  <img src={require(post.picUrl)}/>
+                  <img src={require("./citysource.png")}/>
                 </GridListTile>
               </GridList>
               <Typography gutterBottom variant="h5" component="h2">

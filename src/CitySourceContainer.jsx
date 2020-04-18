@@ -8,8 +8,9 @@ import SignInModal from "./components/SignInModal/SignInModal";
 import CreateIcon from '@material-ui/icons/Create';
 import PostCreate from './components/PostCreate/PostCreate';
 import HometownModal from './components/HometownModal/HometownModal.jsx';
+import PostViewModal from './components/Post/PostViewModal.jsx';
 
-import { currentUserObj } from './signIn.js';
+import { currentUserObj, cachedSignIn } from './signIn.js';
 
 const useStyles = makeStyles(theme => ({
   postButton: {
