@@ -73,11 +73,11 @@ export function setPostInformation(newPostInfo, post_id) {
     }
 }
 
-export function getNearbyPosts(currentLat, currentLong, range) {
+export async function getNearbyPosts(currentLat, currentLong, range) {
     let postList = [];
-    let postsRef = db.collectin('post');
-    query = postsRef.where('lat', '<=', (currentLat+range)).where('lat', '>=', (currentLat-range));
-    query.get().then(function(posts) {
+    let postsRef = db.collection('post');
+    let query = postsRef.where('lat', '<=', (currentLat+range)).where('lat', '>=', (currentLat-range));
+    await query.get().then(function(posts) {
       posts.forEach(function(post) {
         let postObject = post.data();
         if(postObject.long >= (currentLong - range) && postObject.long <= currentLong + range) {

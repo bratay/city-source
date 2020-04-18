@@ -1,19 +1,9 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Avatar,
-         Button,
-         Divider,
-         Grid,
-         List,
-         ListItem,
-         ListItemText,
-         Modal,
-         TextField,
-         Typography } from '@material-ui/core';
-import ProfileItem from './ProfileItem.jsx';
+import { Modal,
+         TextField } from '@material-ui/core';
 import ProfileList from './ProfileList.jsx';
 import { dynamicProfileSearch } from '../../profileSearch.js';
-import { getAllUsers } from '../../profileSearch.js';
 import { profileSearchList } from '../../profileSearch.js';
 
 function getModalStyle() {

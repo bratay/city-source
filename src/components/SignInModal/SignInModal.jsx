@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, Grid, Modal, Typography } from '@material-ui/core'
+import { Button, Modal, Typography } from '@material-ui/core'
 import { googleSignIn } from '../../signIn';
 
 function getModalStyle() {
