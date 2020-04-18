@@ -18,17 +18,20 @@ import { Button,
          List,
          ListSubheader,
          Modal,
+         TextField,
          Typography } from '@material-ui/core'
 import MessageIcon from '@material-ui/icons/Message'
 import ShareIcon from '@material-ui/icons/Share'
 import DeleteIcon from '@material-ui/icons/Delete';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import FavoriteBorderSharpIcon from '@material-ui/icons/FavoriteBorderSharp';
 import Comment from './Comment.jsx'
 import CommentField from './CommentField.jsx'
-import { currentUserObj } from "../../signIn.js";
 
+import { currentUserObj } from "../../signIn.js";
 import { likePost } from '../../postBackEnd.js';
-// import { getPostImage } from '../../imageStorageBackEnd.js';
+import { getPostImage } from '../../imageStorageBackEnd.js';
+import { createComment } from '../../commentBackEnd.js';
 
 function getModalStyle() {
   const top = 50;
@@ -86,6 +89,8 @@ const PostViewModal =  (props) => {
   const [expandedComments, setExpandedComments] = React.useState(false);
   const [expandedPost, setExpandedPost] = React.useState(true);
 
+  let commentString = ""
+
   React.useEffect(() => {
     setOpen(props.open)
   }, [props.open])
@@ -98,6 +103,10 @@ const PostViewModal =  (props) => {
   const handleExpandPost = () => {
     setExpandedComments(false);
     setExpandedPost(true);
+  }
+
+  async function addNewComment(){
+    await(createComment(commentString, post.postID))
   }
 
   const showLocalComments = (
@@ -182,10 +191,20 @@ const PostViewModal =  (props) => {
                     {showNonLocalComments}
                   </List>
                 </Grid>
-                <Grid item xs={12} md={6}>
-                  <CommentField />
-                </Grid>
               </Grid>
+              <DialogActions>
+                <TextField label="Add Comment"
+                           variant="outlined"
+                           multiline
+                           fullWidth
+                           onChange={(e) => {commentString = e.target.value}}/>
+               <IconButton type="submit"
+                           className={classes.iconButton}
+                           aria-label="search"
+                           onClick={addNewComment}>
+                 <ChevronRightIcon />
+               </IconButton>
+              </DialogActions>
             </DialogContent>
           </Collapse>
         </Dialog>
