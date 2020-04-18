@@ -26,7 +26,6 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import FavoriteBorderSharpIcon from '@material-ui/icons/FavoriteBorderSharp';
 import Comment from './Comment.jsx'
-import CommentField from './CommentField.jsx'
 
 import { currentUserObj } from "../../signIn.js";
 import { likePost } from '../../postBackEnd.js';
@@ -118,7 +117,7 @@ const PostViewModal =  (props) => {
     <Comment postID={post.postID} local={false} />
   );
 
-  const deleteButton = (currentUserObj !== null) ?
+  const deleteButton = (currentUserObj.userID === post.userID) ?
         (<IconButton className={classes.likes}
                      aria-label="delete post">
             <DeleteIcon color="primary"/>
