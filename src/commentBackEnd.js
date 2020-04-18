@@ -39,8 +39,11 @@ function createCommentObj(commentDoc) {
 }
 
 export async function createComment(commentString, postID) {
+    if (currentUserObj.userID == "")
+        return false;
+
     let commentID = db.collection('comments').doc().id; //Generate a new ID
-    let isLocalComment = isLocal(postID)
+    let isLocalComment = await isLocal(postID)
     let newComment = {}
     let timestamp = Date.now()
 
@@ -82,17 +85,30 @@ export async function createComment(commentString, postID) {
     return newComment
 }
 
-function isLocal(postID) {
-    //TODO
-    return true
+//returns true if commenter is considered a local to the location of the post
+// +- .13 lat long
+async function isLocal(postID) {
+    let local = await db.collection("post").doc(postID).get().then(async doc => {
+        let data = await doc.data()
+        let postLat = data.lat
+        let postLong = data.long
+
+        if (currentUserObj.lat < postLat + .13 && currentUserObj.lat > postLat - .13 &&
+            currentUserObj.long < postLong + .13 && currentUserObj.long > postLong - .13) {
+            return true
+        } else {
+            return false
+        }
+    })
+    return local
 }
 
 export async function likeComment(commentID) {
-    if (currentUserObj.userID == "") 
+    if (currentUserObj.userID == "")
         return false;
 
     const collect = db.collection('comments').where('commentID', '==', commentID)
-    let result = await collect.get().then( async q => {
+    let result = await collect.get().then(async q => {
         let suc
         await q.forEach(queriedDocs => {
             if (queriedDocs.empty)
@@ -103,6 +119,13 @@ export async function likeComment(commentID) {
 
             if (likesList.includes(currentUserObj.userID) == true) {
                 suc = false;
+
+                //unlike
+                db.collection('comments').doc(commentID).update({
+                    dislikes: firebase.firestore.FieldValue.arrayRemove(
+                        currentUserObj.userID
+                    )
+                })
             } else {
                 db.collection('comments').doc(commentID).update({
                     likes: firebase.firestore.FieldValue.arrayUnion(
@@ -111,7 +134,7 @@ export async function likeComment(commentID) {
                 })
 
                 //remove from dislikes list
-                if(dislikesList.includes(currentUserObj.userID) == true){
+                if (dislikesList.includes(currentUserObj.userID) == true) {
                     db.collection('comments').doc(commentID).update({
                         dislikes: firebase.firestore.FieldValue.arrayRemove(
                             currentUserObj.userID
@@ -130,11 +153,11 @@ export async function likeComment(commentID) {
 }
 
 export async function dislikeComment(commentID) {
-    if (currentUserObj.userID == "") 
+    if (currentUserObj.userID == "")
         return false;
 
     const collect = db.collection('comments').where('commentID', '==', commentID)
-    let result = await collect.get().then( async q => {
+    let result = await collect.get().then(async q => {
         let suc
         await q.forEach(queriedDocs => {
             if (queriedDocs.empty)
@@ -145,6 +168,13 @@ export async function dislikeComment(commentID) {
 
             if (dislikesList.includes(currentUserObj.userID) == true) {
                 suc = false;
+
+                //undislike
+                db.collection('comments').doc(commentID).update({
+                    likes: firebase.firestore.FieldValue.arrayRemove(
+                        currentUserObj.userID
+                    )
+                })
             } else {
                 db.collection('comments').doc(commentID).update({
                     dislikes: firebase.firestore.FieldValue.arrayUnion(
@@ -153,7 +183,7 @@ export async function dislikeComment(commentID) {
                 })
 
                 //remove from likes list
-                if(likesList.includes(currentUserObj.userID) == true){
+                if (likesList.includes(currentUserObj.userID) == true) {
                     db.collection('comments').doc(commentID).update({
                         likes: firebase.firestore.FieldValue.arrayRemove(
                             currentUserObj.userID
@@ -172,25 +202,25 @@ export async function dislikeComment(commentID) {
 }
 
 export function setCommentInformation(newCommentInfo, comment_id) {
-  var user = firebaase.auth().currentUser;
-  if(user){
-    if(currentUserObj.userID === user.uid){
-      var newTimestamp = Date.now();
-      db.collection('comments').doc(post_id).update({
-        likes: newCommentInfo.likes,
-        dislikes: newCommentInfo.dislikes,
-        reported: newCommentInfo.reported,
-        timestamp: newTimestamp,
-      });
-      return true;
+    var user = firebase.auth().currentUser;
+    if (user) {
+        if (currentUserObj.userID === user.uid) {
+            var newTimestamp = Date.now();
+            db.collection('comments').doc(comment_id).update({
+                likes: newCommentInfo.likes,
+                dislikes: newCommentInfo.dislikes,
+                reported: newCommentInfo.reported,
+                timestamp: newTimestamp,
+            });
+            return true;
+        }
+        else {
+            console.log("You shouldn't be here... you're the wrong user");
+            return false;
+        }
     }
     else {
-      console.log("You shouldn't be here... you're the wrong user");
-      return false;
+        console.log("There's a problem, you aren't logged in!");
+        return false;
     }
-  }
-  else {
-    console.log("There's a problem, you aren't logged in!");
-    return false;
-  }
 }

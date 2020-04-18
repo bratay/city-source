@@ -6,10 +6,15 @@ import PlacesAutocomplete, {
     geocodeByAddress,
     getLatLng,
   } from 'react-places-autocomplete';
+import { FilledInput } from '@material-ui/core';
 
-  const AutocompleteSearchBox = (props) => {
+export const AutocompleteSearchBox = (props) => {
     const [value, setValue] = useState("");
     const [coordinates, setCoordinates] = useState({lat: null, lng: null})
+
+    React.useEffect(() => {
+        setValue(props.presetVal);
+    }, [props.presetVal]);
      
     const gotCoords = (hometown, {lat, lng}) => {
         console.log({lat, lng});
@@ -52,9 +57,7 @@ import PlacesAutocomplete, {
                 >
             {({getInputProps, suggestions, getSuggestionItemProps, loading}) =>
                 <div>
-                    <Input inputProps={getInputProps({
-                        placeholder: 'Add your location',
-                    })}
+                    <FilledInput onChange={props.changeFunc} inputProps={getInputProps(props.inputProps)}
                     />
                     <div>
                     {loading && <ListItem><ListItemText primary={"Loading..."} /></ListItem>}

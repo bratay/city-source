@@ -80,7 +80,7 @@ const HometownModal = (props) => {
                     SELECT YOUR HOMETOWN
                 </Typography>
                 <div style={{position: "absolute", zIndex: "2100", textAlign: "center", paddingLeft: "25%", paddingRight: "25%", paddingTop: "2%"}}>
-                    <AutocompleteSearchBox setCoords={setCoordinates} setHometown={setHometownStr}/>
+                    <AutocompleteSearchBox setCoords={setCoordinates} setHometown={setHometownStr} inputProps={{placeholder: 'Add your location',}}/>
                 </div>
                 <div style={{position: "absolute", zIndex: "2000", textAlign: "center", paddingLeft: "35%", paddingTop: "10%"}}>
                  <Button variant="contained" style={{backgroundColor: "#F06E38", color: "white"}} onClick={confirmHometown}>

@@ -1,10 +1,12 @@
 import React from 'react';
-import { Button, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, IconButton, InputLabel, LinearProgress, Slide, TextField, Typography, Snackbar } from '@material-ui/core';
+import { Button, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, IconButton, InputLabel, LinearProgress, Slide, TextField, Typography, Snackbar, FormControl } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { setUserInformation } from "../../profileBackEnd.js";
 import CloseIcon from '@material-ui/icons/Close';
 import RoomIcon from '@material-ui/icons/Room';
 import { currentUserObj } from "../../signIn.js";
+import { AutocompleteSearchBox } from "../MapUI/AutocompleteSearchBox";
+import escape from 'validator/lib/escape';
 
 const useStyles = makeStyles(theme => ({
 	avatar: {
@@ -63,6 +65,7 @@ export function ProfileEdit(props) {
 	const [bioErr, setBioErr] = React.useState(false);
 	const [homeErr, setHomeErr] = React.useState(false);
 	const [hometown, setHometown] = React.useState(undefined);
+	const [homeCoord, setHomeCoord] = React.useState(undefined);
 	const [userErr, setUserErr] = React.useState(false);
 	const [username, setUsername] = React.useState(undefined);
 
@@ -97,21 +100,20 @@ export function ProfileEdit(props) {
 
 	const saveChanges = (event) => {
 		event.preventDefault();
-		if (username === "" || hometown === "") {
+		if (username === "" || hometown === "" || homeCoord === undefined) {
 			// TODO: Add some sort of error message like a snackbar, but snackbars are being a bit difficult for me
 			return;
 		}
 		let updatedObj = {
-			bio: String(bio),
+			bio: escape(bio),
 			email: currentUserObj.email,
-			hometown: String(hometown),
-			// hometownCoor: currentUserObj.hometownCoor,
-			hometownLat: 0,
-			hometownLong: 0,
+			hometown: escape(hometown),
+			hometownLat: homeCoord.lat,
+			hometownLong: homeCoord.lng,
 			picUrl: currentUserObj.picUrl,
 			userID: currentUserObj.userID,
 			userType: currentUserObj.userType,
-			username: String(username),
+			username: escape(username),
 		};
 		setUserInformation(updatedObj);
 	}
@@ -126,9 +128,10 @@ export function ProfileEdit(props) {
 		}
 	};
 	const modifyHome = (event) => {
-		setHometown(event.target.value);
 		if (event.target.value === "") {
 			setHomeErr(true);
+			setHometown("");
+			setHomeCoord(undefined);
 		}
 		else {
 			setHomeErr(false);
@@ -169,16 +172,19 @@ export function ProfileEdit(props) {
 														<RoomIcon />
 													</Grid>
 													<Grid item>
-														<InputLabel htmlFor="hometownField" className={classes.inputLabel}>Hometown *</InputLabel>
-														<TextField 
-															disabled
-															error={homeErr}
-															fullWidth 
-															id="hometownField" 
-															onChange={modifyHome} 
-															required
-															variant="filled"
+													<FormControl variant="filled">
+														<InputLabel htmlFor="hometownField">Hometown</InputLabel>
+														<AutocompleteSearchBox 
+															inputProps={{
+																disabled: true,
+																fullWidth: true,
+																id: 'hometownField',
+																required: true,
+															}}
+															setCoords={setHomeCoord} 
+															setHometown={setHometown}
 														/>
+													</FormControl>
 													</Grid>
 												</Grid>
 											</Grid>
@@ -186,12 +192,12 @@ export function ProfileEdit(props) {
 									</Grid>
 								</Grid>
 								<LinearProgress />
-								<InputLabel htmlFor="bioField" className={classes.inputLabel}>Bio</InputLabel>
 								<TextField 
 									disabled 
 									error={bioErr}
 									fullWidth 
 									id="bioField"
+									label="Bio"
 									multiline 
 									onChange={modifyBio} 
 									rows="4" 
@@ -229,6 +235,7 @@ export function ProfileEdit(props) {
 												<TextField 
 													className={classes.inputField}
 													fullWidth 
+													error={userErr}
 													id="usernameField"
 													label="Display Name"
 													onChange={modifyName} 
@@ -241,15 +248,21 @@ export function ProfileEdit(props) {
 														<RoomIcon />
 													</Grid>
 													<Grid item>
-														<TextField
-															fullWidth 
-															id="hometownField"
-															label="Hometown"
-															onChange={modifyHome} 
-															required
-															value={hometown}
-															variant="filled"
-														/>
+														<FormControl variant="filled" error={homeErr} required>
+															<InputLabel htmlFor="hometownField">Hometown</InputLabel>
+															<AutocompleteSearchBox 
+																changeFunc={modifyHome}
+																inputProps={{
+																	error: homeErr,
+																	fullWidth: true,
+																	id: 'hometownField',
+																	required: true,
+																}}
+																presetVal={hometown}
+																setCoords={setHomeCoord} 
+																setHometown={setHometown}
+															/>
+														</FormControl>
 													</Grid>
 												</Grid>
 											</Grid>
@@ -257,10 +270,11 @@ export function ProfileEdit(props) {
 									</Grid>
 								</Grid>
 								<Divider style={{ marginBottom: "1em" }}/>
-									<InputLabel htmlFor="bioField" className={classes.inputLabel}>Bio</InputLabel>
 									<TextField 
+										error={bioErr}
 										fullWidth 
 										id="bioField" 
+										label="Bio"
 										multiline 
 										onChange={modifyBio} 
 										rows="4" 
