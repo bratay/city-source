@@ -1,24 +1,34 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Avatar,
-         Button,
+import { Button,
          Card,
          CardActions,
          CardContent,
          CardMedia,
          Collapse,
-         Divider,
+         Dialog,
+         DialogActions,
+         DialogContent,
+         DialogContentText,
          Grid,
+         GridList,
+         GridListTile,
+         GridListTileBar,
+         IconButton,
          List,
-         ListItem,
-         ListItemText,
          ListSubheader,
          Modal,
-         TextField,
          Typography } from '@material-ui/core'
 import MessageIcon from '@material-ui/icons/Message'
 import ShareIcon from '@material-ui/icons/Share'
+import DeleteIcon from '@material-ui/icons/Delete';
+import FavoriteBorderSharpIcon from '@material-ui/icons/FavoriteBorderSharp';
 import Comment from './Comment.jsx'
+import CommentField from './CommentField.jsx'
+import { currentUserObj } from "../../signIn.js";
+
+import { likePost } from '../../postBackEnd.js';
+// import { getPostImage } from '../../imageStorageBackEnd.js';
 
 function getModalStyle() {
   const top = 50;
@@ -33,8 +43,9 @@ function getModalStyle() {
 
 const useStyles = makeStyles(theme => ({
   card: {
-    maxWidth: theme.spacing(90),
-    maxHeight: theme.spacing(70)
+    maxWidth: theme.spacing(100),
+    maxHeight: theme.spacing(80),
+    justify: 'center'
   },
   paper: {
     position: 'absolute',
@@ -44,16 +55,30 @@ const useStyles = makeStyles(theme => ({
     outline: 'none',
     padding: theme.spacing(6, 5, 4),
   },
+  actionBar: {
+    spacing: theme.spacing(50)
+  },
+  gridList: {
+    flexWrap: 'nowrap',
+    // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
+    transform: 'translateZ(0)',
+  },
   title: {
     flexGrow: 1,
     fontFamily: 'sans-serif',
     userSelect: 'none',
     color: "inherit",
   },
+  like: {
+    marginLeft: 'auto',
+    alignItems: 'right',
+  },
 }));
 
 const PostViewModal =  (props) => {
   const action = props.action
+
+  const post = props.post
 
   const classes = useStyles();
   const [modalStyle] = React.useState(getModalStyle);
@@ -79,86 +104,93 @@ const PostViewModal =  (props) => {
   const nonLocalComments = [5, 6]
 
   const showLocalComments = localComments.map(() =>
-    <Comment />
+    <Comment postID={post.postID} />
   );
 
   const showNonLocalComments = nonLocalComments.map(() =>
-    <Comment />
+    <Comment postID={post.postID} />
   );
 
+  const deleteButton = (currentUserObj !== null) ?
+        (<IconButton className={classes.likes}
+                     aria-label="delete post">
+            <DeleteIcon color="primary"/>
+          </IconButton>) : null
+
   const modal = (
-      <Modal
-        open={open}
-        onClose={() => {setOpen(false); action(false);}}
-      >
-        <div style={modalStyle} className={classes.paper}>
-          <div style={{maxHeight: 600, overflow: 'auto'}}>
-            <Card className={classes.card} >
-              <Collapse in={expandedPost}>
-                <CardMedia
-                  component="img"
-                  alt="postImg"
-                  height="300"
-                  image={require('./citysource.png')}
-                  title="My Project"
-                />
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="h2">
-                    My Project
-                  </Typography>
-                  <Typography gutterBottom variant="body1" style={{color: "#F06E38"}} component="p">
-                    John Williams
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary" component="p">
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <Button size="small" color="primary" startIcon={<MessageIcon />} onClick={handleExpandComments}>
-                    Comments
-                    </Button>
-                    <Button size="small" color="primary" startIcon={<ShareIcon />}>
-                    Share
-                  </Button>
-                </CardActions>
-              </Collapse>
-              <Collapse in={expandedComments}>
-                <CardActions>
-                  <Button size="small" color="primary" startIcon={<MessageIcon />} onClick={handleExpandPost}>
-                    See post
-                  </Button>
-                </CardActions>
-                <CardContent>
-                  <Grid container direction="row" spacing={2}>
-                    <Grid item xs={6} md={6}>
-                      <List
-                        subheader={
-                                <ListSubheader component="div" id="nested-list-subheader">
-                                  Local
-                                </ListSubheader>
-                              }
-                      >
-                        {showLocalComments}
-                      </List>
-                    </Grid>
-                    <Grid item xs={6} md={6}>
-                      <List
-                        subheader={
-                                <ListSubheader component="div" id="nested-list-subheader">
-                                  Non-local
-                                </ListSubheader>
-                              }
-                      >
-                        {showNonLocalComments}
-                      </List>
-                    </Grid>
-                  </Grid>
-                </CardContent>
-              </Collapse>
-            </Card>
-          </div>
-        </div>
-      </Modal>
+        <Dialog open={open}
+                onClose={() => {setOpen(false); action(false);}}
+                fullWidth
+                maxWidth={'md'}
+                scroll={'body'} >
+          <Collapse in={expandedPost}>
+            <DialogContent style={{overflow: 'scroll'}}>
+              <GridList className={classes.gridList} cellHeight={400} cols={1}>
+                <GridListTile>
+                  <img src={require("./citysource.png")}/>
+                </GridListTile>
+              </GridList>
+              <Typography gutterBottom variant="h5" component="h2">
+                {post.title}
+              </Typography>
+              <Typography gutterBottom variant="body1" style={{color: "#F06E38"}} component="p">
+                {post.username}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" component="p">
+                {post.text}
+              </Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button size="small" color="primary" startIcon={<MessageIcon />} onClick={handleExpandComments}>
+                Comments
+                </Button>
+                <Button size="small" color="primary" startIcon={<ShareIcon />}>
+                Share
+              </Button>
+              <IconButton className={classes.likes}
+                          aria-label="like post">
+                <FavoriteBorderSharpIcon color="primary"/>
+              </IconButton>
+              {deleteButton}
+            </DialogActions>
+          </Collapse>
+          <Collapse in={expandedComments}>
+            <DialogActions>
+              <Button size="small" color="primary" startIcon={<MessageIcon />} onClick={handleExpandPost}>
+                See post
+              </Button>
+            </DialogActions>
+            <DialogContent>
+              <Grid container direction="row" spacing={2}>
+                <Grid item xs={6} md={6}>
+                  <List
+                    subheader={
+                            <ListSubheader component="div" id="nested-list-subheader">
+                              Local
+                            </ListSubheader>
+                          }
+                  >
+                    {showLocalComments}
+                  </List>
+                </Grid>
+                <Grid item xs={6} md={6}>
+                  <List
+                    subheader={
+                            <ListSubheader component="div" id="nested-list-subheader">
+                              Non-local
+                            </ListSubheader>
+                          }
+                  >
+                    {showNonLocalComments}
+                  </List>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <CommentField />
+                </Grid>
+              </Grid>
+            </DialogContent>
+          </Collapse>
+        </Dialog>
     );
 
   return modal;
