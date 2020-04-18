@@ -64,33 +64,29 @@ export function storePostImage(post_id, file){
   });
 }
 
-export function getUserImage(user_id){
+export async function getUserImage(user_id){
   var imageList = [];
   var storageRef = firebase.storage().ref();
   var folderRef = storageRef.child('images/user/'+user_id);
-  folderRef.listAll().then(function(result) {
+  await folderRef.listAll().then(function(result) {
     result.items.forEach(function(imageRef) {
-      imageList.push(url);
-      // imageRef.getDownloadURL().then(function(url) {
-      //   var img = document.getElementById
-      //   imageList.push(url);
-      // })
+      imageRef.getDownloadURL().then(function(url) {
+        imageList.push(url);
+      })
     })
   });
   return imageList;
 }
 
-export function getPostImage(user_id){
+export async function getPostImage(user_id){
   var imageList = [];
   var storageRef = firebase.storage().ref();
   var folderRef = storageRef.child('images/post/'+user_id);
-  folderRef.listAll().then(function(result) {
+  await folderRef.listAll().then(function(result) {
     result.items.forEach(function(imageRef) {
-      imageList.push(url);
-      // imageRef.getDownloadURL().then(function(url) {
-      //   var img = document.getElementById
-      //   imageList.push(url);
-      // })
+      imageRef.getDownloadURL().then(function(url) {
+        imageList.push(url);
+      })
     })
   });
   return imageList;
