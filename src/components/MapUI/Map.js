@@ -36,18 +36,6 @@ const CSMap = () => {
         //}
     }
 
-    const tempPost = {
-        title: "Test Post",
-        address: "KU",
-        lat: 38.9543,
-        long: -95.2558,
-        postID: 9999,
-        username: "Test User",
-        text: "This is a test post to display the card & onclick",
-    }
-
-
-
     return(
         <React.Fragment>
         <div style = {{height: '92vh', width: '100%'}}>
@@ -68,12 +56,6 @@ const CSMap = () => {
                     postObj={postObj}
                 />
             ))}
-            {/* <StandardPin
-                lat={38.9543}
-                lng={-95.2558}
-                postObj = {tempPost}
-                text={'KU test marker'}
-            /> */}
             
         </GoogleMapReact>
         </div>
