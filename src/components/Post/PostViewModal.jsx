@@ -27,7 +27,8 @@ import Comment from './Comment.jsx'
 import CommentField from './CommentField.jsx'
 import { currentUserObj } from "../../signIn.js";
 
-import { likePost } from '../../postBackEnd.js'
+import { likePost } from '../../postBackEnd.js';
+// import { getPostImage } from '../../imageStorageBackEnd.js';
 
 function getModalStyle() {
   const top = 50;
@@ -124,7 +125,7 @@ const PostViewModal =  (props) => {
                 scroll={'body'} >
           <Collapse in={expandedPost}>
             <DialogContent style={{overflow: 'scroll'}}>
-              <GridList className={classes.gridList} cols={2.5}>
+              <GridList className={classes.gridList} cellHeight={400} cols={1}>
                 <GridListTile>
                   <img src={require("./citysource.png")}/>
                 </GridListTile>
@@ -133,7 +134,7 @@ const PostViewModal =  (props) => {
                 {post.title}
               </Typography>
               <Typography gutterBottom variant="body1" style={{color: "#F06E38"}} component="p">
-                John Williams
+                {post.username}
               </Typography>
               <Typography variant="body2" color="textSecondary" component="p">
                 {post.text}
