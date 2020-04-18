@@ -78,7 +78,18 @@ export async function getNearbyPosts(currentLat, currentLong, range) {
     let result = await query.get().then(async posts => {
       let postList = [];
       await posts.forEach(function(post) {
-        let postObject = post.data();
+        let postObject = {
+            comments: post.data().comments,
+            devPost: post.data().devPost,
+            dislikes: post.dislikes,
+            likes: post.likes,
+            pic: post.data().pic,
+            postID: post.data().postID,
+            text: post.data().text,
+            timestamp: post.data().timestamp, //convert from epoch to normal time date
+            title: post.data().title,
+            userID: post.data().userID,
+        };
         if(postObject.long >= (currentLong - range) && postObject.long <= currentLong + range) {
           postList.push(postObject);
         }
@@ -239,7 +250,7 @@ export function getUserInLikes(post_id, user_id) {
         if (queriedDocs.empty === false) {
             return true;
         } else {
-            console.log("No docs match");
+            return false;
         }
     });
 }
@@ -251,7 +262,7 @@ export function getUserInDislikes(post_id, user_id) {
         if (queriedDocs.empty === false) {
             return true;
         } else {
-            console.log("No docs match");
+            return false;
         }
     });
 }
