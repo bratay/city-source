@@ -16,7 +16,8 @@ const useStyles = makeStyles(theme => ({
 const Comment = (props) => {
 
   const classes = useStyles();
-  const postID = props.postID
+  const postID = props.postID;
+  const local = props.local;
 
   let comments = []
 
@@ -27,6 +28,14 @@ const Comment = (props) => {
   };
 
   getComments(comments);
+
+  function isLocal(comment) {
+    return(comment.local)
+  }
+
+  function isNotLocal(comment) {
+    return(!comment.local)
+  }
 
   const commentsList = comments.map((comment) =>
     <ListItem button>
@@ -39,9 +48,14 @@ const Comment = (props) => {
     </ListItem>
   );
 
+  const localComments = commentsList.filter(isLocal);
+  const nonLocalComments = commentsList.filter(isNotLocal);
+
+  const c = local ? localComments : nonLocalComments;
+
   return (
     <React.Fragment>
-      {commentsList}
+      {c}
     </React.Fragment>
   );
 }
