@@ -5,6 +5,8 @@ import InputBase from '@material-ui/core/InputBase';
 import IconButton from '@material-ui/core/IconButton';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
+import { createComment } from '../../commentBackEnd.js';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: '2px 4px',
