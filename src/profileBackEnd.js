@@ -36,33 +36,33 @@ export async function getUserProfileObj(userKey) {
     return userObj
 }
 
-export function getUserPost(userKey) {
+export async function getUserPost(userKey) {
     let listOfPost = [];
     let queryResult = db.collection('post').where('userID', '==', userKey)
 
-    queryResult.get().then(queriedDocs => {
-        if (queriedDocs.empty == false) {
+    await queryResult.get().then(queriedDocs => {
+        if (queriedDocs.empty === false) {
             queriedDocs.forEach(singleDoc => {
                 let currentPost = {
                     comments: singleDoc.data().comments,
                     devPost: singleDoc.data().devPost,
+                    dislikes: singleDoc.dislikes,
+                    likes: singleDoc.likes,
                     pic: singleDoc.data().pic,
                     postID: singleDoc.data().postID,
-                    likes: singleDoc.likes,
-                    dislikes: singleDoc.dislikes,
+                    text: singleDoc.data().text,
                     timestamp: singleDoc.data().timestamp, //convert from epoch to normal time date
                     title: singleDoc.data().title,
-                    userID: singleDoc.data().userID
-                }
-
-                listOfPost.push(currentPost)
-            })
+                    userID: singleDoc.data().userID,
+                };
+                listOfPost.push(currentPost);
+            });
         } else {
             console.log("This user doesn't have any post");
         }
     });
 
-    return listOfPost
+    return listOfPost;
 }
 
 //convert epoch time (number of seconds from 1/1/1970) to
