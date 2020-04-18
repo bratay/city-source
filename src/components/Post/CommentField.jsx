@@ -29,17 +29,18 @@ const CommentField = () => {
   const classes = useStyles();
 
   return (
-    <Paper component="form" className={classes.root}>
+    <React.Fragment>
       <InputBase
         className={classes.input}
         placeholder="Add comment"
         inputProps={{ 'aria-label': 'add comment'}}
         fullWidth
+        multiline
       />
       <IconButton type="submit" className={classes.iconButton} aria-label="search">
         <ChevronRightIcon />
       </IconButton>
-    </Paper>
+    </React.Fragment>
   );
 }
 

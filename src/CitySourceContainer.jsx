@@ -7,7 +7,6 @@ import CreateIcon from '@material-ui/icons/Create';
 import PostCreate from './components/PostCreate/PostCreate';
 import HometownModal from './components/HometownModal/HometownModal.jsx';
 
-import PostViewModal from './components/Post/PostViewModal.jsx'
 import { currentUserObj } from './signIn.js';
 
 const useStyles = makeStyles(theme => ({
@@ -52,7 +51,6 @@ function CitySourceContainer(props) {
       <PostCreate open={postCreateDialog} action={setPostCreateDialog}/>
       <CSMap />
       <HometownModal open={true} />
-      <PostViewModal open={true} postID="123456"/>
     </React.Fragment>
   );
 }
