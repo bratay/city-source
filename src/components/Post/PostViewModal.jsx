@@ -100,15 +100,13 @@ const PostViewModal =  (props) => {
     setExpandedPost(true);
   }
 
-  const localComments = [1, 2, 3, 4]
-  const nonLocalComments = [5, 6]
-
-  const showLocalComments = localComments.map(() =>
-    <Comment postID={post.postID} />
+  const showLocalComments = (
+    <Comment postID={post.postID} local={true} />
   );
 
-  const showNonLocalComments = nonLocalComments.map(() =>
-    <Comment postID={post.postID} />
+
+  const showNonLocalComments = (
+    <Comment postID={post.postID} local={false} />
   );
 
   const deleteButton = (currentUserObj !== null) ?
