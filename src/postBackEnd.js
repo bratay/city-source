@@ -75,7 +75,7 @@ export function setPostInformation(newPostInfo, post_id) {
 export function getNearbyPosts(currentLat, currentLong, range) {
     let postList = [];
     let postsRef = db.collectin('post');
-    query = postsRef.where('lat', '<=', (currentLat+range)).where('lat', '>=', (currentLat-range));
+    let query = postsRef.where('lat', '<=', (currentLat+range)).where('lat', '>=', (currentLat-range));
     query.get().then(function(posts) {
       posts.forEach(function(post) {
         let postObject = post.data();
