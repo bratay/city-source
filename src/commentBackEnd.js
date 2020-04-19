@@ -35,19 +35,19 @@ function createCommentObj(commentDoc) {
         timestamp: commentDoc.data().timestamp,
         local: commentDoc.data().local
     }
-    
+
     return commentObj
 }
 
 export async function createComment(commentString, postID) {
     if (currentUserObj.userID == "")
-    return false;
-    
+        return false;
+
     let commentID = db.collection('comments').doc().id; //Generate a new ID
     let isLocalComment = await isLocal(postID)
     let newComment = {}
     let timestamp = Date.now()
-    
+
     newComment = {
         comment: commentString,
         userID: currentUserObj.userID,
@@ -60,7 +60,7 @@ export async function createComment(commentString, postID) {
         timestamp: timestamp,
         local: isLocalComment
     }
-    
+
     db.collection('comments').doc(commentID).set({
         comment: commentString,
         userID: currentUserObj.userID,
@@ -73,21 +73,21 @@ export async function createComment(commentString, postID) {
         timestamp: timestamp,
         local: isLocalComment
     })
-    
+
     // Update post doc with new comment ID
     db.collection('post').doc(postID).update({
         comments: firebase.firestore.FieldValue.arrayUnion(
             commentID
-            )
-        }).catch(function (error) {
-            // The document probably doesn't exist.
-            console.error("Error updating post document: ", error)
-            return false
-        });
-        
-        return newComment
-    }
-    
+        )
+    }).catch(function (error) {
+        // The document probably doesn't exist.
+        console.error("Error updating post document: ", error)
+        return false
+    });
+
+    return newComment
+}
+
 //returns true if commenter is considered a local to the location of the post
 // +- .13 lat long
 async function isLocal(postID) {
