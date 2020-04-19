@@ -79,16 +79,19 @@ export async function getNearbyPosts(currentLat, currentLong, range) {
       let postList = [];
       await posts.forEach(function(post) {
         let postObject = {
-            comments: post.data().comments,
-            devPost: post.data().devPost,
-            dislikes: post.dislikes,
-            likes: post.likes,
-            pic: post.data().pic,
-            postID: post.data().postID,
-            text: post.data().text,
-            timestamp: post.data().timestamp, //convert from epoch to normal time date
-            title: post.data().title,
-            userID: post.data().userID,
+          title: post.data().title,
+          address: post.data().address,
+          lat: post.data().lat,
+          long: post.data().long,
+          devpost: post.data().devpost,
+          dislikes: post.data().dislikes,
+          likes: post.data().likes,
+          postID: post.data().postID,
+          username: post.data().username,
+          userID: post.data().userID,
+          text: post.data().text,
+          title: post.data().title,
+          timestamp: post.data().timestamp
         };
         if(postObject.long >= (currentLong - range) && postObject.long <= currentLong + range) {
           postList.push(postObject);
@@ -202,7 +205,7 @@ export async function deletePost(postID){
     return false;
   db.collection('post').doc(postID).delete();
   let commentList = db.collection('comments').where('postID', '==', postID);
-  commentList.get().then(function(comments){
+  await commentList.get().then(function(comments){
     var batch = db.batch();
     comments.forEach(function(com){
       batch.delete(com.ref);
@@ -213,14 +216,14 @@ export async function deletePost(postID){
   });
 }
 
-export function getLikeCount(post_id) {
+export async function getLikeCount(post_id) {
     const collect = db.collection('post')//get wanted collection
     var query = collect.where('post_id', '==', post_id)
-    query.get().then(queriedDocs => {
+    await query.get().then(queriedDocs => {
         if (queriedDocs.empty === false) {
             queriedDocs.forEach(singleDoc => {
                 var likeArray = singleDoc.data().likes;
-                return likeArray.length();
+                return likeArray.length;
             })
         } else {
             console.log("No docs match");
@@ -228,14 +231,14 @@ export function getLikeCount(post_id) {
     });
 }
 
-export function getDislikeCount(post_id) {
+export async function getDislikeCount(post_id) {
     const collect = db.collection('post')//get wanted collection
     var query = collect.where('post_id', '==', post_id)
-    query.get().then(queriedDocs => {
+    await query.get().then(queriedDocs => {
         if (queriedDocs.empty === false) {
             queriedDocs.forEach(singleDoc => {
                 var likeArray = singleDoc.data().dislikes;
-                return likeArray.length();
+                return likeArray.length;
             })
         } else {
             console.log("No docs match");
@@ -243,10 +246,10 @@ export function getDislikeCount(post_id) {
     });
 }
 
-export function getUserInLikes(post_id, user_id) {
+export async function getUserInLikes(post_id, user_id) {
     const collect = db.collection('post')//get wanted collection
     var query = collect.where('postID', '==', post_id).where('likes', 'array-contains', user_id);
-    query.get().then(queriedDocs => {
+    await query.get().then(queriedDocs => {
         if (queriedDocs.empty === false) {
             return true;
         } else {
@@ -255,10 +258,10 @@ export function getUserInLikes(post_id, user_id) {
     });
 }
 
-export function getUserInDislikes(post_id, user_id) {
+export async function getUserInDislikes(post_id, user_id) {
     const collect = db.collection('post')//get wanted collection
     var query = collect.where('postID', '==', post_id).where('dislikes', 'array-contains', user_id);
-    query.get().then(queriedDocs => {
+    await query.get().then(queriedDocs => {
         if (queriedDocs.empty === false) {
             return true;
         } else {

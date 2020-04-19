@@ -112,10 +112,9 @@ export function setUserInformation(newUserInfo) {
 export async function deleteUser(userID){
   if (currentUserObj.userID == "")
     return false;
-
   db.collection('users').doc(userID).delete();
   let postList = db.collection('posts').where('userID', '==', userID);
-  postList.get().then(function(posts){
+  await postList.get().then(function(posts){
     var batch = db.batch();
     posts.forEach(function(post){
       deletePost(post.postID);
