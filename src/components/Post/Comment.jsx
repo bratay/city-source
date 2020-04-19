@@ -19,26 +19,41 @@ const Comment = (props) => {
   const postID = props.postID;
   const local = props.local;
 
-  let comments = []
+  const [comments, setComments] = React.useState([])
 
-  async function getComments(comments) {
-    if (postID != null){
-      comments = getCommentsFromPost(postID);
+  React.useEffect(() => {
+    async function getComments() {
+      if (postID != null){
+        const c = await getCommentsFromPost(postID);
+        console.log("comments", c);
+        setComments(c);
+      }
     }
-  };
+    getComments();
+ }, [])
 
-  getComments(comments);
+   function isLocal(comment) {
+     return(comment.local === true)
+   }
 
-  function isLocal(comment) {
-    return(comment.local)
-  }
+   function isNotLocal(comment) {
+     return(!comment.local === false)
+   }
 
-  function isNotLocal(comment) {
-    return(!comment.local)
-  }
+   let c = [];
 
-  const commentsList = comments.map((comment) =>
+   if (local){
+     c = comments.filter(isLocal);
+     console.log(c)
+   }
+   else{
+     c = comments.filter(isNotLocal);
+     console.log(c)
+   }
+
+  const commentsList = c.map((comment) =>
     <ListItem button>
+      {console.log(comment.comment)}
       <Avatar/>
       <ListItemText
         primary={comment.userName}
@@ -48,14 +63,11 @@ const Comment = (props) => {
     </ListItem>
   );
 
-  const localComments = commentsList.filter(isLocal);
-  const nonLocalComments = commentsList.filter(isNotLocal);
-
-  const c = local ? localComments : nonLocalComments;
+  console.log("commentslist: ", commentsList)
 
   return (
     <React.Fragment>
-      {c}
+      {commentsList}
     </React.Fragment>
   );
 }

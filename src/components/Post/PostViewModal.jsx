@@ -1,23 +1,16 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button,
-         Card,
-         CardActions,
-         CardContent,
-         CardMedia,
          Collapse,
          Dialog,
          DialogActions,
          DialogContent,
-         DialogContentText,
          Grid,
          GridList,
          GridListTile,
-         GridListTileBar,
          IconButton,
          List,
          ListSubheader,
-         Modal,
          TextField,
          Typography } from '@material-ui/core'
 import MessageIcon from '@material-ui/icons/Message'
@@ -29,19 +22,7 @@ import Comment from './Comment.jsx'
 
 import { currentUserObj } from "../../signIn.js";
 import { likePost } from '../../postBackEnd.js';
-import { getPostImage } from '../../imageStorageBackEnd.js';
 import { createComment } from '../../commentBackEnd.js';
-
-function getModalStyle() {
-  const top = 50;
-  const left = 50;
-
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`,
-  };
-}
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -83,7 +64,6 @@ const PostViewModal =  (props) => {
   const post = props.post
 
   const classes = useStyles();
-  const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(props.open);
   const [expandedComments, setExpandedComments] = React.useState(false);
   const [expandedPost, setExpandedPost] = React.useState(true);
@@ -105,7 +85,9 @@ const PostViewModal =  (props) => {
   }
 
   async function addNewComment(){
-    await(createComment(commentString, post.postID))
+    console.log(commentString)
+    console.log(post.postID)
+    await createComment(commentString, post.postID)
   }
 
   const deleteButton = (currentUserObj.userID === post.userID) ?
