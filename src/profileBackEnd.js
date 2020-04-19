@@ -1,6 +1,7 @@
 import * as firebase from 'firebase';
 import { db } from './index.js';
 import { currentUserObj } from './signIn.js';
+import { deletePost } from './postBackEnd.js';
 
 export async function getUserProfileObj(userKey) {
     let userExist, userObj
@@ -106,4 +107,18 @@ export function setUserInformation(newUserInfo) {
     console.log("There's a problem, you aren't logged in!");
     return false;
   }
+}
+
+export async function deleteUser(userID){
+  if (currentUserObj.userID == "")
+    return false;
+  db.collection('users').doc(userID).delete();
+  let postList = db.collection('posts').where('userID', '==', userID);
+  await postList.get().then(function(posts){
+    posts.forEach(function(post){
+      deletePost(post.postID);
+    });
+  }).then(function(){
+    return true;
+  });
 }

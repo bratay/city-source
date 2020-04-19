@@ -52,6 +52,7 @@ export function setPostInformation(newPostInfo, post_id) {
         if (currentUserObj.userID === user.uid) {
             var newTimestamp = Date.now()
             db.collection('post').doc(post_id).update({
+                bio: newPostInfo.bio,
                 address: newPostInfo.address,
                 lat: newPostInfo.lat,
                 long: newPostInfo.long,
@@ -184,4 +185,76 @@ export async function dislikePost(postID) {
     });
 
     return result
+}
+
+export async function deletePost(postID){
+  if (currentUserObj.userID == "")
+    return false;
+  db.collection('post').doc(postID).delete();
+  let commentList = db.collection('comments').where('postID', '==', postID);
+  await commentList.get().then(function(comments){
+    var batch = db.batch();
+    comments.forEach(function(com){
+      batch.delete(com.ref);
+    });
+    return batch.commit();
+  }).then(function(){
+    return true;
+  });
+}
+
+export async function getLikeCount(post_id) {
+    const collect = db.collection('post')//get wanted collection
+    var query = collect.where('post_id', '==', post_id)
+    await query.get().then(queriedDocs => {
+        if (queriedDocs.empty === false) {
+            queriedDocs.forEach(singleDoc => {
+                var likeArray = singleDoc.data().likes;
+                return likeArray.length;
+            })
+        } else {
+            console.log("No docs match");
+            return -1;
+        }
+    });
+}
+
+export async function getDislikeCount(post_id) {
+    const collect = db.collection('post')//get wanted collection
+    var query = collect.where('post_id', '==', post_id)
+    await query.get().then(queriedDocs => {
+        if (queriedDocs.empty === false) {
+            queriedDocs.forEach(singleDoc => {
+                var likeArray = singleDoc.data().dislikes;
+                return likeArray.length;
+            })
+        } else {
+            console.log("No docs match");
+            return -1;
+        }
+    });
+}
+
+export async function getUserInLikes(post_id, user_id) {
+    const collect = db.collection('post')//get wanted collection
+    var query = collect.where('postID', '==', post_id).where('likes', 'array-contains', user_id);
+    await query.get().then(queriedDocs => {
+        if (queriedDocs.empty === false) {
+            return true;
+        } else {
+            return false;
+        }
+    });
+}
+
+export async function getUserInDislikes(post_id, user_id) {
+    const collect = db.collection('post')//get wanted collection
+    var query = collect.where('postID', '==', post_id).where('dislikes', 'array-contains', user_id);
+    await query.get().then(queriedDocs => {
+        if (queriedDocs.empty === false) {
+            return true;
+        } else {
+            return false;
+        }
+    });
 }
