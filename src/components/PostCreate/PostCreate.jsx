@@ -30,11 +30,13 @@ export function PostCreate(props) {
 	const classes = useStyles();
 	const action = props.action;
 	const [open, setOpen] = React.useState(props.open);
-
+	const initLoc = props.initLoc ? props.initLoc : "";
+	const initCoords = props.initCoords ? props.initCoords : {lat: null, lng: null};
+	
 	const [title, setTitle] = React.useState("");
 	const [titleErr, setTitleErr] = React.useState(false);
-	const [location, setLocation] = React.useState("");
-	const [locCoord, setLocCoord] = React.useState(null);
+	const [location, setLocation] = React.useState(initLoc);
+	const [coordinates, setCoordinates] = React.useState(initCoords);
 	const [locErr, setLocErr] = React.useState(false);
 	const [description, setDescription] = React.useState("");
 	const [descErr, setDescErr] = React.useState(false);
@@ -110,8 +112,8 @@ export function PostCreate(props) {
 		
 		let postObj = {
 			address: location,
-			lat: locCoord.lat,
-			long: locCoord.lng,
+			lat: coordinates.lat,
+			long: coordinates.lng,
 			pic: null,
 			text: description,
 			title: title
@@ -152,7 +154,8 @@ export function PostCreate(props) {
 									id: 'locationField',
 									required: true,
 								}}
-								setCoords={setLocCoord} 
+								presetVal={initLoc}
+								setCoords={setCoordinates} 
 								setHometown={setLocation}
 							/>
 						</FormControl>

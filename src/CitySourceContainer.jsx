@@ -9,6 +9,7 @@ import CreateIcon from '@material-ui/icons/Create';
 import PostCreate from './components/PostCreate/PostCreate';
 import HometownModal from './components/HometownModal/HometownModal.jsx';
 import PostViewModal from './components/Post/PostViewModal.jsx';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 import { currentUserObj, cachedSignIn } from './signIn.js';
 
@@ -28,7 +29,9 @@ function CitySourceContainer(props) {
   const classes = useStyles();
   const [postCreateDialog, setPostCreateDialog] = React.useState(false);
   const [signInModal, setSignInModal] = React.useState(false);
-
+  const [location, setLocation] = React.useState("");
+  const [coordinates, setCoordinates] = React.useState([]);
+  const [postingMode, setPostingMode] = React.useState(false);
   const isUserObj = () => (currentUserObj.userID !== "");
 
   const [signedIn, setSignedIn] = React.useState(isUserObj());
@@ -52,24 +55,34 @@ function CitySourceContainer(props) {
   return (
     <React.Fragment>
       <Navbar login={signedIn}/>
-      <Fab
+      {!postingMode && <Fab
       className={classes.postButton}
       color="secondary"
       onClick={() => {
         if (signedIn) {
-          setPostCreateDialog(true);
-        }
-        else {
-          setSignInModal(true);
-        }
+                    setPostingMode(true);
+                }
+                else {
+                    setSignInModal(true);
+                }
+            }}
+            variant="extended"
+        >
+            <CreateIcon className={classes.extendedIcon}/> Create Post
+          </Fab> }
+      {postingMode && <Fab
+      className={classes.postButton}
+      color="secondary"
+      onClick={() => {
+        setPostingMode(false);
       }}
-      variant="extended"
+        variant="extended"
       >
-        <CreateIcon className={classes.extendedIcon}/> Create Post
-      </Fab>
-      <PostCreate open={postCreateDialog} action={setPostCreateDialog}/>
-      <CSMap />
-      <HometownModal open={false} />
+          <ArrowBackIcon className={classes.extendedIcon}/> Return
+      </Fab>}
+      <PostCreate open={postCreateDialog} action={setPostCreateDialog} initLoc={location} initCoords={coordinates}/>
+      <CSMap setLocation={setLocation} setCoordinates={setCoordinates} postingMode={postingMode} setPostingMode={setPostingMode} signedIn={signedIn} setPostCreateDialog={setPostCreateDialog}/>
+      <HometownModal open={true} />
       <SignInModal open={signInModal} action={setSignInModal} />
     </React.Fragment>
   );

@@ -26,8 +26,6 @@ function getStyle() {
 const StandardPin = (props) => {
 
     const postObj = props.postObj;
-    const lat = props.lat;
-    const long = props.lng;
     const style = getStyle();
     const [open, setOpen] = React.useState(false);
 
@@ -38,14 +36,18 @@ const StandardPin = (props) => {
         setOpen(!open)
     }
 
-    const pin = (
+    const pin = props.postObj ? (
         <React.Fragment>
             <PostViewModal open={open} action={setOpen} post={postObj}/>
             <div style={style.pin} onClick={() => {handleClick()}}>
                 <img style={style.img} src={CSLogo} alt="CS Logo" />
             </div>
         </React.Fragment>
-    )
+    ) : (
+    <div style={style.pin} onClick={() => {handleClick()}}>
+        <img style={style.img} src={CSLogo} alt="CS Logo" />
+    </div>
+    );
     return pin;
 }
 
