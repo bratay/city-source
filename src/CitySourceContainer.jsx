@@ -30,7 +30,7 @@ function CitySourceContainer(props) {
   const [postCreateDialog, setPostCreateDialog] = React.useState(false);
   const [signInModal, setSignInModal] = React.useState(false);
   const [location, setLocation] = React.useState("");
-  const [coordinates, setCoordinates] = React.useState([]);
+  const [coordinates, setCoordinates] = React.useState({lat: null, lng: null});
   const [postingMode, setPostingMode] = React.useState(false);
   const isUserObj = () => (currentUserObj.userID !== "");
 

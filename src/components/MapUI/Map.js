@@ -35,7 +35,7 @@ const calcRange = (highBound, lowBound) => {
 const CSMap = (props) => {
     const classes = useStyles();
     const [posts, setPosts] = React.useState([]);
-    const initCenter = props.signedIn? [currentUserObj.hometownLat, currentUserObj.hometownLong] : [38.9543,-95.2558];
+    const initCenter = props.signedIn ? [currentUserObj.hometownLat, currentUserObj.hometownLong] : [38.9543,-95.2558];
     const [geocoder, setGeocoder] = React.useState(null);
     const [markerShown, setMarkerShown] = React.useState(false);
     const [markerLatLng, setMarkerLatLng] = React.useState([]);
@@ -70,15 +70,16 @@ const CSMap = (props) => {
     }
     
     async function handleConfirm() {
-        
-        await geocoder.geocode({'location': {lat: markerLatLng[0], lng: markerLatLng[1]}}, function(results, status) {
+        const coords = {lat: markerLatLng[0], lng: markerLatLng[1]};
+        await geocoder.geocode({'location': coords}, function(results, status) {
             if(status === 'OK'){
                 if(results[0]){
                     props.setLocation(results[0].formatted_address);
+                    props.setCoordinates(coords);
+
                 }
             }
         });
-        props.setCoordinates({lat: markerLatLng[0], lng: markerLatLng[1]});
         setMarkerShown(false);
         props.setPostCreateDialog(true);
         props.setPostingMode(false);

@@ -57,7 +57,7 @@ export function PostCreate(props) {
 		setDescErr(false);
 		setLocation("");
 		setLocErr(false);
-
+		setCoordinates({lat: null, lng: null});
 		setOpen(false);
 		action(false);
 	};
