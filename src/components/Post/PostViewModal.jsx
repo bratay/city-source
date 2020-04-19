@@ -108,15 +108,6 @@ const PostViewModal =  (props) => {
     await(createComment(commentString, post.postID))
   }
 
-  const showLocalComments = (
-    <Comment postID={post.postID} local={true} />
-  );
-
-
-  const showNonLocalComments = (
-    <Comment postID={post.postID} local={false} />
-  );
-
   const deleteButton = (currentUserObj.userID === post.userID) ?
         (<IconButton className={classes.likes}
                      aria-label="delete post">
@@ -132,10 +123,10 @@ const PostViewModal =  (props) => {
           <Collapse in={expandedPost}>
             <DialogContent style={{overflow: 'scroll'}}>
               <GridList className={classes.gridList} cellHeight={400} cols={1}>
-                <GridListTile>
-                  <img src={require("./citysource.png")}/>
-                </GridListTile>
-              </GridList>
+               <GridListTile>
+                 <img src={post.pic}/>
+               </GridListTile>
+             </GridList>
               <Typography gutterBottom variant="h5" component="h2">
                 {post.title}
               </Typography>
@@ -176,7 +167,7 @@ const PostViewModal =  (props) => {
                             </ListSubheader>
                           }
                   >
-                    {showLocalComments}
+                    <Comment postID={post.postID} local={true} />
                   </List>
                 </Grid>
                 <Grid item xs={6} md={6}>
@@ -187,7 +178,7 @@ const PostViewModal =  (props) => {
                             </ListSubheader>
                           }
                   >
-                    {showNonLocalComments}
+                    <Comment postID={post.postID} local={false} />
                   </List>
                 </Grid>
               </Grid>
