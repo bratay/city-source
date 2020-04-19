@@ -29,10 +29,12 @@ export function PostCreate(props) {
 	const classes = useStyles();
 	const action = props.action;
 	const [open, setOpen] = React.useState(props.open);
-
+	const initLoc = props.initLoc ? props.initLoc : "";
+	const initCoords = props.initCoords ? props.initCoords : {lat: null, lng: null};
+	const [coordinates, setCoordinates] = React.useState(initCoords);
 	const [title, setTitle] = React.useState("");
 	const [titleErr, setTitleErr] = React.useState(false);
-	const [location, setLocation] = React.useState("");
+	const [location, setLocation] = React.useState(initLoc);
 	const [locErr, setLocErr] = React.useState(false);
 	const [description, setDescription] = React.useState("");
 	const [descErr, setDescErr] = React.useState(false);
@@ -97,7 +99,7 @@ export function PostCreate(props) {
 		
 		let postObj = {
 			address: location,
-			coor: [0, 0],
+			coor: coordinates,
 			text: description,
 			title: title
 		}
@@ -126,14 +128,18 @@ export function PostCreate(props) {
 				<DialogTitle>Create a Post</DialogTitle>
 				<DialogContent>
 					<form autoComplete="off" id="postCreate" onSubmit={submitPost}>
-						<TextField 
-							className={classes.inputField}
-							// disabled
-							fullWidth 
-							label="Location" 
-							onChange={modifyLocation}
-							variant="filled"
-							value={location}
+						<InputLabel htmlFor="hometownField">Location</InputLabel>
+						<AutocompleteSearchBox 
+							changeFunc={modifyLocation}
+							inputProps={{
+								error: locErr,
+								fullWidth: true,
+								id: 'hometownField',
+								required: true,
+							}}
+							presetVal={initLoc}
+							setCoords={setCoordinates} 
+							setHometown={setLocation}
 						/>
 						<TextField 
 							className={classes.inputField}

@@ -9,8 +9,10 @@ import PlacesAutocomplete, {
 import { FilledInput } from '@material-ui/core';
 
 export const AutocompleteSearchBox = (props) => {
-    const [value, setValue] = useState("");
-    const [coordinates, setCoordinates] = useState({lat: null, lng: null})
+    const initValue = props.initValue ? props.initValue : "";
+    const initCoords = props.initCoords ? props.initCoords : {lat: null, lng: null};
+    const [value, setValue] = useState(initValue);
+    const [coordinates, setCoordinates] = useState(initCoords)
 
     React.useEffect(() => {
         setValue(props.presetVal);
