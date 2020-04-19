@@ -75,7 +75,6 @@ export function PostCreate(props) {
 		if (event.target.value === "") {
 			setLocErr(true);
 			setLocation("");
-			setLocCoord(undefined);
 		}
 		else {
 			setLocErr(false);

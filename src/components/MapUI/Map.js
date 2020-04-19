@@ -8,6 +8,7 @@ import { Fab, Snackbar } from '@material-ui/core';
 import CreateIcon from '@material-ui/icons/Create';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
+import {currentUserObj} from '../../signIn.js';
 
 const useStyles = makeStyles(theme => ({
     postButton: {
@@ -34,7 +35,7 @@ const calcRange = (highBound, lowBound) => {
 const CSMap = (props) => {
     const classes = useStyles();
     const [posts, setPosts] = React.useState([]);
-    const initCenter = [38.9543,-95.2558];
+    const initCenter = props.signedIn? [currentUserObj.hometownLat, currentUserObj.hometownLong] : [38.9543,-95.2558];
     const [geocoder, setGeocoder] = React.useState(null);
     const [markerShown, setMarkerShown] = React.useState(false);
     const [markerLatLng, setMarkerLatLng] = React.useState([]);
