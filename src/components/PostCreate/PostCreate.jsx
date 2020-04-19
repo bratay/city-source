@@ -1,10 +1,11 @@
 import React from 'react';
-import { Dialog, IconButton, Slide, DialogContent, DialogTitle, TextField, InputLabel, Typography, DialogActions, Button, Tooltip } from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, IconButton, InputLabel, Slide, TextField, Tooltip, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import escape from 'validator/lib/escape';
+import { createpost, setPostInformation } from '../../postBackEnd.js';
+import { storePostImage } from '../../imageStorageBackEnd.js';
 import { AutocompleteSearchBox } from "../MapUI/AutocompleteSearchBox.jsx";
 import CloseIcon from '@material-ui/icons/Close';
-import { createpost } from '../../postBackEnd.js';
-import escape from 'validator/lib/escape';
 
 const useStyles = makeStyles(theme => ({
 	closeButton: {
@@ -17,7 +18,7 @@ const useStyles = makeStyles(theme => ({
 		marginBottom: "1em",
 	},
 	inputLabel: {
-		marginBottom: "5px",
+		paddingBottom: "5px",
 	},
 }));
 
@@ -33,9 +34,12 @@ export function PostCreate(props) {
 	const [title, setTitle] = React.useState("");
 	const [titleErr, setTitleErr] = React.useState(false);
 	const [location, setLocation] = React.useState("");
+	const [locCoord, setLocCoord] = React.useState(null);
 	const [locErr, setLocErr] = React.useState(false);
 	const [description, setDescription] = React.useState("");
 	const [descErr, setDescErr] = React.useState(false);
+	const [coverImg, setCoverImg] = React.useState(null);
+	const [imgErr, setImgErr] = React.useState(false);
 
 	React.useEffect(() => {
 		setOpen(props.open)
@@ -66,9 +70,10 @@ export function PostCreate(props) {
 		}
 	};
 	const modifyLocation = (event) => {
-		setLocation(event.target.value);
 		if (event.target.value === "") {
 			setLocErr(true);
+			setLocation("");
+			setLocCoord(undefined);
 		}
 		else {
 			setLocErr(false);
@@ -83,26 +88,37 @@ export function PostCreate(props) {
 			setDescErr(false);
 		}
 	};
+	const modifyCoverImg = (event) => {
+		setCoverImg(event.target.files[0]);
+		if (event.target.files[0].type.search(/image\/jpeg|image\/png/g) === -1 || event.target.files[0].size > 1000000) {
+			setImgErr(true);
+		}
+		else {
+			setImgErr(false);
+		}
+	};
 
 	const submitPost = (event) => {
 		// event.preventDefault();
-		if (title === "" || description === "" || location === "") {
+		if (titleErr || descErr || imgErr || locErr) {
 			// TODO: Add some sort of error message like a snackbar, but snackbars are being a bit difficult for me
 			return;
 		}
 		setTitle(escape(title));
 		setDescription(escape(description));
 		setLocation(escape(location));
-		// TODO: Add any other necessary validation
 		
 		let postObj = {
 			address: location,
-			coor: [0, 0],
+			lat: locCoord.lat,
+			long: locCoord.lng,
+			pic: null,
 			text: description,
 			title: title
 		}
-		createpost(postObj);
-		
+		let createdPost = createpost(postObj);
+		let postID = createdPost.postID;
+		storePostImage(postID, coverImg);
 		handleClose();
 	};
 
@@ -126,15 +142,20 @@ export function PostCreate(props) {
 				<DialogTitle>Create a Post</DialogTitle>
 				<DialogContent>
 					<form autoComplete="off" id="postCreate" onSubmit={submitPost}>
-						<TextField 
-							className={classes.inputField}
-							// disabled
-							fullWidth 
-							label="Location" 
-							onChange={modifyLocation}
-							variant="filled"
-							value={location}
-						/>
+						<FormControl variant="filled" error={locErr} required fullWidth style={{marginBottom: "1em"}}>
+							<InputLabel htmlFor="locationField">Location</InputLabel>
+							<AutocompleteSearchBox 
+								changeFunc={modifyLocation}
+								inputProps={{
+									error: locErr,
+									fullWidth: true,
+									id: 'locationField',
+									required: true,
+								}}
+								setCoords={setLocCoord} 
+								setHometown={setLocation}
+							/>
+						</FormControl>
 						<TextField 
 							className={classes.inputField}
 							error={titleErr}
@@ -159,8 +180,10 @@ export function PostCreate(props) {
 							value={description}
 							variant="outlined"
 						/>
-						<InputLabel htmlFor="postimg" className={classes.inputLabel}>Cover Image</InputLabel>
-						<input type="file" id="postimg"/>
+						<InputLabel htmlFor="postimg" className={classes.inputLabel} error={imgErr}>Cover Image</InputLabel>
+						<input type="file" id="postimg" onChange={modifyCoverImg}/>
+						<FormHelperText error={imgErr}>Must be .jpg or .png format less than 1 MB.</FormHelperText>
+						
 						<Typography variant="body2" style={{ marginTop: "5px" }}>* denotes required field</Typography>
 					</form>
 				</DialogContent>

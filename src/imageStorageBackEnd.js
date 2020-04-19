@@ -59,7 +59,9 @@ export function storePostImage(post_id, file){
     }
   }, function() {
     uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-      console.log('File available at ', downloadURL);
+      db.collection('post').doc(post_id).update({
+        pic: downloadURL
+      });
     });
   });
 }
