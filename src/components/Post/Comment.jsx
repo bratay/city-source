@@ -41,7 +41,7 @@ const Comment = (props) => {
     <ListItem button>
       <Avatar/>
       <ListItemText
-        primary={comment.userID}
+        primary={comment.userName}
         secondary={comment.comment}
         className={classes.name}
       />

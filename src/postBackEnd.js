@@ -8,35 +8,35 @@ export function createpost(postObject) {
     let timestamp = Date.now()
 
     newpost = {
-        title: postObject.title,
         address: postObject.address,
-        lat: postObject.lat,
-        long: postObject.long,
         devpost: currentUserObj.userType,
         dislikes: [],
+        lat: postObject.lat,
         likes: [],
+        long: postObject.long,
+        pic: null,
         postID: postID,
+        text: postObject.text,
+        timestamp: timestamp,
+        title: postObject.title,
         userID: currentUserObj.userID,
         username: currentUserObj.username,
-        text: postObject.text,
-        title: postObject.title,
-        timestamp: timestamp
     }
 
     db.collection('post').doc(postID).set({
-        title: postObject.title,
         address: postObject.address,
-        lat: postObject.lat,
-        long: postObject.long,
         devpost: currentUserObj.userType,
         dislikes: [],
+        lat: postObject.lat,
         likes: [],
+        long: postObject.long,
+        pic: null,
         postID: postID,
-        username: currentUserObj.username,
-        userID: currentUserObj.userID,
         text: postObject.text,
+        timestamp: timestamp,
         title: postObject.title,
-        timestamp: timestamp
+        userID: currentUserObj.userID,
+        username: currentUserObj.username,
     })
 
     return newpost
@@ -52,12 +52,14 @@ export function setPostInformation(newPostInfo, post_id) {
         if (currentUserObj.userID === user.uid) {
             var newTimestamp = Date.now()
             db.collection('post').doc(post_id).update({
-                title: newPostInfo.title,
+                bio: newPostInfo.bio,
                 address: newPostInfo.address,
                 lat: newPostInfo.lat,
                 long: newPostInfo.long,
+                pic: newPostInfo.pic,
                 text: newPostInfo.text,
-                timestamp: newTimestamp
+                timestamp: newTimestamp,
+                title: newPostInfo.title,
             });
             return true;
         }
@@ -183,4 +185,76 @@ export async function dislikePost(postID) {
     });
 
     return result
+}
+
+export async function deletePost(postID){
+  if (currentUserObj.userID == "")
+    return false;
+  db.collection('post').doc(postID).delete();
+  let commentList = db.collection('comments').where('postID', '==', postID);
+  await commentList.get().then(function(comments){
+    var batch = db.batch();
+    comments.forEach(function(com){
+      batch.delete(com.ref);
+    });
+    return batch.commit();
+  }).then(function(){
+    return true;
+  });
+}
+
+export async function getLikeCount(post_id) {
+    const collect = db.collection('post')//get wanted collection
+    var query = collect.where('post_id', '==', post_id)
+    await query.get().then(queriedDocs => {
+        if (queriedDocs.empty === false) {
+            queriedDocs.forEach(singleDoc => {
+                var likeArray = singleDoc.data().likes;
+                return likeArray.length;
+            })
+        } else {
+            console.log("No docs match");
+            return -1;
+        }
+    });
+}
+
+export async function getDislikeCount(post_id) {
+    const collect = db.collection('post')//get wanted collection
+    var query = collect.where('post_id', '==', post_id)
+    await query.get().then(queriedDocs => {
+        if (queriedDocs.empty === false) {
+            queriedDocs.forEach(singleDoc => {
+                var likeArray = singleDoc.data().dislikes;
+                return likeArray.length;
+            })
+        } else {
+            console.log("No docs match");
+            return -1;
+        }
+    });
+}
+
+export async function getUserInLikes(post_id, user_id) {
+    const collect = db.collection('post')//get wanted collection
+    var query = collect.where('postID', '==', post_id).where('likes', 'array-contains', user_id);
+    await query.get().then(queriedDocs => {
+        if (queriedDocs.empty === false) {
+            return true;
+        } else {
+            return false;
+        }
+    });
+}
+
+export async function getUserInDislikes(post_id, user_id) {
+    const collect = db.collection('post')//get wanted collection
+    var query = collect.where('postID', '==', post_id).where('dislikes', 'array-contains', user_id);
+    await query.get().then(queriedDocs => {
+        if (queriedDocs.empty === false) {
+            return true;
+        } else {
+            return false;
+        }
+    });
 }
