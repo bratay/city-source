@@ -1,23 +1,16 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button,
-         Card,
-         CardActions,
-         CardContent,
-         CardMedia,
          Collapse,
          Dialog,
          DialogActions,
          DialogContent,
-         DialogContentText,
          Grid,
          GridList,
          GridListTile,
-         GridListTileBar,
          IconButton,
          List,
          ListSubheader,
-         Modal,
          TextField,
          Typography } from '@material-ui/core'
 import MessageIcon from '@material-ui/icons/Message'
@@ -26,22 +19,11 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import FavoriteBorderSharpIcon from '@material-ui/icons/FavoriteBorderSharp';
 import Comment from './Comment.jsx'
+import CommentList from './CommentList.jsx'
 
 import { currentUserObj } from "../../signIn.js";
 import { likePost } from '../../postBackEnd.js';
-import { getPostImage } from '../../imageStorageBackEnd.js';
 import { createComment } from '../../commentBackEnd.js';
-
-function getModalStyle() {
-  const top = 50;
-  const left = 50;
-
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`,
-  };
-}
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -83,12 +65,11 @@ const PostViewModal =  (props) => {
   const post = props.post
 
   const classes = useStyles();
-  const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(props.open);
   const [expandedComments, setExpandedComments] = React.useState(false);
   const [expandedPost, setExpandedPost] = React.useState(true);
-
-  let commentString = ""
+  const [comments, updateComments] = React.useState([])
+  const [commentString, updateCommentString] = React.useState("")
 
   React.useEffect(() => {
     setOpen(props.open)
@@ -105,7 +86,8 @@ const PostViewModal =  (props) => {
   }
 
   async function addNewComment(){
-    await(createComment(commentString, post.postID))
+    await createComment(commentString, post.postID)
+    updateCommentString("")
   }
 
   const deleteButton = (currentUserObj.userID === post.userID) ?
@@ -114,12 +96,29 @@ const PostViewModal =  (props) => {
             <DeleteIcon color="primary"/>
           </IconButton>) : null
 
+  const commentField = (currentUserObj.userID != "") ?
+    ( <React.Fragment>
+        <TextField label="Add Comment"
+                   variant="outlined"
+                   multiline
+                   fullWidth
+                   value={commentString}
+                   onChange={(e) => {updateCommentString(e.target.value);}}/>
+       <IconButton type="submit"
+                   className={classes.iconButton}
+                   aria-label="search"
+                   onClick={addNewComment}>
+         <ChevronRightIcon />
+       </IconButton>
+     </React.Fragment>
+    ) : null;
+
   const modal = (
         <Dialog open={open}
                 onClose={() => {setOpen(false); action(false);}}
                 fullWidth
                 maxWidth={'md'}
-                scroll={'body'} >
+                scroll={'paper'} >
           <Collapse in={expandedPost}>
             <DialogContent style={{overflow: 'scroll'}}>
               <GridList className={classes.gridList} cellHeight={400} cols={1}>
@@ -160,40 +159,14 @@ const PostViewModal =  (props) => {
             <DialogContent>
               <Grid container direction="row" spacing={2}>
                 <Grid item xs={6} md={6}>
-                  <List
-                    subheader={
-                            <ListSubheader component="div" id="nested-list-subheader">
-                              Local
-                            </ListSubheader>
-                          }
-                  >
-                    <Comment postID={post.postID} local={true} />
-                  </List>
+                  <CommentList postID={post.postID} local={true} action={updateComments} />
                 </Grid>
                 <Grid item xs={6} md={6}>
-                  <List
-                    subheader={
-                            <ListSubheader component="div" id="nested-list-subheader">
-                              Non-local
-                            </ListSubheader>
-                          }
-                  >
-                    <Comment postID={post.postID} local={false} />
-                  </List>
+                  <CommentList postID={post.postID} local={false} action={updateComments} />
                 </Grid>
               </Grid>
               <DialogActions>
-                <TextField label="Add Comment"
-                           variant="outlined"
-                           multiline
-                           fullWidth
-                           onChange={(e) => {commentString = e.target.value}}/>
-               <IconButton type="submit"
-                           className={classes.iconButton}
-                           aria-label="search"
-                           onClick={addNewComment}>
-                 <ChevronRightIcon />
-               </IconButton>
+                {commentField}
               </DialogActions>
             </DialogContent>
           </Collapse>

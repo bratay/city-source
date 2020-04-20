@@ -7,6 +7,8 @@ import { Avatar,
 
 import { getCommentsFromPost } from '../../commentBackEnd.js';
 
+import ProfileView from '../Profiles/ProfileView';
+
 const useStyles = makeStyles(theme => ({
  name: {
    padding: theme.spacing(0, 1, 1),
@@ -16,46 +18,36 @@ const useStyles = makeStyles(theme => ({
 const Comment = (props) => {
 
   const classes = useStyles();
-  const postID = props.postID;
+
   const local = props.local;
+  const localComment = props.localComment;
+  const username = props.username;
+  const userID = props.userID;
+  const commentText = props.commentText;
+  const picUrl = props.picUrl;
 
-  let comments = []
+  const [comments, setComments] = React.useState([]);
+  const [openProfile, setOpenProfile] = React.useState(false);
 
-  async function getComments(comments) {
-    if (postID != null){
-      comments = getCommentsFromPost(postID);
-    }
-  };
-
-  getComments(comments);
-
-  function isLocal(comment) {
-    return(comment.local)
-  }
-
-  function isNotLocal(comment) {
-    return(!comment.local)
-  }
-
-  const commentsList = comments.map((comment) =>
-    <ListItem button>
-      <Avatar/>
+  const comment = (local == localComment) ? (
+    <ListItem button onClick={() => {setOpenProfile(true)}}>
+      <Avatar src={picUrl} />
       <ListItemText
-        primary={comment.userName}
-        secondary={comment.comment}
+        primary={username}
+        secondary={commentText}
         className={classes.name}
       />
     </ListItem>
-  );
+  ) : null;
 
-  const localComments = commentsList.filter(isLocal);
-  const nonLocalComments = commentsList.filter(isNotLocal);
-
-  const c = local ? localComments : nonLocalComments;
+  const profile = openProfile ? (
+    <ProfileView open={openProfile} action={setOpenProfile} userId={userID}/>
+  ) : null;
 
   return (
     <React.Fragment>
-      {c}
+      {comment}
+      {profile}
     </React.Fragment>
   );
 }
