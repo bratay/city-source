@@ -19,6 +19,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import FavoriteBorderSharpIcon from '@material-ui/icons/FavoriteBorderSharp';
 import Comment from './Comment.jsx'
+import CommentList from './CommentList.jsx'
 
 import { currentUserObj } from "../../signIn.js";
 import { likePost } from '../../postBackEnd.js';
@@ -67,8 +68,8 @@ const PostViewModal =  (props) => {
   const [open, setOpen] = React.useState(props.open);
   const [expandedComments, setExpandedComments] = React.useState(false);
   const [expandedPost, setExpandedPost] = React.useState(true);
-
-  let commentString = ""
+  const [comments, updateComments] = React.useState([])
+  const [commentString, updateCommentString] = React.useState("")
 
   React.useEffect(() => {
     setOpen(props.open)
@@ -88,6 +89,7 @@ const PostViewModal =  (props) => {
     console.log(commentString)
     console.log(post.postID)
     await createComment(commentString, post.postID)
+    updateCommentString("")
   }
 
   const deleteButton = (currentUserObj.userID === post.userID) ?
@@ -101,7 +103,7 @@ const PostViewModal =  (props) => {
                 onClose={() => {setOpen(false); action(false);}}
                 fullWidth
                 maxWidth={'md'}
-                scroll={'body'} >
+                scroll={'paper'} >
           <Collapse in={expandedPost}>
             <DialogContent style={{overflow: 'scroll'}}>
               <GridList className={classes.gridList} cellHeight={400} cols={1}>
@@ -142,26 +144,10 @@ const PostViewModal =  (props) => {
             <DialogContent>
               <Grid container direction="row" spacing={2}>
                 <Grid item xs={6} md={6}>
-                  <List
-                    subheader={
-                            <ListSubheader component="div" id="nested-list-subheader">
-                              Local
-                            </ListSubheader>
-                          }
-                  >
-                    <Comment postID={post.postID} local={true} />
-                  </List>
+                  <CommentList postID={post.postID} local={true} action={updateComments} />
                 </Grid>
                 <Grid item xs={6} md={6}>
-                  <List
-                    subheader={
-                            <ListSubheader component="div" id="nested-list-subheader">
-                              Non-local
-                            </ListSubheader>
-                          }
-                  >
-                    <Comment postID={post.postID} local={false} />
-                  </List>
+                  <CommentList postID={post.postID} local={false} action={updateComments} />
                 </Grid>
               </Grid>
               <DialogActions>
@@ -169,7 +155,8 @@ const PostViewModal =  (props) => {
                            variant="outlined"
                            multiline
                            fullWidth
-                           onChange={(e) => {commentString = e.target.value}}/>
+                           value={commentString}
+                           onChange={(e) => {updateCommentString(e.target.value);}}/>
                <IconButton type="submit"
                            className={classes.iconButton}
                            aria-label="search"

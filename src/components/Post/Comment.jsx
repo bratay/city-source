@@ -16,58 +16,27 @@ const useStyles = makeStyles(theme => ({
 const Comment = (props) => {
 
   const classes = useStyles();
-  const postID = props.postID;
+
   const local = props.local;
+  const username = props.username
+  const userID = props.userID
+  const commentText = props.commentText
 
   const [comments, setComments] = React.useState([])
 
-  React.useEffect(() => {
-    async function getComments() {
-      if (postID != null){
-        const c = await getCommentsFromPost(postID);
-        console.log("comments", c);
-        setComments(c);
-      }
-    }
-    getComments();
- }, [])
-
-   function isLocal(comment) {
-     return(comment.local === true)
-   }
-
-   function isNotLocal(comment) {
-     return(!comment.local === false)
-   }
-
-   let c = [];
-
-   if (local){
-     c = comments.filter(isLocal);
-     console.log(c)
-   }
-   else{
-     c = comments.filter(isNotLocal);
-     console.log(c)
-   }
-
-  const commentsList = c.map((comment) =>
+  const comment = (
     <ListItem button>
-      {console.log(comment.comment)}
-      <Avatar/>
       <ListItemText
-        primary={comment.userName}
-        secondary={comment.comment}
+        primary={username}
+        secondary={commentText}
         className={classes.name}
       />
     </ListItem>
   );
 
-  console.log("commentslist: ", commentsList)
-
   return (
     <React.Fragment>
-      {commentsList}
+      {comment}
     </React.Fragment>
   );
 }
