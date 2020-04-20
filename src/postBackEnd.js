@@ -77,14 +77,14 @@ export function setPostInformation(newPostInfo, post_id) {
 export async function getNearbyPosts(currentLat, currentLong, range) {
     let postList = [];
     let postsRef = db.collection('post');
-    let query = postsRef.where('lat', '<=', (currentLat+range)).where('lat', '>=', (currentLat-range));
-    await query.get().then(function(posts) {
-      posts.forEach(function(post) {
-        let postObject = post.data();
-        if(postObject.long >= (currentLong - range) && postObject.long <= currentLong + range) {
-          postList.push(postObject);
-        }
-      });
+    let query = postsRef.where('lat', '<=', (currentLat + range)).where('lat', '>=', (currentLat - range));
+    await query.get().then(function (posts) {
+        posts.forEach(function (post) {
+            let postObject = post.data();
+            if (postObject.long >= (currentLong - range) && postObject.long <= currentLong + range) {
+                postList.push(postObject);
+            }
+        });
     });
     return postList;
 }
@@ -187,20 +187,24 @@ export async function dislikePost(postID) {
     return result
 }
 
-export async function deletePost(postID){
-  if (currentUserObj.userID == "")
-    return false;
-  db.collection('post').doc(postID).delete();
-  let commentList = db.collection('comments').where('postID', '==', postID);
-  await commentList.get().then(function(comments){
-    var batch = db.batch();
-    comments.forEach(function(com){
-      batch.delete(com.ref);
+export async function deletePost(postID) {
+    if (currentUserObj.userID == "")
+        return false;
+
+    let result = false
+    let commentList = db.collection('comments').where('postID', '==', postID);
+    result = await commentList.get().then(function (comments) {
+        var batch = db.batch();
+        comments.forEach(function (com) {
+            batch.delete(com.ref);
+        });
+        return batch.commit();
+    }).then(function () {
+        db.collection('post').doc(postID).delete();
+        return true;
     });
-    return batch.commit();
-  }).then(function(){
-    return true;
-  });
+
+    return result
 }
 
 export async function getLikeCount(post_id) {
