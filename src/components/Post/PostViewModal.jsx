@@ -23,7 +23,7 @@ import Comment from './Comment.jsx'
 import CommentList from './CommentList.jsx'
 
 import { currentUserObj } from "../../signIn.js";
-import { likePost, dislikePost, getUserInLikes } from '../../postBackEnd.js';
+import { likePost, dislikePost, getUserInLikes, getLikeCount } from '../../postBackEnd.js';
 import { createComment } from '../../commentBackEnd.js';
 
 const useStyles = makeStyles(theme => ({
@@ -72,6 +72,7 @@ const PostViewModal =  (props) => {
   const [comments, updateComments] = React.useState([]);
   const [commentString, updateCommentString] = React.useState("");
   const [liked, setLiked] = React.useState(false);
+  const [likeCount, setLikeCount] = React.useState(0);
 
   React.useEffect(() => {
     setOpen(props.open)
@@ -116,7 +117,7 @@ const PostViewModal =  (props) => {
             <DeleteIcon color="primary"/>
           </IconButton>) : null
 
-  const likeButton = liked ?
+  const likeButton = (currentUserObj.userID != "" ) && (liked ?
     (<IconButton className={classes.likes}
                  aria-label="like post"
                  onClick={clickUnlike}>
@@ -126,7 +127,7 @@ const PostViewModal =  (props) => {
                  aria-label="like post"
                  onClick={clickLike}>
         <FavoriteBorderSharpIcon color="primary"/>
-      </IconButton>);
+      </IconButton>));
 
   const commentField = (currentUserObj.userID != "") ?
     ( <React.Fragment>
