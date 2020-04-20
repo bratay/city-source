@@ -96,6 +96,23 @@ const PostViewModal =  (props) => {
             <DeleteIcon color="primary"/>
           </IconButton>) : null
 
+  const commentField = (currentUserObj.userID != "") ?
+    ( <React.Fragment>
+        <TextField label="Add Comment"
+                   variant="outlined"
+                   multiline
+                   fullWidth
+                   value={commentString}
+                   onChange={(e) => {updateCommentString(e.target.value);}}/>
+       <IconButton type="submit"
+                   className={classes.iconButton}
+                   aria-label="search"
+                   onClick={addNewComment}>
+         <ChevronRightIcon />
+       </IconButton>
+     </React.Fragment>
+    ) : null;
+
   const modal = (
         <Dialog open={open}
                 onClose={() => {setOpen(false); action(false);}}
@@ -149,18 +166,7 @@ const PostViewModal =  (props) => {
                 </Grid>
               </Grid>
               <DialogActions>
-                <TextField label="Add Comment"
-                           variant="outlined"
-                           multiline
-                           fullWidth
-                           value={commentString}
-                           onChange={(e) => {updateCommentString(e.target.value);}}/>
-               <IconButton type="submit"
-                           className={classes.iconButton}
-                           aria-label="search"
-                           onClick={addNewComment}>
-                 <ChevronRightIcon />
-               </IconButton>
+                {commentField}
               </DialogActions>
             </DialogContent>
           </Collapse>

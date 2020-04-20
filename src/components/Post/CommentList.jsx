@@ -26,18 +26,7 @@ const CommentList = (props) => {
     async function getComments() {
       if (postID != null){
         const c = await getCommentsFromPost(postID);
-
-        console.log(c)
         setComments(c);
-
-        // const filtered = comments.filter(function (comment) {
-        //   console.log(comment);
-        //   console.log(comment.local);
-        //   return (comment.local == false);
-        // });
-        //
-        // console.log(filtered);
-        // setComments(filtered);
       }
     }
     getComments();
