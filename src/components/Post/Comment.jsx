@@ -24,12 +24,14 @@ const Comment = (props) => {
   const username = props.username;
   const userID = props.userID;
   const commentText = props.commentText;
+  const picUrl = props.picUrl;
 
   const [comments, setComments] = React.useState([]);
   const [openProfile, setOpenProfile] = React.useState(false);
 
   const comment = (local == localComment) ? (
     <ListItem button onClick={() => {setOpenProfile(true)}}>
+      <Avatar src={picUrl} />
       <ListItemText
         primary={username}
         secondary={commentText}

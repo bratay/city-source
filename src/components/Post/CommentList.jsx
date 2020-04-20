@@ -38,6 +38,7 @@ const CommentList = (props) => {
              userID={comment.userID}
              local={local}
              localComment={comment.local}
+             picUrl={comment.picURI}
     />
   );
 
