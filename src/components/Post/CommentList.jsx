@@ -26,50 +26,49 @@ const CommentList = (props) => {
     async function getComments() {
       if (postID != null){
         const c = await getCommentsFromPost(postID);
-        console.log("comments", c);
+
+        console.log(c)
         setComments(c);
+
+        // const filtered = comments.filter(function (comment) {
+        //   console.log(comment);
+        //   console.log(comment.local);
+        //   return (comment.local == false);
+        // });
+        //
+        // console.log(filtered);
+        // setComments(filtered);
       }
     }
     getComments();
  }, [])
-
-   // function isLocal(comment) {
-   //   return(comment.local === true)
-   // }
-   //
-   // function isNotLocal(comment) {
-   //   return(!comment.local === false)
-   // }
-   //
-   // let c = [];
-   //
-   // if (local){
-   //   c = comments.filter(isLocal);
-   //   console.log(c)
-   // }
-   // else{
-   //   c = comments.filter(isNotLocal);
-   //   console.log(c)
-   // }
 
   const commentsList = comments.map((comment) =>
     <Comment username={comment.userName}
              commentText={comment.comment}
              userID={comment.userID}
              local={local}
+             localComment={comment.local}
     />
   );
+
+  const subheader = local ? "Local" : "Non-local";
 
   return (
     <React.Fragment>
       <List
         subheader={
-                <ListSubheader component="div" id="nested-list-subheader">
-                  Local
+                <ListSubheader component="div"
+                               id="nested-list-subheader"
+                               color="primary"
+                >
+                  {subheader}
                 </ListSubheader>
               }
       >
-        {commentsList}
+        <div style={{maxHeight: 400, overflow: 'auto'}}>
+          {commentsList}
+        </div>
       </List>
     </React.Fragment>
   );

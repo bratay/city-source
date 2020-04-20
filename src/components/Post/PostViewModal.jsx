@@ -86,8 +86,6 @@ const PostViewModal =  (props) => {
   }
 
   async function addNewComment(){
-    console.log(commentString)
-    console.log(post.postID)
     await createComment(commentString, post.postID)
     updateCommentString("")
   }
