@@ -19,7 +19,6 @@ export const AutocompleteSearchBox = (props) => {
     }, [props.presetVal]);
      
     const gotCoords = (hometown, {lat, lng}) => {
-        console.log({lat, lng});
         setCoordinates({lat, lng});
         props.setCoords({lat, lng});
         props.setHometown(hometown);

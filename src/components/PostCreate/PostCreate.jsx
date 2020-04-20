@@ -30,13 +30,10 @@ export function PostCreate(props) {
 	const classes = useStyles();
 	const action = props.action;
 	const [open, setOpen] = React.useState(props.open);
-	const initLoc = props.initLoc ? props.initLoc : "";
-	const initCoords = props.initCoords ? props.initCoords : {lat: null, lng: null};
-	
 	const [title, setTitle] = React.useState("");
 	const [titleErr, setTitleErr] = React.useState(false);
-	const [location, setLocation] = React.useState(initLoc);
-	const [coordinates, setCoordinates] = React.useState(initCoords);
+	const [location, setLocation] = React.useState(props.initLoc);
+	const [coordinates, setCoordinates] = React.useState(props.initCoords);
 	const [locErr, setLocErr] = React.useState(false);
 	const [description, setDescription] = React.useState("");
 	const [descErr, setDescErr] = React.useState(false);
@@ -46,6 +43,14 @@ export function PostCreate(props) {
 	React.useEffect(() => {
 		setOpen(props.open)
 	}, [props.open]);
+
+	React.useEffect(() => {
+		setLocation(props.initLoc);
+	}, [props.initLoc]);
+
+	React.useEffect(() => {
+		setCoordinates(props.initCoords)
+	}, [props.initCoords]);
 
 	const handleClickOpen = () => {
 		setOpen(true);
@@ -119,7 +124,9 @@ export function PostCreate(props) {
 		}
 		let createdPost = createpost(postObj);
 		let postID = createdPost.postID;
-		storePostImage(postID, coverImg);
+		if(coverImg){
+			storePostImage(postID, coverImg);
+		}
 		handleClose();
 	};
 
@@ -153,7 +160,9 @@ export function PostCreate(props) {
 									id: 'locationField',
 									required: true,
 								}}
-								presetVal={initLoc}
+								initValue={location}
+								initCoords={coordinates}
+								presetVal={location}
 								setCoords={setCoordinates} 
 								setHometown={setLocation}
 							/>
