@@ -30,11 +30,10 @@ export function PostCreate(props) {
 	const classes = useStyles();
 	const action = props.action;
 	const [open, setOpen] = React.useState(props.open);
-
 	const [title, setTitle] = React.useState("");
 	const [titleErr, setTitleErr] = React.useState(false);
-	const [location, setLocation] = React.useState("");
-	const [locCoord, setLocCoord] = React.useState(null);
+	const [location, setLocation] = React.useState(props.initLoc);
+	const [coordinates, setCoordinates] = React.useState(props.initCoords);
 	const [locErr, setLocErr] = React.useState(false);
 	const [description, setDescription] = React.useState("");
 	const [descErr, setDescErr] = React.useState(false);
@@ -44,6 +43,14 @@ export function PostCreate(props) {
 	React.useEffect(() => {
 		setOpen(props.open)
 	}, [props.open]);
+
+	React.useEffect(() => {
+		setLocation(props.initLoc);
+	}, [props.initLoc]);
+
+	React.useEffect(() => {
+		setCoordinates(props.initCoords)
+	}, [props.initCoords]);
 
 	const handleClickOpen = () => {
 		setOpen(true);
@@ -55,7 +62,7 @@ export function PostCreate(props) {
 		setDescErr(false);
 		setLocation("");
 		setLocErr(false);
-
+		setCoordinates({lat: null, lng: null});
 		setOpen(false);
 		action(false);
 	};
@@ -73,7 +80,6 @@ export function PostCreate(props) {
 		if (event.target.value === "") {
 			setLocErr(true);
 			setLocation("");
-			setLocCoord(undefined);
 		}
 		else {
 			setLocErr(false);
@@ -110,15 +116,17 @@ export function PostCreate(props) {
 		
 		let postObj = {
 			address: location,
-			lat: locCoord.lat,
-			long: locCoord.lng,
+			lat: coordinates.lat,
+			long: coordinates.lng,
 			pic: null,
 			text: description,
 			title: title
 		}
 		let createdPost = createpost(postObj);
 		let postID = createdPost.postID;
-		storePostImage(postID, coverImg);
+		if(coverImg){
+			storePostImage(postID, coverImg);
+		}
 		handleClose();
 	};
 
@@ -152,7 +160,10 @@ export function PostCreate(props) {
 									id: 'locationField',
 									required: true,
 								}}
-								setCoords={setLocCoord} 
+								initValue={location}
+								initCoords={coordinates}
+								presetVal={location}
+								setCoords={setCoordinates} 
 								setHometown={setLocation}
 							/>
 						</FormControl>

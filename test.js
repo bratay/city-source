@@ -107,3 +107,28 @@ query.get().then(queriedDocs => {
 // }
 
 
+export async function testDeletePost() {
+    let postID = ''//Get a valid post ID
+    currentUserObj.userID = "2345"
+    let result = await deletePost(postID)
+
+    console.log("Result = " + result)
+}
+
+export async function testDeleteUser() {
+    let userID = '1234'//Get valid user ID
+    currentUserObj.userID = userID
+    let result = await deleteCurrentUser()
+
+    let numPost = 0
+    let postList = db.collection('posts').where('userID', '==', userID);
+
+    await postList.get().then(posts => {
+        posts.forEach(post => {
+            numPost++
+        })
+    })
+
+    console.log("Result = " + result)
+    console.log("numPost = " + numPost)
+}

@@ -26,6 +26,7 @@ function createCommentObj(commentDoc) {
     commentObj = {
         comment: commentDoc.data().comment,
         userID: commentDoc.data().userID,
+        picURI: currentUserObj.picUrl,
         userName: commentDoc.data().userName,
         postID: commentDoc.data().postID,
         commentID: commentDoc.data().commentID,
@@ -41,7 +42,7 @@ function createCommentObj(commentDoc) {
 
 export async function createComment(commentString, postID) {
     if (currentUserObj.userID == "")
-    return false;
+        return false;
 
     let commentID = db.collection('comments').doc().id; //Generate a new ID
     let isLocalComment = await isLocal(postID)
@@ -51,6 +52,7 @@ export async function createComment(commentString, postID) {
     newComment = {
         comment: commentString,
         userID: currentUserObj.userID,
+        picURI: currentUserObj.picUrl,
         userName: currentUserObj.username,
         postID: postID,
         commentID: commentID,
@@ -64,6 +66,7 @@ export async function createComment(commentString, postID) {
     db.collection('comments').doc(commentID).set({
         comment: commentString,
         userID: currentUserObj.userID,
+        picURI: currentUserObj.picUrl,
         userName: currentUserObj.username,
         postID: postID,
         commentID: commentID,
@@ -78,15 +81,15 @@ export async function createComment(commentString, postID) {
     db.collection('post').doc(postID).update({
         comments: firebase.firestore.FieldValue.arrayUnion(
             commentID
-            )
-        }).catch(function (error) {
-            // The document probably doesn't exist.
-            console.error("Error updating post document: ", error)
-            return false
-        });
+        )
+    }).catch(function (error) {
+        // The document probably doesn't exist.
+        console.error("Error updating post document: ", error)
+        return false
+    });
 
-        return newComment
-    }
+    return newComment
+}
 
 //returns true if commenter is considered a local to the location of the post
 // +- .13 lat long
