@@ -26,7 +26,7 @@ function createCommentObj(commentDoc) {
     commentObj = {
         comment: commentDoc.data().comment,
         userID: commentDoc.data().userID,
-        picURI: currentUserObj.picUrl,
+        picURI: commentDoc.data().picURI,
         userName: commentDoc.data().userName,
         postID: commentDoc.data().postID,
         commentID: commentDoc.data().commentID,
