@@ -25,7 +25,6 @@ const Comment = (props) => {
   const userID = props.userID;
   const commentText = props.commentText;
   const picUrl = props.picUrl;
-  console.log(picUrl);
 
   const [comments, setComments] = React.useState([]);
   const [openProfile, setOpenProfile] = React.useState(false);

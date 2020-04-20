@@ -17,12 +17,13 @@ import MessageIcon from '@material-ui/icons/Message'
 import ShareIcon from '@material-ui/icons/Share'
 import DeleteIcon from '@material-ui/icons/Delete';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderSharpIcon from '@material-ui/icons/FavoriteBorderSharp';
 import Comment from './Comment.jsx'
 import CommentList from './CommentList.jsx'
 
 import { currentUserObj } from "../../signIn.js";
-import { likePost } from '../../postBackEnd.js';
+import { likePost, dislikePost, getUserInLikes } from '../../postBackEnd.js';
 import { createComment } from '../../commentBackEnd.js';
 
 const useStyles = makeStyles(theme => ({
@@ -68,12 +69,21 @@ const PostViewModal =  (props) => {
   const [open, setOpen] = React.useState(props.open);
   const [expandedComments, setExpandedComments] = React.useState(false);
   const [expandedPost, setExpandedPost] = React.useState(true);
-  const [comments, updateComments] = React.useState([])
-  const [commentString, updateCommentString] = React.useState("")
+  const [comments, updateComments] = React.useState([]);
+  const [commentString, updateCommentString] = React.useState("");
+  const [liked, setLiked] = React.useState(false);
 
   React.useEffect(() => {
     setOpen(props.open)
   }, [props.open])
+
+  React.useEffect(() => {
+    async function getLiked(){
+      const isLiked = await getUserInLikes(post.postID, currentUserObj.userID);
+      setLiked(isLiked);
+    }
+    getLiked();
+  }, [])
 
   const handleExpandComments = () => {
     setExpandedComments(true);
@@ -83,6 +93,16 @@ const PostViewModal =  (props) => {
   const handleExpandPost = () => {
     setExpandedComments(false);
     setExpandedPost(true);
+  }
+
+  const clickLike = async () => {
+    setLiked(true);
+    await likePost(post.postID);
+  }
+
+  const clickUnlike = async () => {
+    setLiked(false);
+    await dislikePost(post.postID);
   }
 
   async function addNewComment(){
@@ -95,6 +115,18 @@ const PostViewModal =  (props) => {
                      aria-label="delete post">
             <DeleteIcon color="primary"/>
           </IconButton>) : null
+
+  const likeButton = liked ?
+    (<IconButton className={classes.likes}
+                 aria-label="like post"
+                 onClick={clickUnlike}>
+        <FavoriteIcon color="primary"/>
+      </IconButton>) :
+    (<IconButton className={classes.likes}
+                 aria-label="like post"
+                 onClick={clickLike}>
+        <FavoriteBorderSharpIcon color="primary"/>
+      </IconButton>);
 
   const commentField = (currentUserObj.userID != "") ?
     ( <React.Fragment>
@@ -143,10 +175,7 @@ const PostViewModal =  (props) => {
                 <Button size="small" color="primary" startIcon={<ShareIcon />}>
                 Share
               </Button>
-              <IconButton className={classes.likes}
-                          aria-label="like post">
-                <FavoriteBorderSharpIcon color="primary"/>
-              </IconButton>
+              {likeButton}
               {deleteButton}
             </DialogActions>
           </Collapse>
