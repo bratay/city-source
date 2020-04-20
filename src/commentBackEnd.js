@@ -101,9 +101,9 @@ async function isLocal(postID) {
 
         if (currentUserObj.lat < postLat + .13 && currentUserObj.lat > postLat - .13 &&
             currentUserObj.long < postLong + .13 && currentUserObj.long > postLong - .13) {
-            return true
-        } else {
             return false
+        } else {
+            return true
         }
     })
     return local
