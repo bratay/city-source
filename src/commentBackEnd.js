@@ -26,6 +26,7 @@ function createCommentObj(commentDoc) {
     commentObj = {
         comment: commentDoc.data().comment,
         userID: commentDoc.data().userID,
+        picURI: currentUserObj.picUrl,
         userName: commentDoc.data().userName,
         postID: commentDoc.data().postID,
         commentID: commentDoc.data().commentID,
@@ -51,6 +52,7 @@ export async function createComment(commentString, postID) {
     newComment = {
         comment: commentString,
         userID: currentUserObj.userID,
+        picURI: currentUserObj.picUrl,
         userName: currentUserObj.userName,
         postID: postID,
         commentID: commentID,
@@ -64,6 +66,7 @@ export async function createComment(commentString, postID) {
     db.collection('comments').doc(commentID).set({
         comment: commentString,
         userID: currentUserObj.userID,
+        picURI: currentUserObj.picUrl,
         userName: currentUserObj.userName,
         postID: postID,
         commentID: commentID,
