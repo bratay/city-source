@@ -63,6 +63,9 @@ export function PostCreate(props) {
 		setLocation("");
 		setLocErr(false);
 		setCoordinates({lat: null, lng: null});
+		setCoverImg(null);
+		setImgErr(false);
+
 		setOpen(false);
 		action(false);
 	};
@@ -106,8 +109,17 @@ export function PostCreate(props) {
 
 	const submitPost = (event) => {
 		// event.preventDefault();
-		if (titleErr || descErr || imgErr || locErr) {
+		if (titleErr || descErr || imgErr || locErr || title === "" || location === "" || description === "") {
 			// TODO: Add some sort of error message like a snackbar, but snackbars are being a bit difficult for me
+			if (title === "") {
+				setTitleErr(true);
+			}
+			if (description === "") {
+				setDescErr(true);
+			}
+			if (location === "") {
+				setLocErr(true);
+			}
 			return;
 		}
 		setTitle(escape(title));
