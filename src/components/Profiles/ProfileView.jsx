@@ -5,6 +5,8 @@ import { getUserProfileObj, getUserPost } from "../../profileBackEnd.js";
 import CloseIcon from '@material-ui/icons/Close';
 import RoomIcon from '@material-ui/icons/Room';
 import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
+import { PostItem } from "../Profiles/PostItem.jsx";
+
 
 const useStyles = makeStyles(theme => ({
 	avatar: {
@@ -56,10 +58,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 	return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function PostCard(props) {
-	let listOfPosts = getUserPost()
-}
-
 export function ProfileDialog(props) {
 	const action = props.action;
 	const userId = props.userId;
@@ -75,16 +73,13 @@ export function ProfileDialog(props) {
 		}
 		async function fetchUserPosts() {
 			const posts = await getUserPost(userId);
-			setListofPosts(posts);
+			posts.sort((postA, postB) => postB.timestamp - postA.timestamp);
+			setListofPosts(posts.slice(0, 5));
 		}
 		fetchUserObj();
 		fetchUserPosts();
 		setOpen(props.open);
 	}, [props.open]);
-
-	React.useEffect(() => {
-		
-	 }, [userId]);
 
 	const handleClose = () => {
 		setOpen(false);
@@ -92,32 +87,9 @@ export function ProfileDialog(props) {
 	};
 
 	const ListOfPosts = () => {
-		const postCompList = listOfPosts.map((post) => {
-			return (
-				<Card className={classes.post}>
-					<div style ={{display: "flex",}}>
-					<CardMedia
-						style={{width: 151}}
-						component="img"
-						src={post.pic}
-					/>
-					<CardContent>
-						<Typography component="h5" variant="h5">
-							{post.title}
-						</Typography>
-						<Typography variant="body2">
-							{post.text}
-						</Typography>
-					</CardContent>
-					</div>	
-					<CardActions>
-						<Button size="small" color="primary" style={{marginLeft: 'auto',}}>
-							Read More
-						</Button>
-					</CardActions>					
-				</Card>
-			);
-		});
+		const postCompList = listOfPosts.map((post) => 
+			<PostItem postObj={post} close={handleClose} />
+		);
 	return (<React.Fragment>{postCompList}</React.Fragment>);
 	}
 

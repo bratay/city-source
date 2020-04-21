@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
     paper: {
       position: 'absolute',
       width: 500,
-      height: 200,
+      height: 240,
       backgroundColor: theme.palette.background.paper,
       borderRadius: '25px',
       outline: 'none',
@@ -82,7 +82,7 @@ const HometownModal = (props) => {
                 <div style={{position: "absolute", zIndex: "2100", textAlign: "center", paddingLeft: "25%", paddingRight: "25%", paddingTop: "2%"}}>
                     <AutocompleteSearchBox setCoords={setCoordinates} setHometown={setHometownStr} inputProps={{placeholder: 'Add your location',}}/>
                 </div>
-                <div style={{position: "absolute", zIndex: "2000", textAlign: "center", paddingLeft: "35%", paddingTop: "10%"}}>
+                <div style={{position: "absolute", zIndex: "2000", textAlign: "center", paddingLeft: "35%", paddingTop: "15%"}}>
                  <Button variant="contained" style={{backgroundColor: "#F06E38", color: "white"}} onClick={confirmHometown}>
                     Confirm
                  </Button>

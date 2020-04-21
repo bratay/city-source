@@ -60,7 +60,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const PostViewModal =  (props) => {
+export const PostViewModal =  (props) => {
   const action = props.action
 
   const post = props.post

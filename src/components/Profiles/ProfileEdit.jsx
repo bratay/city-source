@@ -69,6 +69,8 @@ export function ProfileEdit(props) {
 	const [userErr, setUserErr] = React.useState(false);
 	const [username, setUsername] = React.useState(undefined);
 
+	const [successOpen, setSuccessOpen] = React.useState(false);
+	const [errorOpen, setErrorOpen] = React.useState(false);
 	
 
 	React.useEffect(() => {
@@ -77,17 +79,6 @@ export function ProfileEdit(props) {
 		setHometown(currentUserObj.hometown);
 		setBio(currentUserObj.bio);
 	}, [props.open]);
-
-	// React.useEffect(() => {
-	// 	async function fetchUserObj() {
-	// 		const obj = await getUserProfileObj(props.userId);
-	// 		setUserObj(obj);
-	// 		setUsernameLocal(obj.username);
-	// 		setHometownLocal(obj.hometown);
-	// 		setBioLocal(obj.bio);
-	// 	}
-	// 	// fetchUserObj();
-	//  }, [props.open]);
 
 	const handleClose = () => {
 		setUserErr(false);
@@ -98,10 +89,18 @@ export function ProfileEdit(props) {
 		action(false);
 	};
 
+	const handleSnackClose = (event, reason) => {
+		if (reason === 'clickaway') {
+			return;
+		}
+		setSuccessOpen(false);
+		setErrorOpen(false);
+	}
+
 	const saveChanges = (event) => {
 		event.preventDefault();
 		if (username === "" || hometown === "" || homeCoord === undefined) {
-			// TODO: Add some sort of error message like a snackbar, but snackbars are being a bit difficult for me
+			setErrorOpen(true);
 			return;
 		}
 		let updatedObj = {
@@ -116,6 +115,7 @@ export function ProfileEdit(props) {
 			username: escape(username),
 		};
 		setUserInformation(updatedObj);
+		setSuccessOpen(true);
 	}
 
 	const modifyName = (event) => {
@@ -292,6 +292,26 @@ export function ProfileEdit(props) {
 						</Button>
 					</DialogActions>
 				</Dialog>
+				<Snackbar
+					anchorOrigin={{
+						vertical: 'bottom',
+						horizontal: 'center',
+					}}
+					open={successOpen}
+					autoHideDuration={6000}
+					onClose={handleSnackClose}
+					message="Profile saved successfully!"
+				/>
+				<Snackbar
+					anchorOrigin={{
+						vertical: 'bottom',
+						horizontal: 'center',
+					}}
+					open={errorOpen}
+					autoHideDuration={6000}
+					onClose={handleSnackClose}
+					message="Your profile could not be saved.\nPlease check the highlighted fields."
+				/>
 			</React.Fragment>
 		);
 	}
