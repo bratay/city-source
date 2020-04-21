@@ -21,8 +21,10 @@ const CommentList = (props) => {
   const action = props.action;
 
   const [comments, setComments] = React.useState([])
+  const [num, setNum] = React.useState(props.num) //this is so stupid. so dumb and i hate myself
 
   React.useEffect(() => {
+    setNum(props.num)
     async function getComments() {
       if (postID != null){
         const c = await getCommentsFromPost(postID);
@@ -30,7 +32,7 @@ const CommentList = (props) => {
       }
     }
     getComments();
- }, [])
+ }, [props.num])
 
   const commentsList = comments.map((comment) =>
     <Comment username={comment.userName}

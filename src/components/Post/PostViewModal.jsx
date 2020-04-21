@@ -69,7 +69,7 @@ export const PostViewModal =  (props) => {
   const [open, setOpen] = React.useState(props.open);
   const [expandedComments, setExpandedComments] = React.useState(false);
   const [expandedPost, setExpandedPost] = React.useState(true);
-  const [comments, updateComments] = React.useState([]);
+  const [comment, addComment] = React.useState(0);
   const [commentString, updateCommentString] = React.useState("");
   const [liked, setLiked] = React.useState(false);
   const [likeCount, setLikeCount] = React.useState(0);
@@ -109,6 +109,7 @@ export const PostViewModal =  (props) => {
   async function addNewComment(){
     await createComment(commentString, post.postID)
     updateCommentString("")
+    addComment(comment+1)
   }
 
   const deleteButton = (currentUserObj.userID === post.userID) ?
@@ -189,10 +190,10 @@ export const PostViewModal =  (props) => {
             <DialogContent>
               <Grid container direction="row" spacing={2}>
                 <Grid item xs={6} md={6}>
-                  <CommentList postID={post.postID} local={true} action={updateComments} />
+                  <CommentList postID={post.postID} local={true} num={comment} />
                 </Grid>
                 <Grid item xs={6} md={6}>
-                  <CommentList postID={post.postID} local={false} action={updateComments} />
+                  <CommentList postID={post.postID} local={false} num={comment} />
                 </Grid>
               </Grid>
               <DialogActions>
