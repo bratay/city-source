@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, IconButton, InputLabel, Slide, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, IconButton, InputLabel, Slide, Snackbar, TextField, Tooltip, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import escape from 'validator/lib/escape';
 import { createpost, setPostInformation } from '../../postBackEnd.js';
@@ -39,6 +39,9 @@ export function PostCreate(props) {
 	const [descErr, setDescErr] = React.useState(false);
 	const [coverImg, setCoverImg] = React.useState(null);
 	const [imgErr, setImgErr] = React.useState(false);
+
+	const [successOpen, setSuccessOpen] = React.useState(false);
+	const [errorOpen, setErrorOpen] = React.useState(false);
 
 	React.useEffect(() => {
 		setOpen(props.open)
@@ -107,6 +110,19 @@ export function PostCreate(props) {
 		}
 	};
 
+	const handleSuccessClose = (event, reason) => {
+		if (reason === 'clickaway') {
+			return;
+		}
+		setSuccessOpen(false);
+	}
+	const handleErrorClose = (event, reason) => {
+		if (reason === 'clickaway') {
+			return;
+		}
+		setErrorOpen(false);
+	}
+
 	const submitPost = (event) => {
 		// event.preventDefault();
 		if (titleErr || descErr || imgErr || locErr || title === "" || location === "" || description === "") {
@@ -120,6 +136,7 @@ export function PostCreate(props) {
 			if (location === "") {
 				setLocErr(true);
 			}
+			setErrorOpen(true);
 			return;
 		}
 		setTitle(escape(title));
@@ -139,6 +156,7 @@ export function PostCreate(props) {
 		if(coverImg){
 			storePostImage(postID, coverImg);
 		}
+		setSuccessOpen(true);
 		handleClose();
 	};
 
@@ -219,6 +237,40 @@ export function PostCreate(props) {
           			</Button>
 				</DialogActions>
 			</Dialog>
+			<Snackbar
+				action={
+					<React.Fragment>
+					  	<IconButton size="small" aria-label="close" color="inherit" onClick={handleSuccessClose}>
+							<CloseIcon fontSize="small" />
+					  	</IconButton>
+					</React.Fragment>
+				}
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'center',
+				}}
+				open={successOpen}
+				autoHideDuration={6000}
+				onClose={handleSuccessClose}
+				message="Post created successfully!"
+			/>
+			<Snackbar
+				action={
+					<React.Fragment>
+					  	<IconButton size="small" aria-label="close" color="inherit" onClick={handleErrorClose}>
+							<CloseIcon fontSize="small" />
+					  	</IconButton>
+					</React.Fragment>
+				}
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'center',
+				}}
+				open={errorOpen}
+				autoHideDuration={6000}
+				onClose={handleErrorClose}
+				message="Post creation failed. Please check the highlighted fields."
+			/>
 		</React.Fragment>
 	);
 }
