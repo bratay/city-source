@@ -98,12 +98,12 @@ async function isLocal(postID) {
         let data = await doc.data()
         let postLat = data.lat
         let postLong = data.long
-
-        if (currentUserObj.lat < postLat + .13 && currentUserObj.lat > postLat - .13 &&
-            currentUserObj.long < postLong + .13 && currentUserObj.long > postLong - .13) {
-            return false
-        } else {
+        
+        if (Math.abs(currentUserObj.hometownLat) < Math.abs(postLat) + .13 && Math.abs(currentUserObj.hometownLat) > Math.abs(postLat) - .13 &&
+            Math.abs(currentUserObj.hometownLong) < Math.abs(postLong) + .13 && Math.abs(currentUserObj.hometownLong) > Math.abs(postLong) - .13) {
             return true
+        } else {
+            return false
         }
     })
     return local
