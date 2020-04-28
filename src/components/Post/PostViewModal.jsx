@@ -5,6 +5,7 @@ import { Button,
          Dialog,
          DialogActions,
          DialogContent,
+         DialogTitle,
          Grid,
          GridList,
          GridListTile,
@@ -23,7 +24,7 @@ import Comment from './Comment.jsx'
 import CommentList from './CommentList.jsx'
 
 import { currentUserObj } from "../../signIn.js";
-import { likePost, dislikePost, getUserInLikes, getLikeCount } from '../../postBackEnd.js';
+import { deletePost, likePost, dislikePost, getUserInLikes, getLikeCount } from '../../postBackEnd.js';
 import { createComment } from '../../commentBackEnd.js';
 
 const useStyles = makeStyles(theme => ({
@@ -73,10 +74,21 @@ export const PostViewModal =  (props) => {
   const [commentString, updateCommentString] = React.useState("");
   const [liked, setLiked] = React.useState(false);
   const [likeCount, setLikeCount] = React.useState(0);
+  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
 
   React.useEffect(() => {
     setOpen(props.open)
   }, [props.open])
+
+  // React.useEffect(() => {
+  //   async function getNumLikes(){
+  //     const numLikes = getLikeCount(post.post_id);
+  //     setLikeCount(numLikes);
+  //   }
+  //   if (post != null && (post.postID != null)){
+  //     getNumLikes();
+  //   }
+  // }, [])
 
   React.useEffect(() => {
     async function getLiked(){
@@ -112,18 +124,46 @@ export const PostViewModal =  (props) => {
     addComment(comment+1)
   }
 
+  async function deleteThisPost(){
+    await deletePost(post.postID)
+    setDeleteDialogOpen(false)
+    setOpen(false)
+  }
+
   const deleteButton = (currentUserObj.userID === post.userID) ?
         (<IconButton className={classes.likes}
-                     aria-label="delete post">
+                     aria-label="delete post"
+                     onClick={() => {setDeleteDialogOpen(true)}}>
             <DeleteIcon color="primary"/>
           </IconButton>) : null
 
+  const deleteDialog = (deleteDialogOpen) ?
+      (
+        <Dialog
+          open={deleteDialogOpen}
+          onClose={() => {setDeleteDialogOpen(false)}}
+        >
+          <DialogTitle>{"Do you want to delete this post?"}</DialogTitle>
+          <DialogActions>
+            <Button onClick={deleteThisPost} color="primary">
+              Yes
+            </Button>
+            <Button onClick={() => {setDeleteDialogOpen(false)}} color="primary" autoFocus>
+              No
+            </Button>
+          </DialogActions>
+        </Dialog>
+      ) : null
+
   const likeButton = (currentUserObj.userID != "" ) && (liked ?
-    (<IconButton className={classes.likes}
+    (<React.Fragment>
+      <IconButton className={classes.likes}
                  aria-label="like post"
                  onClick={clickUnlike}>
         <FavoriteIcon color="primary"/>
-      </IconButton>) :
+      </IconButton>
+      {likeCount}
+       </React.Fragment>) :
     (<IconButton className={classes.likes}
                  aria-label="like post"
                  onClick={clickLike}>
@@ -204,7 +244,12 @@ export const PostViewModal =  (props) => {
         </Dialog>
     );
 
-  return modal;
+  return (
+    <React.Fragment>
+      {modal}
+      {deleteDialog}
+    </React.Fragment>
+  );
 }
 
 export default PostViewModal;
