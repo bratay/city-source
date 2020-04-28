@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, IconButton, InputLabel, LinearProgress, Slide, TextField, Typography, Snackbar, FormControl } from '@material-ui/core';
+import { Button, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, Grid, IconButton, InputLabel, LinearProgress, Slide, Snackbar, TextField, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { setUserInformation } from "../../profileBackEnd.js";
 import CloseIcon from '@material-ui/icons/Close';
@@ -50,6 +50,9 @@ const useStyles = makeStyles(theme => ({
 	inputLabel: {
 		marginBottom: "5px",
 	},
+	locationBox: {
+		position: "absolute",
+	}
 }));
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -77,6 +80,7 @@ export function ProfileEdit(props) {
 		setOpen(props.open);
 		setUsername(currentUserObj.username);
 		setHometown(currentUserObj.hometown);
+		setHomeCoord({lat: currentUserObj.hometownLat, lng: currentUserObj.hometownLong});
 		setBio(currentUserObj.bio);
 	}, [props.open]);
 
@@ -89,17 +93,28 @@ export function ProfileEdit(props) {
 		action(false);
 	};
 
-	const handleSnackClose = (event, reason) => {
+	const handleSuccessClose = (event, reason) => {
 		if (reason === 'clickaway') {
 			return;
 		}
 		setSuccessOpen(false);
+	}
+	const handleErrorClose = (event, reason) => {
+		if (reason === 'clickaway') {
+			return;
+		}
 		setErrorOpen(false);
 	}
 
 	const saveChanges = (event) => {
 		event.preventDefault();
-		if (username === "" || hometown === "" || homeCoord === undefined) {
+		if (username === "" || hometown === "" || homeCoord === undefined || userErr || homeErr || bioErr) {
+			if (username === "") {
+				setUserErr(true);
+			}
+			if (hometown === "" || homeCoord === undefined) {
+				setHomeErr(true);
+			}
 			setErrorOpen(true);
 			return;
 		}
@@ -293,24 +308,38 @@ export function ProfileEdit(props) {
 					</DialogActions>
 				</Dialog>
 				<Snackbar
+					action={
+						<React.Fragment>
+							<IconButton size="small" aria-label="close" color="inherit" onClick={handleSuccessClose}>
+								<CloseIcon fontSize="small" />
+							</IconButton>
+						</React.Fragment>
+					}
 					anchorOrigin={{
 						vertical: 'bottom',
 						horizontal: 'center',
 					}}
 					open={successOpen}
 					autoHideDuration={6000}
-					onClose={handleSnackClose}
+					onClose={handleSuccessClose}
 					message="Profile saved successfully!"
 				/>
 				<Snackbar
+					action={
+						<React.Fragment>
+							<IconButton size="small" aria-label="close" color="inherit" onClick={handleErrorClose}>
+								<CloseIcon fontSize="small" />
+							</IconButton>
+						</React.Fragment>
+					}
 					anchorOrigin={{
 						vertical: 'bottom',
 						horizontal: 'center',
 					}}
 					open={errorOpen}
 					autoHideDuration={6000}
-					onClose={handleSnackClose}
-					message="Your profile could not be saved.\nPlease check the highlighted fields."
+					onClose={handleErrorClose}
+					message="Your profile could not be saved. Please check the highlighted fields."
 				/>
 			</React.Fragment>
 		);
