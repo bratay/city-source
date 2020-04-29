@@ -80,15 +80,13 @@ export const PostViewModal =  (props) => {
     setOpen(props.open)
   }, [props.open])
 
-  // React.useEffect(() => {
-  //   async function getNumLikes(){
-  //     const numLikes = getLikeCount(post.post_id);
-  //     setLikeCount(numLikes);
-  //   }
-  //   if (post != null && (post.postID != null)){
-  //     getNumLikes();
-  //   }
-  // }, [])
+  React.useEffect(() => {
+    async function getNumLikes(){
+      const numLikes = await getLikeCount(post.postID);
+      setLikeCount(numLikes);
+    }
+    getNumLikes();
+  }, [])
 
   React.useEffect(() => {
     async function getLiked(){
