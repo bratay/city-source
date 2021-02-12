@@ -28,3 +28,11 @@ and citizens will have more influence over community development.
 **Sydney Combs** - [sycombs](https://github.com/sycombs)
 **Daniel Gonzalez** - [dgonzalez346](https://github.com/dgonzalez346)
 **Nathan Pelletier** - [npelletier](https://github.com/npelletier)
+
+[![Screen-Shot-2021-02-11-at-11-23-43-PM.png](https://i.postimg.cc/vZjLjvNQ/Screen-Shot-2021-02-11-at-11-23-43-PM.png)](https://postimg.cc/PCWwv1Hc)
+
+[![Screen-Shot-2021-02-11-at-11-26-20-PM.png](https://i.postimg.cc/0j8pmXbC/Screen-Shot-2021-02-11-at-11-26-20-PM.png)](https://postimg.cc/hz5zRr8J)
+
+[![Screen-Shot-2021-02-11-at-11-24-05-PM.png](https://i.postimg.cc/Twvj23xF/Screen-Shot-2021-02-11-at-11-24-05-PM.png)](https://postimg.cc/B8NPMsXB)
+
+[![Screen-Shot-2021-02-11-at-11-28-00-PM.png](https://i.postimg.cc/ydhmDCYd/Screen-Shot-2021-02-11-at-11-28-00-PM.png)](https://postimg.cc/hzjzYwmW)
