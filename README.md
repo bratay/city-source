@@ -23,7 +23,7 @@ and citizens will have more influence over community development.
 
 ## Team Members
 
-**Jacob Parnell** - [compoundfraxure](https://github.com/compoundfraxure)
+**Jacob Parnell** - [jake-penguins](https://github.com/jake-penguins)
 **Branden Taylor** - [bratay](https://github.com/bratay)
 **Sydney Combs** - [sycombs](https://github.com/sycombs)
 **Daniel Gonzalez** - [dgonzalez346](https://github.com/dgonzalez346)
